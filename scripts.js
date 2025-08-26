@@ -125,6 +125,9 @@ window.addEventListener('scroll', function() {
 
 let lastScrollTops = 0;
 const panel = document.querySelector(".filters-panel");
+const foot = document.getElementById("footer");
+const rightAds = document.getElementById("right-ads");
+
 let isHidden = false;
 const buffer = 20; // minimum scroll difference to trigger show/hide
 
@@ -141,6 +144,7 @@ window.addEventListener("scroll", () => {
         if (!isHidden && distanceToBottom <= buffer) {
             panel.classList.add("d-none");
             isHidden = true;
+            foot.style.marginBottom = "120px";
             console.log("Near bottom → hide panel", scrollTop);
         } 
         // Scroll up → show panel if it was hidden
