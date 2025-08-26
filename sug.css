@@ -1,0 +1,251 @@
+/* Decision */
+/* Header */
+
+.choic-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+.choice-details-wapper {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.choice-header-text {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #ffd700;
+    text-transform: uppercase;
+    margin-right: 0.5rem;
+    white-space: nowrap;
+}
+
+/* Date buttons */
+.choice-date {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    flex: 1;
+    padding-bottom: 10px;
+    scroll-behavior: smooth;
+}
+
+.choice-date::-webkit-scrollbar {
+    display: none;
+}
+
+.date-tab {
+    background: #1f2e4a;
+    padding: 0.45rem 1rem;
+    font-size: 0.9rem;
+    color: #ffd700;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    position: relative;
+    transition: all 0.2s ease-in-out;
+}
+
+.date-tab.active {
+    background: #ffd700;
+    color: #1a1a1a;
+    font-weight: 700;
+}
+
+.date-tab:hover {
+    background: #ffc107;
+    color: #1a1a1a;
+    box-shadow: 0 0 8px #ffc107;
+    font-weight: 700;
+}
+
+.tooltip-text {
+    display: none;
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 100;
+}
+
+.tooltip-text::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 10px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+.date-tab:hover .tooltip-text {
+    display: block;
+}
+
+/* Loader spinner */
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+#matchList-choice {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+
+
+
+
+
+/* Overlay */
+.custom-alert {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    overflow: hidden;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+.custom-alert::-webkit-scrollbar {
+    display: none !important;
+}
+.hidden {
+    display: none;
+}
+
+/* Content Box */
+.custom-alert-content {
+    background: #0a1f2b;
+    color: #fff;
+    padding: 1.5rem 2rem;
+    border-radius: 14px;
+    text-align: center;
+    max-width: 380px;
+    width: 90%;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    animation: fadeIn 0.3s ease;
+}
+
+/* Icon styling */
+.alert-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    animation: popIn 0.4s ease;
+}
+
+/* Title */
+.custom-alert-content h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Message */
+.custom-alert-content p {
+    font-size: 1rem;
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+}
+
+/* Button */
+.custom-alert-content button {
+    background: #ffd700;
+    color: #0a1f2b;
+    border: none;
+    padding: 0.6rem 1.4rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.custom-alert-content button:hover {
+    background: #e6c200;
+}
+
+/* Types (icon + title color) */
+.alert-success .alert-icon {
+    color: #4caf50;
+}
+
+/* Green */
+.alert-success h3 {
+    color: #4caf50;
+}
+
+.alert-warning .alert-icon {
+    color: #ffc107;
+}
+
+/* Yellow */
+.alert-warning h3 {
+    color: #ffc107;
+}
+
+.alert-error .alert-icon {
+    color: #f44336;
+}
+
+/* Red */
+.alert-error h3 {
+    color: #f44336;
+}
+
+.alert-info .alert-icon {
+    color: #2196f3;
+}
+
+/* Blue */
+.alert-info h3 {
+    color: #2196f3;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

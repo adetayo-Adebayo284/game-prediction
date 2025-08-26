@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Point Sport - Sports Prediction Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- FontAwesome CDN for icons -->
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> -->
+
+    <link rel="stylesheet" href="./themes.css" />
+    <link rel="stylesheet" href="./slide.css" />
+    <link rel="stylesheet" href="./his.css" />
+    <link rel="stylesheet" href="./sug.css" />
+    <link rel="stylesheet" href="./response.css" />
+
+    <!-- Include Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+    <!-- Desktop navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="28"
+                height="28"
+                fill="#ffd700"
+                viewBox="0 0 24 24"
+                class="me-2"
+                aria-hidden="true"
+                focusable="false"
+            >
+                <path d="M12 2L15 8H9L12 2Z" />
+                <circle cx="12" cy="16" r="6" stroke="#ffd700" stroke-width="2" fill="none" />
+            </svg>
+            Point Sport
+            </a>
+            <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navMenu"
+            aria-controls="navMenu"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            >
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#bottomNav">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#todayPredictionHeader">Predictions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#histories">History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile bottom nav -->
+    <div id="bottomNav" class="d-lg-none d-flex justify-content-around">
+        <button class="active" data-nav="home" aria-label="Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#ffd700" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/>
+            </svg>
+            <span class="nav-text">Home</span>
+        </button>
+        <button data-nav="todayPredictionHeader" aria-label="todayPredictionHeader">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#ffd700" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="10" stroke="#ffd700" stroke-width="2" fill="none"/>
+            <path d="M8 12l2 2 4-4" stroke="#ffd700" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="nav-text">Predictions</span>
+        </button>
+        <button data-nav="histories" aria-label="Histories">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#ffd700" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="10" fill="none" stroke="#ffd700" stroke-width="2"/>
+            <line x1="12" y1="16" x2="12" y2="12" stroke="#ffd700" stroke-width="2"/>
+            <circle cx="12" cy="8" r="1" fill="#ffd700"/>
+            </svg>
+            <span class="nav-text" href="#histories">History</span>
+        </button>
+        <button data-nav="contact" aria-label="Contact">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#ffd700" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M2 21l21-9L2 3v7l15 2-15 2z" fill="none" stroke="#ffd700" stroke-width="2"/>
+            </svg>
+            <span class="nav-text">Contact</span>
+        </button>
+    </div>
+
+    <!-- Header Section -->
+    <section class="header-section">
+        <h1 id="animated-header">
+            <span id="typed-text"></span><span id="cursor">|</span>
+        </h1>
+        <p id="animated-subtext">
+            Choose your sport, odds, risk level, and generate your predicted matches with confidence metrics.
+        </p>
+    </section>
+
+    <div class="container-fluid main-container">
+        <!-- Filters panel -->
+        <aside class="filters-panel" aria-label="Filter options panel">
+            <h5>Choose Sport</h5>
+            <div id="sportBtns" class="scroll-horizontal" role="list" tabindex="0" aria-label="Sports selection">
+                <!-- Sports Generated Dynamically -->
+            </div>
+
+            <h5>Choose Odds</h5>
+            <div id="oddsBtns" class="scroll-horizontal" role="list" tabindex="0" aria-label="Odds selection">
+                <!-- Odds Generated Dynamically -->
+            </div>
+
+            <h5>Limit Risk</h5>
+            <div
+                class="risk-options"
+                role="radiogroup"
+                aria-label="Risk level selection"
+                tabindex="0"
+                id="riskGroup"
+            >
+                <div class="risk-option" role="radio" aria-checked="false" tabindex="-1" data-value="Low risk">
+                    <input type="radio" id="riskLow" name="risk" value="Low risk" />
+                    <label for="riskLow">
+                    <span class="custom-radio" aria-hidden="true">
+                        <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        focusable="false"
+                        width="18"
+                        height="18"
+                        fill="none"
+                        stroke="#ffd700"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        >
+                        <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                    </span>
+                    Low risk
+                    </label>
+                </div>
+                <div class="risk-option" role="radio" aria-checked="false" tabindex="-1" data-value="Very low risk">
+                    <input type="radio" id="riskVeryLow" name="risk" value="Very low risk" />
+                    <label for="riskVeryLow">
+                    <span class="custom-radio" aria-hidden="true">
+                        <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        focusable="false"
+                        width="18"
+                        height="18"
+                        fill="none"
+                        stroke="#ffd700"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        >
+                        <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                    </span>
+                    Very low risk
+                    </label>
+                </div>
+                <div class="risk-option" role="radio" aria-checked="false" tabindex="-1" data-value="Least risk">
+                    <input type="radio" id="riskLeast" name="risk" value="Least risk" />
+                    <label for="riskLeast">
+                    <span class="custom-radio" aria-hidden="true">
+                        <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        focusable="false"
+                        width="18"
+                        height="18"
+                        fill="none"
+                        stroke="#ffd700"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        >
+                        <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                    </span>
+                    Least risk
+                    </label>
+                </div>
+            </div>
+            <div class="btn-wrapper"> 
+                <button id="generateBtn" class="btn-generate btn-left" aria-label="Generate matches">Generate</button> 
+                <button id="resetBtn" class="btn-reset btn-right d-none" aria-label="Reset selections">Reset</button> 
+            </div>
+        </aside>
+
+        <!-- <button class="btn-reset" aria-label="Reset matches" id="resetBtn">Reset Selections</button> -->
+
+        <!-- Today Prediction -->
+        <section class="predictions-container" id="predictionsList" tabindex="0" aria-live="polite" aria-label="Predicted matches">
+           <!-- Ads Banner -->
+            <div class="ads-banner collapsed" id="adsBanner">
+                <button id="toggleAdsBtn" aria-label="Toggle Ads Banner" class="ads-toggle-btn" title="Expand Ads">▼</button>
+
+                <div class="ads-preview" aria-hidden="true">
+                    <span class="ads-preview-text"></span>
+                </div>
+
+                <div class="ads-slides">
+                    <div class="ads-slide"><img src="./assets/basball.PNG" alt="Baseball Championship"></div>
+                    <div class="ads-slide"><img src="./assets/tbTennis.jpg" alt="Table Tennis Open"></div>
+                    <div class="ads-slide"><img src="./assets/ftBall.jpg" alt="Football League Finals"></div>
+                    <div class="ads-slide"><img src="./assets/soccer.jfif" alt="International Soccer Cup"></div>
+                </div>
+                <button class="ads-prev">&#10094;</button>
+                <button class="ads-next">&#10095;</button>
+            </div>
+            <br>
+            <!-- Today's Predictions -->
+            <!-- Today's Football Prediction Section -->
+            <section class="today-matches mb-4" style="margin: 0; padding: 0;">
+                <h3 class="prediction-header" title="Filter Selection" id="todayPredictionHeader" tabindex="0" aria-label="Today's Predictions">
+                    <button id="openSelectorBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="matchSelector" class="selector-btn" title="Select Matches, Tournaments, and more">
+                        <!-- Icon SVG on the left -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="selector-icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12" y2="16" />
+                        </svg>
+                    </button>
+                    <div id="updatedSelection" class=" mb-4 mt-4 d-flex">&nbsp;&nbsp;PREDICTIONS</div>
+                    <span id="selectedInfo" class="selected-info" aria-live="polite" aria-atomic="true" style="margin: 10px 0 10px; font-weight: 400; font-size: 0.9em; width: 100%; ">
+                        <!-- Dynamic selected matches/tournaments will show here -->
+                    </span>
+
+                </h3>
+                <div class="match-list" id="matchList" role="list" tabindex="0" aria-label="List of today's matches">
+                    <!-- ACCORDIAN Match items inserted here dynamically -- -->
+                </div>
+
+            </section>
+            <!-- End of Today's Predictions -->
+             
+            <!-- Match Selector Modal (hidden by default) -->
+            <section class="predictions-container" style="margin: 0; padding: 0; width: 100%;" aria-label="Predicted matches" tabindex="0">
+                <button id="openSelectorBtn" style="margin: 0; padding: 0; width: 100%;" aria-haspopup="dialog" aria-expanded="false" aria-controls="matchSelector" class="selector-btn" title="Select Matches, Tournaments, and more">
+                    <!-- Select Matches & Tournaments -->
+                </button>
+
+                <div id="selectedInfo" style="margin: 0; padding: 0; width: 100%;" class="selected-info" aria-live="polite" aria-atomic="true" style="margin:1rem 0; font-weight: 600; color:#ffd700;">
+                    <!-- AAll Matches -->
+                </div>
+
+                <!-- Carousel Section filtered  -->
+                <section style="margin: 0; padding: 0; width: 100%;" class="match-carousel-section" aria-label="Match carousel">
+                    <div style="margin: 0; padding: 0; width: 100%;" id="matchCarousel" class="match-carousel"></div>
+                    <!-- <div class="end text-center" style="opacity: 0.50">----- END -----</div> -->
+                </section>
+
+                <!-- Match List (hidden when All matches selected) -->
+                <section style="margin: 0; padding: 0; width: 100%;" class="today-matches" style="display:none;">
+                    <div id="matchList" class="match-list" role="list" tabindex="0" aria-label="List of today's matches"></div>
+                </section>
+
+                <!-- Modal -->
+                <div id="matchSelector" role="dialog" aria-modal="true" aria-labelledby="matchSelectorTitle" class="modal" hidden>
+                    <div class="modal-content" role="document">
+                        <div class="modal-header">
+                        <img src="https://www.example.com/path/to/your/image.svg" alt="Filter" class="modal-icon" />
+
+                        <h4 id="matchSelectorTitle">Filter Selection</h4>
+                        <button class="modal-close" aria-label="Close selector">&times;</button>
+                        </div>
+
+                        <div class="selector-options" id="selectorOptions" tabindex="0"></div>
+                        
+                        <div class="modal-footer">
+                            <img src="icons/soccer-ball.svg" alt="Soccer Icon" class="footer-logo"/>
+                            <button id="applySelectionBtn" class="btn-apply" disabled>
+                                <img src="icons/checkmark.svg" class="btn-icon" alt="Apply" /> Apply Selection
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="choice">
+                    <div class="choice-details-wapper">
+                        <div class="choic-header d-flex">
+                            <i class="choice-header-text">📅</i>
+                            <div class="choice-header-text">DATE</div>
+                            <div class="choice-date" id="choice-date"></div>
+                            <br>
+                        </div>
+                    </div>
+                    <div id="matchList-choice"></div>
+                </div>
+            </section>
+
+            <section id="histories" class="history-section ">
+                <h3 class="history-header" title="Previous History" tabindex="0" aria-label="User History">
+                    <div class="his-wrapper d-flex">
+                        <!-- History Button -->
+                        <button id="openHistoryBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="historySelector" class="history-btn" title="View History">
+                            <!-- Updated Icon SVG -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="history-icon" viewBox="0 0 24 24">
+                                <path d="M3 12h18M12 3l9 9-9 9"></path>
+                            </svg>
+                        </button>
+                        <div class="history-text">&nbsp;&nbsp; HISTORY</div>
+                    </div>
+                </h3>
+                <span id="historyInfo " class="history-info" aria-live="polite" aria-atomic="true" style="margin-left: 10px; font-weight: 400; font-size: 0.9em; width: 100%;">
+                    <!-- Dynamic history details will show here -->
+                </span>
+                <div id="matchesContainer" class="mb-3"></div>
+            </section>
+        </section>
+        <!-- Custom Alert Box -->
+        <div id="custom-alert" class="custom-alert hidden">
+            <div class="custom-alert-content">
+                <div id="alert-icon" class="alert-icon"></div>
+                <h3 id="alert-title"></h3>
+                <p id="alert-message"></p>
+                <button id="alert-ok-btn">OK</button>
+            </div>
+        </div>
+        <!-- End of Today's Predictions -->
+
+        <aside class="right-ads prediction-carousel" aria-label="Prediction carousel" role="region">
+            <h5  id="toggle">Sports Schedule</h5>
+            <h5 class="predict-header d-none">Sports Schedule</h5>
+            <div class="carousel-group" id="carouselGroup" aria-hidden="false" aria-label="Carousel of predictions">
+                <div class="prediction-header">
+                    <span class="game-name" id="gameName"></span>
+                </div>
+
+                <div class="carousel-viewport" aria-hidden="false">
+                    <div class="carousel-track" id="carouselTrack" role="list"></div>
+                </div>
+
+                <div class="carousel-controls" aria-hidden="false">
+                    <button class="carousel-btn prev-btn" aria-label="Previous match" title="Previous">‹</button>
+                    <div class="carousel-dots" id="carouselDots" role="tablist" aria-label="Slide indicators"></div>
+                    <button class="carousel-btn next-btn" aria-label="Next match" title="Next">›</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    
+
+
+    
+    
+
+    
+    <!-- Footer -->
+   <footer class="footer ">
+        <div class="footer-container">
+            <div class="footer-left">
+                <h3>Point Sport</h3>
+                <p>Making sports predictions smarter, faster, and easier.</p>
+            </div>
+
+            <div class="footer-links">
+                <a href="#">Home</a>
+                <a href="#">Predictions</a>
+                <a href="#">History</a>
+                <a href="#">Contact</a>
+            </div>
+
+            <div class="footer-right">
+                <p>© 2025 Point Sport. All rights reserved.</p>
+            </div>
+        </div>
+
+    </footer>
+
+    <!-- Scripts -->
+    <script src="./scripts.js"></script>
+    <script src="./fetch.js"></script>
+    <script src="./slid.js"></script>
+    <script src="./adsjs.js"></script>
+    <script src="./his.js"></script>
+    <script src="./days.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    
+</body>
+
+</html>

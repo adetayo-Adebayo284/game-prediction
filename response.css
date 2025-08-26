@@ -1,0 +1,1299 @@
+/* ===========================
+   Responsive Media Queries
+   =========================== */
+   
+
+/* Extra Small Devices (Phones, portrait < 480px) */
+@media (max-width: 479px) {
+    :root {
+        --font-size-title: 1.4rem;
+        --font-size-subtitle: 1rem;
+        --font-size-body: 0.9rem;
+        --border-width: 1px;
+        --cursor-width: 3px;
+        --cursor-height: 1em;
+        --font-size-button: 0.9rem;
+        --background-header: linear-gradient(135deg, #0a1f44, #021d3a);
+    }
+    #typed-text,
+    #cursor {
+        font-size: var(--font-size-title);
+    }
+
+    #cursor {
+        font-weight: var(--border-width);
+        width: var(--cursor-width);
+        /* thin like real cursor */
+        height: var(--cursor-width);
+        /* cursor color */
+        margin-left: 3px;
+        /* spacing from text */
+    }
+
+    #animated-subtext {
+        font-size: var(--font-size-subtitle);
+    }
+
+    /* LEFT VIEW */
+    .filters-panel {
+        margin: 0.5rem 0;
+        border-collapse: collapse;
+    }
+
+    .filters-panel>h5 {
+        font-size: var(--font-size-button);
+        margin-bottom: 16px;
+    }
+
+    #sportBtns,
+    #oddsBtns {
+        margin: 0.9rem 0 !important;
+        font-size: var(--font-size-button);
+        border-width: var(--border-width);
+    }
+
+    #sportBtns>button:nth-child(1),
+    #oddsBtns>button:nth-child(1) {
+        margin-left: 0.9rem;
+    }
+
+    #generateBtn,
+    #resetBtn {
+        font-size: var(--font-size-button);
+        margin-bottom: 8px;
+        font-weight: 700;
+        padding: 6px;
+    }
+    .alert-icon {
+        font-size: var(--font-size-title) !important;
+    }
+    #alert-title {
+        font-size: var(--font-size-body) !important;
+    }
+    #alert-message {
+        font-size: var(--font-size-body);
+    }
+    
+    /* MIDDLE VIEW */
+    #adsBanner {
+        /* margin:auto !important; */
+    }
+
+    #predictionsList {
+        /* margin: 0 0.5rem 0 0;come back here */
+    }
+
+    /* ALL WRAPPER */
+    #matchList,
+    #histories,
+    #matchList-choice>div {
+        border-collapse: collapse;
+        height: auto;
+    }
+
+    #histories {
+        margin-top: 15px;
+    }
+
+    /* margin on cards body and header  */
+    .accordion-item,
+    .prediction-card,
+    #predictionsList,
+    #historyInfo\  {
+        margin: 2px !important;
+        padding: 0px !important;
+    }
+
+    .accordion {
+        margin: 3px !important;
+        padding: 0px !important;
+    }
+
+    /* ALL HEADER */
+    #todayPredictionHeader,
+    .choice-details-wapper,
+    .choic-header,
+    #histories>h3 {
+        background: var(--background-header) !important;
+    }
+
+    #selectedInfo {
+        font-size: var(--font-size-button);
+    }
+
+    .choice-header-text,
+    #histories>h3>div>div,
+    #openHistoryBtn>svg,
+    #updatedSelection,
+    #openSelectorBtn>svg {
+        font-size: var(--font-size-subtitle);
+
+    }
+
+    /* RIGHT VIEW */
+    .prediction-carousel {
+        margin-left: 0.5rem;
+        border-bottom: none;
+    }
+
+    .prediction-carousel h5,
+    .predict-header {
+        font-size: var(--font-size-button);
+        padding: 18px !important;
+        text-wrap: wrap;
+    }
+
+    #carouselTrack>div>div.teams {
+        overflow: hidden;
+        height: fit-content;
+        /* background: var(--background-overlay) !important; */
+        padding: 10px;
+    }
+
+    #carouselTrack>div>div.teams>div>img {
+        /* margin: 0 0 1.5rem; */
+        padding: 10px !important;
+    }
+
+    /* MEDDLE VS AND TIME DIV */
+    #carouselTrack>div>div.teams>div.vs-block {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        text-wrap: wrap;
+        padding: 0 10px;
+    }
+
+    #carouselTrack>div>div.extra-info {
+        text-align: center;
+    }
+
+    #carouselTrack>div>div.prediction-footer>button {
+        display: none;
+    }
+
+    /* ACCORDION CARD */
+    /* text header */
+    .accordion-button {
+        font-size: var(--font-size-body);
+    }
+
+    .accordion-body {
+        padding: 20px 5px 5px !important;
+    }
+
+    /* card first group *
+    .match-header {
+        /* display: flex !important;
+        align-items: center;
+        justify-content: center;
+    } */
+
+    /* image and team name */
+    .team {
+        margin: 10px 0 10px;
+    }
+
+    .team img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .team-name {
+        font-size: var(--font-size-body);
+    }
+    .match-score {
+        margin-bottom: 3px;
+        font-size: var(--font-size-body);
+        padding: 10px;
+    }
+    /* tooltips card badge  */
+    .confidence-badge {
+        margin-left: 5px !important;
+        font-size: var(--font-size-button);
+    }
+    .tooltip-badge>.tooltip-texts {
+        top: -60px !important;
+    }
+
+    /* tooltips date  */
+    .choice-date .date-tab .tooltip-text {
+        top: -9px !important;
+    }
+    #viewAllBtn {
+        font-size: var(--font-size-button);
+    }
+    .right-ads h5 {
+        font-size: var(--font-size-subtitle);
+        font-weight: 700;
+    }
+    .modal-header h4 {
+        font-size: var(--font-size-button);
+    }
+    #selectorOptions>div>label {
+        font-size: var(--font-size-body);
+    }
+
+}
+
+/* Small Devices (Phones landscape / small tablets) */
+@media (min-width: 480px) and (max-width: 767px) {
+    :root {
+        --font-size-title: 1.6rem;
+        --font-size-subtitle: 1.2rem;
+        --font-size-body: 1rem;
+        --border-width: 1.5px;
+        --cursor-width: 3px;
+        --cursor-height: 1em;
+        --font-size-button: 1rem;
+        --background-header: linear-gradient(135deg, #0a1f44, #021d3a);
+    }
+    #typed-text,
+    #cursor {
+        font-size: var(--font-size-title);
+    }
+
+    #cursor {
+        font-weight: var(--border-width);
+        width: var(--cursor-width);
+        /* thin like real cursor */
+        height: var(--cursor-width);
+        /* cursor color */
+        margin-left: 3px;
+        /* spacing from text */
+    }
+
+    #animated-subtext {
+        font-size: var(--font-size-subtitle);
+    }
+
+    /* LEFT VIEW */
+    .filters-panel {
+        margin: 0.5rem 0;
+        border-collapse: collapse;
+    }
+
+    .filters-panel>h5 {
+        font-size: var(--font-size-button);
+        margin-bottom: 16px;
+    }
+
+    #sportBtns,
+    #oddsBtns {
+        margin: 0.9rem 0 !important;
+        font-size: var(--font-size-button);
+        border-width: var(--border-width);
+    }
+
+    #sportBtns>button:nth-child(1),
+    #oddsBtns>button:nth-child(1) {
+        margin-left: 0.9rem;
+    }
+
+    #generateBtn,
+    #resetBtn {
+        font-size: var(--font-size-button);
+        margin-bottom: 8px;
+        font-weight: 700;
+        padding: 6px;
+    }
+
+    .alert-icon {
+        font-size: var(--font-size-title) !important;
+    }
+
+    #alert-title {
+        font-size: var(--font-size-body) !important;
+    }
+
+    #alert-message {
+        font-size: var(--font-size-body);
+    }
+
+    /* MIDDLE VIEW */
+    #adsBanner {
+        /* margin:auto !important; */
+    }
+
+    #predictionsList {
+        /* margin: 0 0.5rem 0 0;come back here */
+    }
+
+    /* ALL WRAPPER */
+    #matchList,
+    #histories,
+    #matchList-choice>div {
+        border-collapse: collapse;
+        height: auto;
+    }
+
+    #histories {
+        margin-top: 15px;
+    }
+
+    /* margin on cards body and header  */
+    .accordion-item,
+    .prediction-card,
+    #predictionsList,
+    #historyInfo\  {
+        margin: 2px !important;
+        padding: 0px !important;
+    }
+
+    .accordion {
+        margin: 3px !important;
+        padding: 0px !important;
+    }
+
+    /* ALL HEADER */
+    #todayPredictionHeader,
+    .choice-details-wapper,
+    .choic-header,
+    #histories>h3 {
+        background: var(--background-header) !important;
+    }
+
+    #selectedInfo {
+        font-size: var(--font-size-button);
+    }
+
+    .choice-header-text,
+    #histories>h3>div>div,
+    #openHistoryBtn>svg,
+    #updatedSelection,
+    #openSelectorBtn>svg {
+        font-size: var(--font-size-subtitle);
+
+    }
+
+    /* RIGHT VIEW */
+    .prediction-carousel {
+        margin-left: 0.5rem;
+        border-bottom: none;
+    }
+
+    .prediction-carousel h5,
+    .predict-header {
+        font-size: var(--font-size-button);
+        padding: 18px !important;
+        text-wrap: wrap;
+    }
+
+    #carouselTrack>div>div.teams {
+        overflow: hidden;
+        height: fit-content;
+        /* background: var(--background-overlay) !important; */
+        padding: 10px;
+    }
+
+    #carouselTrack>div>div.teams>div>img {
+        /* margin: 0 0 1.5rem; */
+        padding: 10px !important;
+    }
+
+    /* MEDDLE VS AND TIME DIV */
+    #carouselTrack>div>div.teams>div.vs-block {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        text-wrap: wrap;
+        padding: 0 10px;
+    }
+
+    #carouselTrack>div>div.extra-info {
+        text-align: center;
+    }
+
+    #carouselTrack>div>div.prediction-footer>button {
+        display: none;
+    }
+
+    /* ACCORDION CARD */
+    /* text header */
+    .accordion-button {
+        font-size: var(--font-size-body);
+    }
+
+    .accordion-body {
+        padding: 20px 5px 5px !important;
+    }
+
+    /* card first group */
+    .match-header {
+        display: flex !important;
+        flex-direction: row;
+    } 
+
+    /* image and team name */
+    .team {
+        margin: 10px 0 10px;
+    }
+
+    .team img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .team-name {
+        font-size: var(--font-size-body);
+    }
+
+    .match-score {
+        margin-bottom: 3px;
+        font-size: var(--font-size-body);
+        padding: 10px;
+    }
+
+    /* tooltips card badge  */
+    .confidence-badge {
+        margin-left: 5px !important;
+        font-size: var(--font-size-button);
+    }
+
+    .tooltip-badge>.tooltip-texts {
+        top: -60px !important;
+    }
+
+    /* tooltips date  */
+    .choice-date .date-tab .tooltip-text {
+        top: -9px !important;
+    }
+
+    #viewAllBtn {
+        font-size: var(--font-size-button);
+    }
+
+    .right-ads h5 {
+        font-size: var(--font-size-subtitle);
+        font-weight: 700;
+    }
+
+    .modal-header h4 {
+        font-size: var(--font-size-button);
+    }
+
+    #selectorOptions>div>label {
+        font-size: var(--font-size-body);
+    }
+}
+
+/* Medium Devices (Tablets portrait) */
+@media (min-width: 768px) and (max-width: 991px) {
+    :root {
+        --font-size-title: 1.8rem;
+        --font-size-subtitle: 1.3rem;
+        --font-size-body: 1.05rem;
+        --border-width: 2px;
+        --cursor-width: 3px;
+        --cursor-height: 1em;
+        --font-size-button: 1.1rem;
+        --background-header: linear-gradient(135deg, #0a1f44, #021d3a);
+    }
+    #typed-text,
+    #cursor {
+        font-size: var(--font-size-title);
+    }
+
+    #cursor {
+        font-weight: var(--border-width);
+        width: var(--cursor-width);
+        /* thin like real cursor */
+        height: var(--cursor-width);
+        /* cursor color */
+        margin-left: 3px;
+        /* spacing from text */
+    }
+
+    #animated-subtext {
+        font-size: var(--font-size-subtitle);
+    }
+
+    /* LEFT VIEW */
+    .filters-panel {
+        margin: 0.5rem 0;
+        border-collapse: collapse;
+    }
+
+    .filters-panel>h5 {
+        font-size: var(--font-size-button);
+        margin-bottom: 16px;
+    }
+
+    #sportBtns,
+    #oddsBtns {
+        margin: 0.9rem 0 !important;
+        font-size: var(--font-size-button);
+        border-width: var(--border-width);
+    }
+
+    #sportBtns>button:nth-child(1),
+    #oddsBtns>button:nth-child(1) {
+        margin-left: 0.9rem;
+    }
+
+    #generateBtn,
+    #resetBtn {
+        font-size: var(--font-size-button);
+        margin-bottom: 8px;
+        font-weight: 700;
+        padding: 6px;
+    }
+
+    .alert-icon {
+        font-size: var(--font-size-title) !important;
+    }
+
+    #alert-title {
+        font-size: var(--font-size-body) !important;
+    }
+
+    #alert-message {
+        font-size: var(--font-size-body);
+    }
+
+    /* MIDDLE VIEW */
+    #adsBanner {
+        /* margin:auto !important; */
+    }
+
+    #predictionsList {
+        /* margin: 0 0.5rem 0 0;come back here */
+    }
+
+    /* ALL WRAPPER */
+    #matchList,
+    #histories,
+    #matchList-choice>div {
+        border-collapse: collapse;
+        height: auto;
+    }
+
+    #histories {
+        margin-top: 15px;
+    }
+
+    /* margin on cards body and header  */
+    .accordion-item,
+    .prediction-card,
+    #predictionsList,
+    #historyInfo\  {
+        margin: 2px !important;
+        padding: 0px !important;
+    }
+
+    .accordion {
+        margin: 3px !important;
+        padding: 0px !important;
+    }
+
+    /* ALL HEADER */
+    #todayPredictionHeader,
+    .choice-details-wapper,
+    .choic-header,
+    #histories>h3 {
+        background: var(--background-header) !important;
+    }
+
+    #selectedInfo {
+        font-size: var(--font-size-button);
+    }
+
+    .choice-header-text,
+    #histories>h3>div>div,
+    #openHistoryBtn>svg,
+    #updatedSelection,
+    #openSelectorBtn>svg {
+        font-size: var(--font-size-subtitle);
+
+    }
+
+    /* RIGHT VIEW */
+    .prediction-carousel {
+        margin-left: 0.5rem;
+        border-bottom: none;
+    }
+    #toggle {
+        position: fixed;
+        bottom: 10;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important; 
+        z-index: 1200;
+        background: rgba(0, 0, 0, 0.7);
+        left: 0;
+        right: 0;
+    }
+
+    .prediction-carousel h5,
+    .predict-header {
+        font-size: var(--font-size-button);
+        padding: 18px !important;
+        text-wrap: wrap;
+    }
+
+    #carouselTrack>div>div.teams {
+        overflow: hidden;
+        height: fit-content;
+        /* background: var(--background-overlay) !important; */
+        padding: 10px;
+    }
+
+    #carouselTrack>div>div.teams>div>img {
+        /* margin: 0 0 1.5rem; */
+        padding: 10px !important;
+    }
+
+    /* MEDDLE VS AND TIME DIV */
+    #carouselTrack>div>div.teams>div.vs-block {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        text-wrap: wrap;
+        padding: 0 10px;
+    }
+
+    #carouselTrack>div>div.extra-info {
+        text-align: center;
+    }
+
+    #carouselTrack>div>div.prediction-footer>button {
+        display: none;
+    }
+
+    /* ACCORDION CARD */
+    /* text header */
+    .accordion-button {
+        font-size: var(--font-size-body);
+    }
+
+    .accordion-body {
+        padding: 20px 5px 5px !important;
+    }
+
+    /* card first group */
+    .match-header {
+        display: flex !important;
+        flex-direction: row;
+    }
+
+    /* image and team name */
+    .team {
+        margin: 10px 0 10px;
+    }
+
+    .team img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .team-name {
+        font-size: var(--font-size-body);
+    }
+
+    .match-score {
+        margin-bottom: 3px;
+        font-size: var(--font-size-body);
+        padding: 10px;
+    }
+
+    /* tooltips card badge  */
+    .confidence-badge {
+        margin-left: 5px !important;
+        font-size: var(--font-size-button);
+    }
+
+    .tooltip-badge>.tooltip-texts {
+        top: -60px !important;
+    }
+
+    /* tooltips date  */
+    .choice-date .date-tab .tooltip-text {
+        top: -9px !important;
+    }
+
+    #viewAllBtn {
+        font-size: var(--font-size-button);
+    }
+
+    .right-ads h5 {
+        font-size: var(--font-size-subtitle);
+        font-weight: 700;
+    }
+
+    .modal-header h4 {
+        font-size: var(--font-size-button);
+    }
+
+    #selectorOptions>div>label {
+        font-size: var(--font-size-body);
+    }
+}
+
+/* Large Devices (Tablets landscape / small laptops) */
+@media (min-width: 992px) and (max-width: 1199px) {
+    :root {
+        --font-size-title: 2rem;
+        --font-size-subtitle: 1.4rem;
+        --font-size-body: 1.1rem;
+        --border-width: 2px;
+        --cursor-width: 3px;
+        --cursor-height: 1.2em;
+        --font-size-button: 1.1rem;
+        --background-header: linear-gradient(135deg, #0a1f44, #021d3a);
+    }
+
+    #typed-text, #cursor {
+        font-size: var(--font-size-title);
+    }
+    #cursor {
+        font-weight: var(--border-width);
+        width: var(--cursor-width);
+        /* thin like real cursor */
+        height: var(--cursor-width);
+        /* cursor color */
+        margin-left: 3px;
+        /* spacing from text */
+    }
+    #animated-subtext {
+        font-size: var(--font-size-subtitle);
+    }
+
+    /* LEFT VIEW */
+    .filters-panel {
+        margin: 0.5rem;
+        border-collapse: collapse;
+    }
+    .filters-panel>h5 {
+        font-size: var(--font-size-button);
+        margin-bottom: 16px;
+    }
+    
+    #sportBtns, #oddsBtns {
+        margin: 0.9rem 0 !important;
+        font-size: var(--font-size-button);
+        border-width: var(--border-width);
+    }
+    #sportBtns>button:nth-child(1),
+    #oddsBtns>button:nth-child(1) {
+        margin-left: 0.9rem;
+    }
+    #generateBtn, #resetBtn {
+        font-size: var(--font-size-button);
+        margin-bottom: 8px;
+        font-weight: 700;
+    }
+
+    /* MIDDLE VIEW */
+    #adsBanner{
+        /* margin:auto !important; */
+    }
+    #predictionsList {
+        /* margin: 0 0.5rem 0 0;come back here */
+    }
+    
+    /* ALL WRAPPER */
+    #matchList,
+    #histories,
+    #matchList-choice>div{
+        border-collapse: collapse;
+        height: auto;
+    }
+    #histories{
+        margin-top: 15px;
+    }
+    .accordion-item,
+    .prediction-card,
+    #predictionsList,
+    #historyInfo\  {
+        margin: 2px !important;
+        padding: 0px !important;
+    }
+    .accordion{
+        margin: 3px !important;
+        padding: 0px !important;
+    }
+    /* ALL HEADER */
+    #todayPredictionHeader, 
+    .choice-details-wapper,
+    .choic-header,
+    #histories>h3 {
+        background: var(--background-header) !important;
+    }
+    #selectedInfo {
+        font-size: var(--font-size-button);
+    }
+    
+    .choice-header-text,
+    #histories>h3>div>div,
+    #openHistoryBtn>svg,
+    #updatedSelection,
+    #openSelectorBtn>svg {
+        font-size: var(--font-size-subtitle);
+
+    }
+
+    /* RIGHT VIEW */
+    .prediction-carousel {
+        margin-left: 0.5rem;
+        border-bottom: none;
+    }
+    .prediction-carousel h5,
+    .predict-header {
+        font-size: var(--font-size-button);
+        padding: 18px !important;
+        text-wrap: wrap;
+    }
+    #carouselTrack>div>div.teams {
+        overflow: hidden;
+        height: fit-content;
+        /* background: var(--background-overlay) !important; */
+        padding: 10px;
+    }
+    #carouselTrack>div>div.teams>div>img {
+        /* margin: 0 0 1.5rem; */
+        padding: 10px !important;
+    }
+    /* MEDDLE VS AND TIME DIV */
+    #carouselTrack>div>div.teams>div.vs-block {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        text-wrap: wrap;
+        padding: 0 10px;
+    }
+    #carouselTrack>div>div.extra-info {
+        text-align: center;
+    }
+    #carouselTrack>div>div.prediction-footer>button {
+        display: none;
+    }
+
+    /* ACCORDION CARD */
+    /* text header */
+    .accordion-button {
+        font-size: var(--font-size-body);
+    }
+    .accordion-body {
+        padding: 20px 5px 5px !important;
+    }
+    /* card first group *
+    .match-header {
+        /* display: flex !important;
+        align-items: center;
+        justify-content: center;
+    } */
+
+    /* image and team name */
+    .team {
+        margin: 10px 0 10px;
+    }
+    .team-name {
+        font-size: var(--font-size-body);
+    }
+    /* tooltips card badge  */
+    .tooltip-badge > .tooltip-texts{
+        top: -50px !important;
+    }
+    /* tooltips date  */
+    .choice-date .date-tab .tooltip-text {
+        top: -5px !important;
+    }
+
+}
+
+/* Extra Large Devices (Laptops / Desktops) */
+@media (min-width: 1200px) and (max-width: 1599px) {
+    :root {
+        --font-size-title: 2.4rem;
+        --font-size-subtitle: 1.6rem;
+        --font-size-body: 1.15rem;
+        --border-width: 2.5px;
+        --cursor-width: 3px;
+        --cursor-height: 1.3em;
+        --font-size-button: 1.15rem;
+        --background-header: linear-gradient(135deg, #0a1f44, #021d3a);
+    }
+    #typed-text,
+    #cursor {
+        font-size: var(--font-size-title);
+    }
+
+    #cursor {
+        font-weight: var(--border-width);
+        width: var(--cursor-width);
+        /* thin like real cursor */
+        height: var(--cursor-width);
+        /* cursor color */
+        margin-left: 3px;
+        /* spacing from text */
+    }
+
+    #animated-subtext {
+        font-size: var(--font-size-subtitle);
+    }
+
+    /* LEFT VIEW */
+    .filters-panel {
+        margin: 0.5rem;
+        border-collapse: collapse;
+    }
+
+    .filters-panel>h5 {
+        font-size: var(--font-size-button);
+        margin-bottom: 17px;
+    }
+
+    #sportBtns,
+    #oddsBtns {
+        margin: 1rem 0 !important;
+        font-size: var(--font-size-button);
+        border-width: var(--border-width);
+    }
+
+    #sportBtns>button:nth-child(1),
+    #oddsBtns>button:nth-child(1) {
+        margin-left: 1rem;
+    }
+
+    #generateBtn,
+    #resetBtn {
+        font-size: var(--font-size-button);
+        margin-bottom: 8px;
+        font-weight: 700;
+    }
+
+    /* MIDDLE VIEW */
+    #adsBanner {
+        /* margin:auto !important; */
+    }
+
+    #predictionsList {
+        /* margin: 0 0.5rem 0 0;come back here */
+    }
+
+    /* ALL WRAPPER */
+    #matchList,
+    #histories,
+    #matchList-choice>div {
+        border-collapse: collapse;
+        height: auto;
+    }
+
+    #histories {
+        margin-top: 5px !important;
+    }
+
+    .accordion-item,
+    .prediction-card,
+    #predictionsList,
+    #historyInfo\  {
+        margin: 2px !important;
+        padding: 0px !important;
+    }
+
+    .accordion {
+        margin: 5px !important;
+        padding: 0px !important;
+    }
+
+    /* ALL HEADER */
+    #todayPredictionHeader,
+    .choice-details-wapper,
+    .choic-header,
+    #histories>h3 {
+        background: var(--background-header) !important;
+    }
+
+    #selectedInfo {
+        font-size: var(--font-size-button);
+    }
+
+    .choice-header-text,
+    #histories>h3>div>div,
+    #openHistoryBtn>svg,
+    #updatedSelection,
+    #openSelectorBtn>svg {
+        font-size: var(--font-size-subtitle);
+
+    }
+
+    /* RIGHT VIEW */
+    .prediction-carousel {
+        margin-left: 0.5rem;
+        border-bottom: none;
+    }
+
+    .prediction-carousel h5,
+    .predict-header {
+        font-size: var(--font-size-button);
+        padding: 18px !important;
+        text-wrap: wrap;
+    }
+
+    #carouselTrack>div>div.teams {
+        overflow: hidden;
+        height: fit-content;
+        /* background: var(--background-overlay) !important; */
+        padding: 10px;
+    }
+
+    #carouselTrack>div>div.teams>div>img {
+        /* margin: 0 0 1.5rem; */
+        padding: 10px !important;
+    }
+
+    /* MEDDLE VS AND TIME DIV */
+    #carouselTrack>div>div.teams>div.vs-block {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        text-wrap: wrap;
+        padding: 0 10px;
+    }
+
+    #carouselTrack>div>div.extra-info {
+        text-align: center;
+    }
+
+    #carouselTrack>div>div.prediction-footer>button {
+        display: none;
+    }
+
+    /* ACCORDION CARD */
+    /* text header */
+    .accordion-button {
+        font-size: var(--font-size-body);
+    }
+
+    .accordion-body {
+        padding: 20px 5px 5px !important;
+    }
+
+    /* card first group *
+    .match-header {
+        /* display: flex !important;
+        align-items: center;
+        justify-content: center;
+    } */
+
+    /* image and team name */
+    .team {
+        margin: 10px 0 10px;
+    }
+
+    .team-name {
+        font-size: var(--font-size-body);
+    }
+
+    /* tooltips card badge  */
+    .tooltip-badge>.tooltip-texts {
+        top: -50px !important;
+    }
+
+    /* tooltips date  */
+    .choice-date .date-tab .tooltip-text {
+        top: -10px !important;
+    }
+}
+
+/* Ultra Wide Screens (Big desktops, TVs) */
+@media (min-width: 1600px) {
+    :root {
+        --font-size-title: 2.8rem;
+        --font-size-subtitle: 1.8rem;
+        --font-size-body: 1.25rem;
+        --border-width: 3px;
+        --cursor-width: 4px;
+        --cursor-height: 1.4em;
+        --font-size-button: 1.25rem;
+        --background-header: linear-gradient(135deg, #0a1f44, #021d3a);
+    }
+    #typed-text,
+    #cursor {
+        font-size: var(--font-size-title);
+    }
+
+    #cursor {
+        font-weight: var(--border-width);
+        width: var(--cursor-width);
+        /* thin like real cursor */
+        height: var(--cursor-width);
+        /* cursor color */
+        margin-left: 5px;
+        /* spacing from text */
+    }
+
+    #animated-subtext {
+        font-size: var(--font-size-subtitle);
+    }
+
+    /* LEFT VIEW */
+    .filters-panel {
+        margin: 1rem;
+        border-collapse: collapse;
+        width: 20%;
+    }
+
+    .filters-panel>h5 {
+        font-size: var(--font-size-button);
+        margin-bottom: 17px;
+    }
+
+    #sportBtns,
+    #oddsBtns {
+        margin: 1rem 0 !important;
+        font-size: var(--font-size-button);
+        border-width: var(--border-width);
+    }
+
+    #sportBtns>button:nth-child(1),
+    #oddsBtns>button:nth-child(1) {
+        margin-left: 1rem;
+    }
+
+    #generateBtn,
+    #resetBtn {
+        font-size: var(--font-size-button);
+        margin-bottom: 8px;
+        font-weight: 700;
+    }
+
+    /* MIDDLE VIEW */
+    #adsBanner {
+        /* margin:auto !important; */
+    }
+
+    #predictionsList {
+        /* margin: 0 0.5rem 0 0;come back here */
+    }
+
+    /* ALL WRAPPER */
+    #matchList,
+    #histories,
+    #matchList-choice>div {
+        border-collapse: collapse;
+        height: auto;
+    }
+
+    #histories {
+        margin-top: 5px !important;
+    }
+
+    .accordion-item,
+    .prediction-card,
+    #predictionsList,
+    #historyInfo\  {
+        margin: 2px !important;
+        padding: 0px !important;
+    }
+
+    .accordion {
+        margin: 5px !important;
+        padding: 0px !important;
+    }
+
+    /* ALL HEADER */
+    #todayPredictionHeader,
+    .choice-details-wapper,
+    .choic-header,
+    #histories>h3 {
+        background: var(--background-header) !important;
+    }
+
+    #selectedInfo {
+        font-size: var(--font-size-button);
+    }
+
+    .choice-header-text,
+    #histories>h3>div>div,
+    #openHistoryBtn>svg,
+    #updatedSelection,
+    #openSelectorBtn>svg {
+        font-size: var(--font-size-subtitle);
+
+    }
+
+    /* RIGHT VIEW */
+    .prediction-carousel {
+        margin-left: 0.5rem;
+        border-bottom: none;
+    }
+
+    .prediction-carousel h5,
+    .predict-header {
+        font-size: var(--font-size-button);
+        padding: 18px !important;
+        text-wrap: wrap;
+    }
+
+    #carouselTrack>div>div.teams {
+        overflow: hidden;
+        height: fit-content;
+        /* background: var(--background-overlay) !important; */
+        padding: 10px;
+    }
+
+    #carouselTrack>div>div.teams>div>img {
+        /* margin: 0 0 1.5rem; */
+        padding: 10px !important;
+    }
+
+    /* MEDDLE VS AND TIME DIV */
+    #carouselTrack>div>div.teams>div.vs-block {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        text-wrap: wrap;
+        padding: 0 10px;
+    }
+
+    #carouselTrack>div>div.extra-info {
+        text-align: center;
+    }
+
+    #carouselTrack>div>div.prediction-footer>button {
+        display: none;
+    }
+
+    /* ACCORDION CARD */
+    /* text header */
+    .accordion-button {
+        font-size: var(--font-size-body);
+    }
+
+    .accordion-body {
+        padding: 20px 5px 5px !important;
+    }
+
+    /* card first group *
+    .match-header {
+        /* display: flex !important;
+        align-items: center;
+        justify-content: center;
+    } */
+
+    /* image and team name */
+    .team {
+        margin: 10px 0 10px;
+    }
+
+    .team-name {
+        font-size: var(--font-size-body);
+    }
+
+    /* tooltips card badge  */
+    .tooltip-badge>.tooltip-texts {
+        top: -50px !important;
+    }
+
+    /* tooltips date  */
+    .choice-date .date-tab .tooltip-text {
+        top: -10px !important;
+    }
+}

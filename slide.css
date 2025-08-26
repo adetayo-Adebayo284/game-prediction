@@ -1,0 +1,720 @@
+.ads-banner {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100vw;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    background: #000;
+}
+
+.ads-slides {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    user-select: none;
+}
+
+.ads-slides:active {
+    cursor: grabbing;
+}
+
+.ads-slide {
+    flex: 0 0 100%;
+    height: 100%;
+}
+
+.ads-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+    pointer-events: none;
+}
+
+/* Toggle Button */
+.ads-toggle-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 4px;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.65);
+    border: none;
+    color: #ffd700;
+    font-weight: 700;
+    font-size: 1.4rem;
+    cursor: pointer;
+    border-radius: 3px;
+    padding: 0 6px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 6px #ffd700cc;
+    transition: 0.3s ease, opacity 0.5s ease;
+    opacity: 0.3;
+    /* faded by default */
+}
+
+.ads-toggle-btn.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ads-toggle-btn:hover,
+.ads-toggle-btn:focus {
+    background: rgba(0, 0, 0, 0.85);
+    opacity: 1;
+    /* fade out completely on hover */
+}
+
+@media (max-width: 992px) {
+
+    /* Hide toggle button on mobile so ads never collapse on mobile */
+    .ads-toggle-btn {
+        display: none;
+    }
+
+    /* Override collapsed styles on mobile to show ads normally */
+    .ads-banner.collapsed {
+        height: auto !important;
+        aspect-ratio: 16 / 9 !important;
+        border-radius: 12px !important;
+        padding: initial !important;
+        margin: initial !important;
+    }
+
+    .ads-banner.collapsed .ads-slides,
+    .ads-banner.collapsed .ads-prev,
+    .ads-banner.collapsed .ads-next {
+        display: flex !important;
+    }
+
+    .ads-banner.collapsed .ads-preview {
+        display: none !important;
+    }
+}
+
+/* Collapsed Mode */
+.ads-banner.collapsed {
+    height: 100px;
+    aspect-ratio: auto;
+    border-radius: 8px;
+    padding: 0;
+    margin: 0;
+}
+
+.ads-banner.collapsed .ads-slides,
+.ads-banner.collapsed .ads-prev,
+.ads-banner.collapsed .ads-next {
+    display: none;
+}
+
+.ads-preview {
+    display: none;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+}
+
+.ads-banner.collapsed .ads-preview {
+    display: block;
+    filter: none;
+    /* removed brightness filter */
+}
+
+/* Overlay Text on Preview */
+.ads-preview-text {
+    position: absolute;
+    bottom: 4px;
+    left: 8px;
+    right: 8px;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: rgba(0, 0, 0, 0.55);
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.ads-preview-text.show {
+    opacity: 1;
+}
+
+.ads-banner:hover .ads-toggle-btn {
+    opacity: 1 !important;
+    /* fully visible on hover */
+}
+
+
+
+
+/* small top-right container */
+/* Ensuring the prediction carousel stays at the top of the page */
+.right-ads.prediction-carousel {
+    background: rgba(255, 255, 255, 0.06);
+    width: 20%;
+    height: fit-content !important;
+}
+
+/* Style for the toggle button on mobile */
+@media (max-width: 768px) {
+    .prediction-carousel {
+        width: 100%;
+        height: auto;
+    }
+
+    /* Style for the icon inside the toggle button */
+    #toggle-side i {
+        font-size: 0.5rem;
+        /* Increase icon size */
+    }
+
+    .prediction-header .icon {
+        font-size: 1.2rem;
+    }
+}
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .right-ads.prediction-carousel {
+        height: auto;
+        /* let it expand naturally */
+        width: 100%;
+    }
+
+    .slide .team img {
+        width: 46px;
+        height: 46px;
+    }
+
+    .carousel-btn {
+        padding: 6px 8px;
+    }
+
+    .slide .extra-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+    }
+
+    /* Prediction header font and icon size adjustments for small screens */
+    .prediction-header {
+        font-size: 1rem;
+    }
+   /* Predict Header */
+   #toggle {
+       padding: 0.5rem;
+       text-align: center;
+       font-size: 1.2rem;
+       position: fixed;
+       bottom: 60px;
+       /* Default bottom position */
+       left: 0;
+       right: 0;
+       background: rgba(0, 0, 0, 0.7);
+       width: 100%;
+       z-index: 500 !important;
+       transition: bottom 0.3s ease-in-out;
+       /* Smooth transition */
+   }
+   #carouselGroup {
+        display: none;
+    }
+    .main-container{
+        padding: 0;
+    }
+}
+
+/* For small screen sizes (e.g., mobile) */
+@media (max-width: 320px) {
+    .right-ads.prediction-carousel {
+        height: auto;
+        /* let it expand naturally */
+        width: 100% !important;
+    }
+    #carouselGroup {
+        display: none;
+    }
+}
+
+/* For medium screen sizes (e.g., tablets) */
+@media (min-width: 401px) and (max-width: 1024px) {
+    #toggle {
+        bottom: 35px;
+        /* Slightly lower for tablets */
+    }
+    .main-container {
+        padding: 0;
+    }
+}
+
+/* For small screen sizes (e.g., mobile) */
+@media (min-width: 769px) and (max-width: 990px) {
+    .prediction-carousel {
+        width: 100% !important;
+        height: auto !important;
+        
+    }
+    .main-container {
+        padding: 0;
+    }
+}
+
+/* predict header */
+#toggle, 
+.predict-header {
+    padding: 1rem 0.5rem;
+    text-align: center;
+    border-bottom: 2px solid #ffd700;
+}
+#toggle{
+    cursor: pointer;
+}
+
+
+
+
+/* Center the "Prediction of the Day" */
+/* Prediction header for carousel */
+.prediction-header {
+    font-size: 1.1rem;
+    color: #ffd700;
+    font-weight: 600;
+    margin-top: -0.3rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    gap: 8px;
+}
+
+.prediction-header span {
+    display: inline-block;
+}
+
+/* Add the world icon to the prediction header */
+.prediction-header .icon {
+    font-size: 1.5rem;
+    /* Increase icon size */
+    color: #ffd700;
+    /* Matching the color */
+}
+
+/* viewport contains the track and hides overflow */
+.carousel-viewport {
+    overflow: hidden;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    flex: 1 1 auto;
+}
+
+/* track that will slide horizontally */
+.carousel-track {
+    display: flex;
+    height: 100%;
+    transition: transform 480ms cubic-bezier(.22, .9, .31, 1);
+    will-change: transform;
+}
+
+/* each slide */
+.slide {
+    min-width: 100%;
+    box-sizing: border-box;
+    padding: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+/* header line with league + time */
+.slide .match-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #e8e8e8;
+    gap: 0.5rem;
+}
+
+/* teams row */
+.slide .teams {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.25rem;
+}
+
+/* team block (image above, name below) */
+.slide .team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+    text-align: center;
+    color: #ffd;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.slide .team img {
+    width: 54px;
+    height: 54px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #06203a;
+    border: none;
+    /* Removed the border */
+}
+
+/* vs & countdown */
+.slide .vs-block {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    color: #fff;
+}
+
+.slide .vs-text {
+    font-weight: 800;
+    letter-spacing: 1px;
+    font-size: 1.05rem;
+}
+
+.slide .countdown {
+    font-size: 0.8rem;
+    color: #ffd700;
+}
+
+/* extras row (odds, prediction, metric) */
+.slide .extra-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.82rem;
+    color: #e6e6e6;
+    margin-top: 0.3rem;
+    background: rgba(255, 255, 255, 0.06);
+    /* Faint background */
+    border-radius: 8px;
+    /* Rounded corners */
+    padding: 0.5rem;
+}
+
+/* Align time with odds */
+.slide .extra-info .odds,
+.slide .extra-info .date-info {
+    text-align: right;
+    /* Align text to the right */
+}
+
+/* button styles */
+.prediction-footer .btn {
+    width: 100%;
+    /* Full width button */
+    background: transparent;
+    border: 2px solid #ffd700;
+    /* Border background */
+    color: #ffd700;
+    padding: 12px 0;
+    border-radius: 8px;
+    /* Rounded corners */
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    transition: background-color 0.3s ease;
+}
+
+.prediction-footer .btn:hover {
+    background: #ffc107;
+    color: #1a1a1a;
+    font-weight: 700;
+    box-shadow: 0 0 10px #ffc107;
+    /* Slight background color on hover */
+}
+
+
+/* small icon next to text */
+.icon {
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    vertical-align: middle;
+    fill: none;
+    stroke: #ffd700;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    
+}
+
+/* controls */
+.carousel-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 0.25rem;
+}
+
+.carousel-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    color: #ffd700;
+    padding: 6px 10px;
+    margin: 0 1rem 1rem;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    min-width: 40px;
+}
+
+.carousel-btn:hover {
+    border: #ffc107;
+    color: #fff;
+    box-shadow: 0 0 10px #ffc107;
+    transition: all 0.2s ease;
+}
+
+.carousel-btn.active {
+    border: #ffc107;
+    box-shadow: 0 0 8px #ffc107;
+    color: #fff;
+}
+
+.carousel-dots {
+    display: flex;
+    gap: 6px;
+    flex: 1 1 auto;
+    justify-content: center;
+}
+
+.carousel-dots button {
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.carousel-dots button.active {
+    background: #ffd700;
+}
+
+
+
+.slide .team span {
+    font-size: 0.82rem;
+    display: block;
+    margin-top: 6px;
+    color: #ffd;
+}
+
+
+/* Prevent body scroll when modal open */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Modal backdrop + slide up */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 15, 25, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 9999;
+    overflow: hidden;
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.35s ease-out, opacity 0.35s ease-out;
+}
+
+.selector-options::-webkit-scrollbar{
+    display: none;
+}
+
+.modal.show {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Modal content */
+.modal-content {
+    background: linear-gradient(160deg, #1a1f2f 0%, #10141f 100%);
+    color: #fefefe;
+    width: 100%;
+    max-width: 500px;
+    max-height: 82vh;
+    border-top-left-radius: 22px;
+    border-top-right-radius: 22px;
+    padding: 1.5rem 1.5rem 2rem;
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.55);
+    overflow-y: auto;
+    position: relative;
+    outline: none;
+    animation: fadeSlideUp 0.4s ease;
+}
+
+/* Animations */
+@keyframes fadeSlideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Close button */
+.modal-close {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    background: none;
+    border: none;
+    font-size: 2.2rem;
+    color: #ffd700;
+    cursor: pointer;
+    transition: transform 0.25s ease, color 0.3s ease;
+    line-height: 1;
+    padding: 0;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+    color: #fff;
+    transform: rotate(90deg);
+}
+
+/* Selector options */
+.selector-options {
+    margin-top: 2.6rem;
+    max-height: 52vh;
+    overflow-y: auto;
+    padding-right: 0.6rem;
+    scroll-behavior: smooth;
+}
+
+/* Section headings */
+.selector-section strong {
+    font-size: 1.15rem;
+    margin: 0.8rem 0 0.6rem;
+    display: block;
+    color: #ffd700;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    padding-bottom: 0.3rem;
+}
+
+/* Labels (checkbox rows) */
+.selector-section label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.55rem;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s, color 0.3s;
+}
+
+.selector-section label:hover {
+    background: rgba(255, 215, 0, 0.15);
+    color: #ffd700;
+}
+
+/* Checkbox */
+.selector-section input[type="checkbox"] {
+    margin-right: 0.8rem;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #ffd700;
+}
+
+/* Optional flag/logo inside labels */
+.selector-section label img {
+    width: 22px;
+    height: 22px;
+    margin-right: 8px;
+    border-radius: 4px;
+}
+
+/* Matches spacing */
+#selectorOptions>div:nth-child(3)>label {
+    margin-bottom: 1.5rem;
+}
+
+/* Sticky apply button */
+.btn-apply {
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(90deg, #ffd700, #e6c200);
+    border: none;
+    padding: 1rem 0;
+    cursor: pointer;
+    font-weight: 700;
+    color: #111;
+    width: 100%;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 -4px 12px rgba(255, 215, 0, 0.5);
+    transition: background 0.3s ease, transform 0.2s ease;
+    z-index: 10;
+}
+
+.btn-apply:disabled {
+    background: #666;
+    color: #ddd;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.btn-apply:not(:disabled):hover,
+.btn-apply:not(:disabled):focus {
+    background: #f5d200;
+    transform: scale(1.02);
+}
+
+
+
+
+
+
+
+
+

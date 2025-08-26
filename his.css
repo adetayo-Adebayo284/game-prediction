@@ -1,0 +1,130 @@
+/* =======================
+   History Button and Text
+   ======================= */
+
+/* Wrapper for the content inside the header */
+.history-section h3{
+    margin: 0;
+    position: sticky !important;
+    top: 0 !important;
+    display: block;
+    padding: 1rem;
+    z-index: 100;
+    cursor: pointer;
+    background: #0a1f44;;
+    overflow-y: auto;
+    scrollbar-width: none;
+    /* Hide scrollbar in Firefox */
+    -ms-overflow-style: none;
+}
+
+/* Button Styling */
+.history-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #fff;
+    /* margin-right: 10px; */
+    font-weight: 100 !important;
+}
+
+/* Hover effect on the button */
+.history-btn:hover {
+    color: #ffc107;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Updated SVG Icon Styling */
+.history-icon {
+    width: 20px;
+    height: 20px;
+    transition: all 0.3s ease;
+    /* margin-right: 8px; */
+}
+.loader {
+    color: #ffd700;
+    font-size: 1.2rem;
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* History Text Styling */
+.history-text {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #ffd700;
+    text-shadow: 0 0 3px #ffd700;
+}
+
+/* History Info Styling */
+#historyInfo {
+    /* margin-left: 10px; */
+    font-weight: 400;
+    font-size: 0.9em;
+    width: 100%;
+    color: #fff;
+}
+
+/* Styling for the matches container (with hidden scrollbar) */
+/* #matchesContainer {
+    /* To create space below the sticky header *
+    overflow-y: scroll;
+    /* Allows scrolling *
+    max-height: 400px;
+    /* Set a max height if needed 
+    /* padding: 10px; *
+    scrollbar-width: none;
+    /* Firefox *
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ 
+}
+
+/* Hide the scrollbar for Webkit browsers (Chrome, Safari)
+#matchesContainer::-webkit-scrollbar {
+    display: none;
+} */
+
+/* View All Button */
+.his-view-all {
+    background: #1f2e4a;
+    border: 2px solid #ffd700;
+    /* padding: 0.5rem; */
+    font-size: 1rem;
+    color: #ffd700;
+    min-width: 110px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+.his-view-all:hover {
+    background: #ffc107;
+    color: #1a1a1a;
+    box-shadow: 0 0 10px #ffc107;
+}
+
+
+
+
+.match-result {
+    /* display: ; */
+    padding: 6px 10px;
+    margin-top: 8px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.result-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.result-fail {
+    background-color: #f8d7da;
+    color: #721c24;
+}

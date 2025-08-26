@@ -1,0 +1,76 @@
+/* Basic styling for the modal */
+.modal {
+    position: fixed;
+    bottom: -100%;
+    /* Start below the screen */
+    left: 0;
+    right: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    display: none;
+    /* Initially hidden */
+    opacity: 0;
+    transition: bottom 0.3s ease, opacity 0.3s ease;
+    /* Smooth transition */
+}
+
+/* Modal content styling */
+.modal-content {
+    background: white;
+    padding: 20px;
+    position: relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Modal slide-up effect when it is displayed */
+.modal.show {
+    bottom: 0;
+    opacity: 1;
+}
+
+/* Close button styling */
+.btn-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff4b5c;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+/* Button hover effect */
+.btn-close:hover {
+    background: #ff3a49;
+}
+
+/* Submit button styling */
+.btn-submit {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background-color: #45a049;
+}
+
+/* Modal header styling */
+.modal-header {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
