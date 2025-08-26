@@ -643,7 +643,7 @@ generateBtn.addEventListener("click", () => {
                 "No predictions are available for the selected filters. You will be redirected to today’s predictions.",
                 "warning"
             );
-            window.location.href = "http://localhost/game/#todayPredictionHeader";
+            window.location.href = "./#todayPredictionHeader";
         }, 20);
         return;
     }
