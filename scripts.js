@@ -123,35 +123,36 @@ window.addEventListener('scroll', function() {
 });
 
 
-// let lastScrollTops = 0;
-// const panel = document.querySelector(".filters-panel");
-// let isHidden = false;
-// const buffer = 20; // minimum scroll difference to trigger show/hide
+let lastScrollTops = 0;
+const panel = document.querySelector(".filters-panel");
+let isHidden = false;
+const buffer = 20; // minimum scroll difference to trigger show/hide
 
-// window.addEventListener("scroll", () => {
-//     const scrollTop = window.scrollY || document.documentElement.scrollTop;
-//     const scrollHeight = document.documentElement.scrollHeight;
-//     const clientHeight = document.documentElement.clientHeight;
+window.addEventListener("scroll", () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
 
-//     // Calculate how far we are from the bottom
-//     const distanceToBottom = scrollHeight - (scrollTop + clientHeight);
+    // Calculate how far we are from the bottom
+    const distanceToBottom = scrollHeight - (scrollTop + clientHeight);
 
-//     // Scroll down → hide panel only when near bottom
-//     if (!isHidden && distanceToBottom <= buffer) {
-//         panel.classList.add("d-none");
-//         isHidden = true;
-//         console.log("Near bottom → hide panel", scrollTop);
-//     } 
+    if (window.innerWidth <= 991.99) {
+        // Scroll down → hide panel only when near bottom
+        if (!isHidden && distanceToBottom <= buffer) {
+            panel.classList.add("d-none");
+            isHidden = true;
+            console.log("Near bottom → hide panel", scrollTop);
+        } 
+        // Scroll up → show panel if it was hidden
+        // else if (isHidden && scrollTop < lastScrollTops - buffer) {
+            // panel.classList.remove("d-none");
+            // isHidden = false;
+            // console.log("Scrolling up ↑ show panel", scrollTop);
+        // }
+    }
 
-//     // Scroll up → show panel if it was hidden
-//     else if (isHidden && scrollTop < lastScrollTops - buffer) {
-//         // panel.classList.remove("d-none");
-//         // isHidden = false;
-//         // console.log("Scrolling up ↑ show panel", scrollTop);
-//     }
-
-//     lastScrollTops = scrollTop <= 0 ? 0 : scrollTop;
-// });
+    lastScrollTops = scrollTop <= 0 ? 0 : scrollTop;
+});
 
 
 
