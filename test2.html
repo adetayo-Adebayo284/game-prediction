@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Eagle Predict - Sports Prediction Dashboard with Leagues</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        /* Same styling as before */
+        body {
+            background: linear-gradient(135deg, #0a1f44, #021d3a);
+            color: #e0e6f1;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #ffd700 !important;
+        }
+
+        .header-section {
+            text-align: center;
+            padding: 3rem 1rem 1rem;
+        }
+
+        .header-section h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-section p {
+            font-size: 1.2rem;
+            color: #cfd8e6;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 1.8rem 1.5rem 2rem;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.15);
+            color: #fff;
+            margin-bottom: 2rem;
+        }
+
+        .controls h5 {
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 0.8rem;
+        }
+
+        .btn-odds,
+        .btn-sport {
+            border-radius: 50px;
+            font-weight: 600;
+            color: #222;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-odds {
+            background: #ffd700;
+            border: none;
+            margin: 0 5px 10px 0;
+            padding: 0.4rem 1rem;
+            font-size: 1rem;
+        }
+
+        .btn-odds.active,
+        .btn-sport.active {
+            background: #ffc107;
+            box-shadow: 0 0 8px #ffc107;
+            color: #1a1a1a;
+        }
+
+        .btn-sport {
+            background: #1f2e4a;
+            border: 2px solid #ffd700;
+            margin: 0 8px 12px 0;
+            padding: 0.5rem 1.4rem;
+            font-size: 1rem;
+            color: #ffd700;
+            min-width: 110px;
+        }
+
+        .btn-sport:hover {
+            background: #ffc107;
+            color: #1a1a1a;
+            box-shadow: 0 0 10px #ffc107;
+        }
+
+        .risk-options label {
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            user-select: none;
+        }
+
+        .risk-options input[type="radio"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        #generateBtn {
+            margin-top: 1.5rem;
+            background: #ffd700;
+            border-radius: 50px;
+            font-weight: 700;
+            color: #222;
+            font-size: 1.2rem;
+            padding: 0.7rem 2rem;
+            border: none;
+            width: 100%;
+            box-shadow: 0 0 12px #ffc107;
+            transition: background-color 0.3s ease;
+        }
+
+        #generateBtn:hover {
+            background-color: #ffc107;
+            color: #111;
+        }
+
+        .prediction-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.15);
+            padding: 1.8rem 1.5rem 2rem;
+            transition: transform 0.3s ease;
+            color: #fefefe;
+        }
+
+        .prediction-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 35px rgba(255, 215, 0, 0.4);
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .team {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            min-width: 110px;
+        }
+
+        .team-logo {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 2px solid #ffd700;
+            background: #0a1f44;
+        }
+
+        .team-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #ffd700;
+            text-shadow: 0 0 5px #ffd700;
+            white-space: nowrap;
+        }
+
+        .match-score {
+            font-weight: 700;
+            font-size: 1.7rem;
+            color: #fff;
+            background: #1f2e4a;
+            padding: 0.2rem 1rem;
+            border-radius: 12px;
+            min-width: 70px;
+            text-align: center;
+            box-shadow: 0 0 10px #ffd700;
+        }
+
+        .match-info {
+            font-size: 0.9rem;
+            color: #bbb;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .prediction-details {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffe066;
+            margin-bottom: 0.6rem;
+            text-align: center;
+        }
+
+        .confidence-badge {
+            display: inline-block;
+            background-color: #ffc107;
+            color: #1a1a1a;
+            font-weight: 700;
+            padding: 0.3rem 0.9rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            text-align: center;
+            width: fit-content;
+            margin: 0 auto;
+            box-shadow: 0 0 8px #ffc107;
+        }
+
+        footer {
+            margin-top: auto;
+            background: rgba(0, 0, 0, 0.7);
+            color: #999;
+            text-align: center;
+            padding: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .team-name {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .match-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .match-score {
+                min-width: auto;
+                padding: 0.3rem 0.8rem;
+            }
+
+            .btn-sport {
+                min-width: auto;
+                font-size: 0.9rem;
+                padding: 0.4rem 1rem;
+            }
+
+            .btn-odds {
+                font-size: 0.9rem;
+                padding: 0.3rem 0.7rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Eagle Predict</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Predictions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <section class="header-section">
+        <h1>Accurate Sports Predictions</h1>
+        <p>Choose your sport, league, odds, risk level, and generate predicted matches with confidence metrics.</p>
+    </section>
+
+    <div class="container mb-5">
+        <div class="row g-4">
+            <!-- Controls panel -->
+            <div class="col-lg-4">
+                <div class="controls">
+
+                    <h5>Choose Sport</h5>
+                    <div id="sportBtns" class="d-flex flex-wrap mb-4">
+                        <button class="btn btn-sport me-2 mb-2" data-sport="Soccer">Soccer</button>
+                        <button class="btn btn-sport me-2 mb-2" data-sport="Basketball">Basketball</button>
+                        <button class="btn btn-sport me-2 mb-2" data-sport="Hockey">Hockey</button>
+                        <button class="btn btn-sport me-2 mb-2" data-sport="American Football">American
+                            Football</button>
+                        <button class="btn btn-sport me-2 mb-2" data-sport="Table Tennis">Table Tennis</button>
+                        <button class="btn btn-sport me-2 mb-2" data-sport="Horse Race">Horse Race</button>
+                    </div>
+
+                    <h5>Choose League/Tournament</h5>
+                    <select id="leagueSelect" class="form-select mb-4" aria-label="Select League">
+                        <option value="">-- Select a league --</option>
+                    </select>
+
+                    <h5>Choose Odds</h5>
+                    <div id="oddsBtns" class="d-flex flex-wrap mb-4">
+                        <button class="btn btn-odds me-2 mb-2" data-odd="2">2 odds</button>
+                        <button class="btn btn-odds me-2 mb-2" data-odd="5">5 odds</button>
+                        <button class="btn btn-odds me-2 mb-2" data-odd="10">10 odds</button>
+                        <button class="btn btn-odds me-2 mb-2" data-odd="20">20 odds</button>
+                        <button class="btn btn-odds me-2 mb-2" data-odd="50">50 odds</button>
+                        <button class="btn btn-odds me-2 mb-2" data-odd="100">100 odds</button>
+                        <button class="btn btn-odds me-2 mb-2" data-odd="1000">1000 odds</button>
+                    </div>
+
+                    <h5>Limit Risk</h5>
+                    <div class="risk-options mb-4">
+                        <div>
+                            <input type="radio" id="riskLow" name="risk" value="Low risk" />
+                            <label for="riskLow">Low risk</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="riskVeryLow" name="risk" value="Very low risk" />
+                            <label for="riskVeryLow">Very low risk</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="riskLeast" name="risk" value="Least risk" />
+                            <label for="riskLeast">Least risk</label>
+                        </div>
+                    </div>
+
+                    <button id="generateBtn">Generate Matches</button>
+                </div>
+            </div>
+
+            <!-- Predictions list -->
+            <div class="col-lg-8" id="predictionsList">
+                <!-- Predictions will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Eagle Predict. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Leagues by sport (you can expand)
+        const leaguesBySport = {
+            Soccer: [
+                "Champions League",
+                "Europa League",
+                "Conference League",
+                "Premier League",
+                "Championship",
+                "League One",
+                "LaLiga",
+                "Serie A",
+                "Bundesliga",
+                "Ligue 1",
+                "Liga Portugal",
+                "Super Lig",
+                "Premier Soccer League",
+                "Kenyan Premier League",
+                "NPFL Premier League",
+                "Major League Soccer",
+                "Saudi Pro League"
+            ],
+            Basketball: [
+                "NBA",
+                "EuroLeague",
+                "FIBA World Cup"
+            ],
+            Hockey: [
+                "NHL",
+                "KHL"
+            ],
+            "American Football": [
+                "NFL",
+                "NCAA"
+            ],
+            "Table Tennis": [
+                "World TT Championship",
+                "ITTF World Tour"
+            ],
+            "Horse Race": [
+                "Grand National",
+                "Kentucky Derby"
+            ]
+        };
+
+        // Sample matches - simplified for demo
+        const sampleMatches = {
+            Soccer: [
+                { home: "Manchester United", away: "Chelsea", league: "Premier League", time: "2025-08-12 19:45", score: "1 - 1", prediction: "BTTS - No", confidence: 85, homeLogo: "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg", awayLogo: "https://upload.wikimedia.org/wikipedia/en/c/c2/Chelsea_FC.svg" },
+                { home: "Barcelona", away: "Real Madrid", league: "LaLiga", time: "2025-08-13 21:00", score: "3 - 2", prediction: "Over 2.5 Goals", confidence: 78, homeLogo: "https://upload.wikimedia.org/wikipedia/en/0/09/FC_Barcelona_%28crest%29.svg", awayLogo: "https://upload.wikimedia.org/wikipedia/en/f/fc/Real_Madrid_CF.svg" },
+                { home: "PSG", away: "Lyon", league: "Ligue 1", time: "2025-08-14 18:30", score: "2 - 0", prediction: "Home Win", confidence: 90, homeLogo: "https://upload.wikimedia.org/wikipedia/en/e/e1/Paris_Saint-Germain_F.C..svg", awayLogo: "https://upload.wikimedia.org/wikipedia/en/7/7c/Olympique_Lyonnais.svg" }
+            ],
+            Basketball: [
+                { home: "LA Lakers", away: "Boston Celtics", league: "NBA", time: "2025-08-15 20:00", score: "102 - 99", prediction: "Home Win", confidence: 88, homeLogo: "https://upload.wikimedia.org/wikipedia/commons/3/3c/Los_Angeles_Lakers_logo.svg", awayLogo: "https://upload.wikimedia.org/wikipedia/en/8/8f/Boston_Celtics.svg" }
+            ],
+            Hockey: [
+                { home: "Toronto Maple Leafs", away: "Montreal Canadiens", league: "NHL", time: "2025-08-16 19:30", score: "4 - 3", prediction: "Away Win", confidence: 72, homeLogo: "https://upload.wikimedia.org/wikipedia/en/7/7f/Toronto_Maple_Leafs_logo.svg", awayLogo: "https://upload.wikimedia.org/wikipedia/en/1/12/Montreal_Canadiens_logo.svg" }
+            ],
+            "American Football": [
+                { home: "Dallas Cowboys", away: "Green Bay Packers", league: "NFL", time: "2025-08-17 18:00", score: "21 - 17", prediction: "Home Win", confidence: 83, homeLogo: "https://upload.wikimedia.org/wikipedia/commons/1/15/Dallas_Cowboys.svg", awayLogo: "https://upload.wikimedia.org/wikipedia/commons/5/53/Green_Bay_Packers_logo.svg" }
+            ],
+            "Table Tennis": [
+                { home: "Player A", away: "Player B", league: "World TT Championship", time: "2025-08-18 14:00", score: "3 - 1", prediction: "Home Win", confidence: 76, homeLogo: "https://upload.wikimedia.org/wikipedia/commons/4/45/Table_tennis_pictogram.svg", awayLogo: "https://upload.wikimedia.org/wikipedia/commons/4/45/Table_tennis_pictogram.svg" }
+            ],
+            "Horse Race": [
+                { home: "Thunderbolt", away: "Speed King", league: "Grand National", time: "2025-08-19 16:30", score: "N/A", prediction: "Winner: Thunderbolt", confidence: 81, homeLogo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Horse_silhouette_icon.svg", awayLogo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Horse_silhouette_icon.svg" }
+            ]
+        };
+
+        const sportBtns = document.querySelectorAll("#sportBtns button");
+        const leagueSelect = document.getElementById("leagueSelect");
+        const oddsBtns = document.querySelectorAll("#oddsBtns button");
+        const riskRadios = document.querySelectorAll("input[name='risk']");
+        const generateBtn = document.getElementById("generateBtn");
+        const predictionsList = document.getElementById("predictionsList");
+
+        let selectedSport = null;
+        let selectedLeague = null;
+        let selectedOdds = null;
+        let selectedRisk = null;
+
+        // On sport selection, populate leagues dropdown
+        sportBtns.forEach(btn => btn.addEventListener("click", () => {
+            sportBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            selectedSport = btn.dataset.sport;
+
+            // Populate leagues for this sport
+            leagueSelect.innerHTML = `<option value="">-- Select a league --</option>`;
+            if (leaguesBySport[selectedSport]) {
+                leaguesBySport[selectedSport].forEach(league => {
+                    const option = document.createElement("option");
+                    option.value = league;
+                    option.textContent = league;
+                    leagueSelect.appendChild(option);
+                });
+            }
+            selectedLeague = null;
+            leagueSelect.value = "";
+        }));
+
+        leagueSelect.addEventListener("change", e => {
+            selectedLeague = e.target.value || null;
+        });
+
+        oddsBtns.forEach(btn => btn.addEventListener("click", () => {
+            oddsBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            selectedOdds = parseInt(btn.dataset.odd, 10);
+        }));
+
+        riskRadios.forEach(radio => radio.addEventListener("change", () => {
+            selectedRisk = radio.value;
+        }));
+
+        // Filter matches demo logic with league filter
+        function filterMatches(matches, odds, risk, league) {
+            if (!matches) return [];
+
+            // Filter by league if selected
+            let filtered = league ? matches.filter(m => m.league === league) : matches;
+
+            // Filter by odds - fewer matches with higher odds
+            filtered = filtered.slice(0, Math.max(1, Math.floor(filtered.length * (2 / odds))));
+
+            // Filter by risk level
+            if (risk === "Low risk") {
+                filtered = filtered.filter(m => m.confidence >= 80);
+            } else if (risk === "Very low risk") {
+                filtered = filtered.filter(m => m.confidence >= 70);
+            }
+            // Least risk shows all
+
+            return filtered;
+        }
+
+        function renderPredictions(matches) {
+            predictionsList.innerHTML = "";
+            if (!matches || matches.length === 0) {
+                predictionsList.innerHTML = `<p class="text-center fs-4 text-warning">No predictions available for the selected filters.</p>`;
+                return;
+            }
+            matches.forEach(match => {
+                const card = document.createElement("div");
+                card.className = "prediction-card mb-4";
+                card.innerHTML = `
+        <div class="match-header">
+          <div class="team">
+            <img src="${match.homeLogo}" alt="${match.home}" class="team-logo" />
+            <div class="team-name">${match.home}</div>
+          </div>
+          <div class="match-score">${match.score}</div>
+          <div class="team">
+            <img src="${match.awayLogo}" alt="${match.away}" class="team-logo" />
+            <div class="team-name">${match.away}</div>
+          </div>
+        </div>
+        <div class="match-info">${match.league} • ${match.time}</div>
+        <div class="prediction-details">Prediction: ${match.prediction}</div>
+        <div class="confidence-badge">Confidence: ${match.confidence}%</div>
+      `;
+                predictionsList.appendChild(card);
+            });
+        }
+
+        generateBtn.addEventListener("click", () => {
+            if (!selectedSport) {
+                alert("Please select a sport.");
+                return;
+            }
+            if (!selectedOdds) {
+                alert("Please select odds.");
+                return;
+            }
+            if (!selectedRisk) {
+                alert("Please select a risk level.");
+                return;
+            }
+            // League optional
+            let matches = sampleMatches[selectedSport];
+            if (!matches) {
+                predictionsList.innerHTML = `<p class="text-center fs-4 text-warning">No data available for selected sport.</p>`;
+                return;
+            }
+            const filtered = filterMatches(matches, selectedOdds, selectedRisk, selectedLeague);
+            renderPredictions(filtered);
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

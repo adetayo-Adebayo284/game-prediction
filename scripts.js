@@ -1,5 +1,6 @@
 // Sample data for predicted matches per sport and odds - normally from API
-const sampleMatches = {
+const sampleMatches = 
+{
     Soccer: [
         {
             home: "Manchester United",
@@ -104,10 +105,18 @@ const sampleMatches = {
 
 document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', function() {
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        // remove active + reset color
+        document.querySelectorAll('.nav-link').forEach(l => {
+            l.classList.remove('active');
+            l.style.color = ''; // reset
+        });
+
+        // set active + apply color
         this.classList.add('active');
+        this.style.color = '#8ef0a0';
     });
 });
+
 
 
 // JavaScript to change header background on scroll
@@ -174,7 +183,7 @@ window.addEventListener("scroll", () => {
 //     }
 // });
 
-function showCustomAlert(title, message, type = "info") {
+function showCustomAlert(title, message, type) {
   const alertBox = document.getElementById("custom-alert");
   const alertContent = alertBox.querySelector(".custom-alert-content");
   const alertIcon = document.getElementById("alert-icon");

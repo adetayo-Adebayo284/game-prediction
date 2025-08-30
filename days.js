@@ -6,32 +6,32 @@ const today = new Date();
 
 // Mock matches database keyed by date (day-month-year)
 const matchesDB = {
-  "20-8-2025": [
-      { time: "12:00", league: "Eredivisie", homeLogo: "ajax-logo.png", awayLogo: "psv-logo.png", home: "Ajax", away: "PSV", score: "3 - 2", prediction: "Ajax Win", confidence: 88 }
-  ],
-  "21-8-2025": [
-      { time: "15:00", league: "La Liga", homeLogo: "sevilla-logo.png", awayLogo: "valencia-logo.png", home: "Sevilla", away: "Valencia", score: "1 - 0", prediction: "Sevilla Win", confidence: 82 }
-  ],
-  "22-8-2025": [
-      { time: "17:00", league: "Serie A", homeLogo: "napoli-logo.png", awayLogo: "roma-logo.png", home: "Napoli", away: "Roma", score: "2 - 1", prediction: "Napoli Win", confidence: 79 }
-  ],
-  "23-8-2025": [
-      { time: "14:00", league: "Premier League", homeLogo: "arsenal-logo.png", awayLogo: "chelsea-logo.png", home: "Arsenal", away: "Chelsea", score: "2 - 1", prediction: "BTTS - Yes", confidence: 85 },
-      { time: "16:30", league: "Ligue 1", homeLogo: "psg-logo.png", awayLogo: "marseille-logo.png", home: "PSG", away: "Marseille", score: "3 - 0", prediction: "PSG Win", confidence: 90 }
-  ],
-  "24-8-2025": [
-      { time: "18:00", league: "Bundesliga", homeLogo: "bayern-logo.png", awayLogo: "dortmund-logo.png", home: "Bayern Munich", away: "Borussia Dortmund", score: "1 - 1", prediction: "Draw", confidence: 80 },
-      { time: "20:00", league: "Serie A", homeLogo: "juventus-logo.png", awayLogo: "milan-logo.png", home: "Juventus", away: "AC Milan", score: "1 - 2", prediction: "AC Milan Win", confidence: 75 }
-  ],
-  "25-8-2025": [
-      { time: "22:00", league: "La Liga", homeLogo: "barcelona-logo.png", awayLogo: "real-madrid-logo.png", home: "Barcelona", away: "Real Madrid", score: "2 - 2", prediction: "Draw", confidence: 70 }
-  ],
-  "26-8-2025": [
-      { time: "19:00", league: "Premier League", homeLogo: "liverpool-logo.png", awayLogo: "man-city-logo.png", home: "Liverpool", away: "Man City", score: "2 - 3", prediction: "Man City Win", confidence: 77 }
-  ],
-  "27-8-2025": [
-      { time: "21:00", league: "Ligue 1", homeLogo: "lyon-logo.png", awayLogo: "monaco-logo.png", home: "Lyon", away: "Monaco", score: "1 - 1", prediction: "Draw", confidence: 73 }
-  ]
+  // "20-8-2025": [
+  //     { time: "12:00", league: "Eredivisie", homeLogo: "ajax-logo.png", awayLogo: "psv-logo.png", home: "Ajax", away: "PSV", score: "3 - 2", prediction: "Ajax Win", confidence: 88 }
+  // ],
+  // "21-8-2025": [
+  //     { time: "15:00", league: "La Liga", homeLogo: "sevilla-logo.png", awayLogo: "valencia-logo.png", home: "Sevilla", away: "Valencia", score: "1 - 0", prediction: "Sevilla Win", confidence: 82 }
+  // ],
+  // "22-8-2025": [
+  //     { time: "17:00", league: "Serie A", homeLogo: "napoli-logo.png", awayLogo: "roma-logo.png", home: "Napoli", away: "Roma", score: "2 - 1", prediction: "Napoli Win", confidence: 79 }
+  // ],
+  // "23-8-2025": [
+  //     { time: "14:00", league: "Premier League", homeLogo: "arsenal-logo.png", awayLogo: "chelsea-logo.png", home: "Arsenal", away: "Chelsea", score: "2 - 1", prediction: "BTTS - Yes", confidence: 85 },
+  //     { time: "16:30", league: "Ligue 1", homeLogo: "psg-logo.png", awayLogo: "marseille-logo.png", home: "PSG", away: "Marseille", score: "3 - 0", prediction: "PSG Win", confidence: 90 }
+  // ],
+  // "24-8-2025": [
+  //     { time: "18:00", league: "Bundesliga", homeLogo: "bayern-logo.png", awayLogo: "dortmund-logo.png", home: "Bayern Munich", away: "Borussia Dortmund", score: "1 - 1", prediction: "Draw", confidence: 80 },
+  //     { time: "20:00", league: "Serie A", homeLogo: "juventus-logo.png", awayLogo: "milan-logo.png", home: "Juventus", away: "AC Milan", score: "1 - 2", prediction: "AC Milan Win", confidence: 75 }
+  // ],
+  // "25-8-2025": [
+  //     { time: "22:00", league: "La Liga", homeLogo: "barcelona-logo.png", awayLogo: "real-madrid-logo.png", home: "Barcelona", away: "Real Madrid", score: "2 - 2", prediction: "Draw", confidence: 70 }
+  // ],
+  // "26-8-2025": [
+  //     { time: "19:00", league: "Premier League", homeLogo: "liverpool-logo.png", awayLogo: "man-city-logo.png", home: "Liverpool", away: "Man City", score: "2 - 3", prediction: "Man City Win", confidence: 77 }
+  // ],
+  // "27-8-2025": [
+  //     { time: "21:00", league: "Ligue 1", homeLogo: "lyon-logo.png", awayLogo: "monaco-logo.png", home: "Lyon", away: "Monaco", score: "1 - 1", prediction: "Draw", confidence: 73 }
+  // ]
 };
 
 // Generate date buttons dynamically (-3 to +3 days)
@@ -145,14 +145,38 @@ function renderMatches(matches) {
 }
 
 // Load matches for a date
-function loadMatches(date) {
+// Dynamic today date in YYYY-MM-DD for PHP
+const todays = new Date();
+const yyyy = todays.getFullYear();
+const mm = String(todays.getMonth() + 1).padStart(2, "0");
+const dd = String(todays.getDate()).padStart(2, "0");
+const todayYYYYMMDD = `${yyyy}-${mm}-${dd}`;
+
+// Load matches from PHP API
+async function loadMatches(dateYYYYMMDD) {
   showLoader();
-  setTimeout(() => {
-    const matches = matchesDB[date] || [];
+
+  try {
+    const res = await fetch(`./getAllLeague.php?date=${dateYYYYMMDD}`);
+    const data = await res.json();
+
+    // Merge with existing matchesDB
+    Object.assign(matchesDB, data);
+
+    // Extract DD-MM-YYYY key (PHP returns reformatted keys)
+    const keys = Object.keys(data);
+    const matches = keys.length ? data[keys[0]] : [];
+
+    console.log(matches);
+    console.log("Date: ", dateYYYYMMDD);
     renderMatches(matches);
-  }, 800);
+  } catch (err) {
+    console.error("Error loading matches:", err);
+  }
 }
 
-// Initial load
-const todayKey = `${today.getDate()}-${today.getMonth() + 1}-${today.getFullYear()}`;
-loadMatches(todayKey);
+// Manual test
+loadMatches("2024-02-25"); 
+
+// Dynamic load using today
+// loadMatches(todayYYYYMMDD); // Uncomment for dynamic testing

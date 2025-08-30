@@ -3,7 +3,7 @@
    ======================= */
 
 /* Wrapper for the content inside the header */
-.history-section h3{
+.history-section h3 {
     margin: 0;
     position: sticky !important;
     top: 0 !important;
@@ -11,7 +11,8 @@
     padding: 1rem;
     z-index: 100;
     cursor: pointer;
-    background: #0a1f44;;
+    background: #0a1f44;
+    ;
     overflow-y: auto;
     scrollbar-width: none;
     /* Hide scrollbar in Firefox */
@@ -42,6 +43,7 @@
     transition: all 0.3s ease;
     /* margin-right: 8px; */
 }
+
 .loader {
     color: #ffd700;
     font-size: 1.2rem;

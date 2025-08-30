@@ -130,9 +130,11 @@
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
 }
+
 .custom-alert::-webkit-scrollbar {
     display: none !important;
 }
+
 .hidden {
     display: none;
 }

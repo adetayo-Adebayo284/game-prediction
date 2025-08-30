@@ -235,6 +235,36 @@
         font-size: var(--font-size-body);
     }
 
+
+    /* here  */
+
+    .field label {
+        font-size: var(--font-size-button) !important;
+        margin-bottom: 4px;
+    }
+    .card > div > h3{
+        display: none;
+    }
+    body>div>header>h1 {
+        font-size: var(--font-size-subtitl);
+    }
+    body>div>section>div:nth-child(3)>h3,
+    #unselectedHeader {
+        font-size: var(--font-size-subtitl);
+    }
+    .match-score {
+        font-size: var(--font-size-button);
+    }
+    .match-info {
+        font-size: var(--font-size-button);
+    }
+    .copy-btn,
+    .delete-btn {
+        font-size: var(--font-size-subtitle);
+    }
+    #regenerateBtn,  #resetBtn {
+        font-size: var(--font-size-button);
+    }
 }
 
 /* Small Devices (Phones landscape / small tablets) */
@@ -477,6 +507,44 @@
     #selectorOptions>div>label {
         font-size: var(--font-size-body);
     }
+
+        /* here  */
+    
+        .field label {
+            font-size: var(--font-size-button) !important;
+            margin-bottom: 4px;
+        }
+    
+        .card>div>h3 {
+            display: none;
+        }
+    
+        body>div>header>h1 {
+            font-size: var(--font-size-subtitl);
+        }
+    
+        body>div>section>div:nth-child(3)>h3,
+        #unselectedHeader {
+            font-size: var(--font-size-subtitl);
+        }
+    
+        .match-score {
+            font-size: var(--font-size-button);
+        }
+        .match-info {
+            font-size: var(--font-size-button);
+        }
+        .copy-btn,
+        .delete-btn {
+            font-size: var(--font-size-subtitle);
+        }
+        #regenerateBtn,
+        #resetBtn {
+            font-size: var(--font-size-button);
+            width: auto;
+            height: auto;
+        }
+        
 }
 
 /* Medium Devices (Tablets portrait) */
@@ -730,6 +798,41 @@
     #selectorOptions>div>label {
         font-size: var(--font-size-body);
     }
+
+        /* here  */
+    
+        .field label {
+            font-size: var(--font-size-button) !important;
+            margin-bottom: 4px;
+        }
+    
+        .card>div>h3 {
+            display: none;
+        }
+    
+        body>div>header>h1 {
+            font-size: var(--font-size-subtitl);
+        }
+    
+        body>div>section>div:nth-child(3)>h3,
+        #unselectedHeader {
+            font-size: var(--font-size-subtitl);
+        }
+    
+        .match-score {
+            font-size: var(--font-size-button);
+        }
+        .match-info {
+            font-size: var(--font-size-button);
+        }
+         .copy-btn,
+         .delete-btn {
+             font-size: var(--font-size-subtitle);
+         }
+        #regenerateBtn,
+        #resetBtn {
+            font-size: var(--font-size-button);
+        }
 }
 
 /* Large Devices (Tablets landscape / small laptops) */
@@ -894,6 +997,10 @@
     .team-name {
         font-size: var(--font-size-body);
     }
+    .match-header .match-score {
+        font-size: var(--font-size-body);
+        flex-wrap: nowrap;
+    }
     /* tooltips card badge  */
     .tooltip-badge > .tooltip-texts{
         top: -50px !important;
@@ -903,6 +1010,41 @@
         top: -5px !important;
     }
 
+        /* here  */
+    
+        .field label {
+            font-size: var(--font-size-button) !important;
+            margin-bottom: 4px;
+        }
+    
+        .card>div>h3 {
+            display: none;
+        }
+    
+        body>div>header>h1 {
+            font-size: var(--font-size-subtitl);
+        }
+    
+        body>div>section>div:nth-child(3)>h3,
+        #unselectedHeader {
+            font-size: var(--font-size-subtitl);
+        }
+    
+        .match-score {
+            font-size: var(--font-size-button);
+        }
+        .match-info {
+            font-size: var(--font-size-button);
+        }
+         .copy-btn,
+         .delete-btn {
+             font-size: var(--font-size-subtitle);
+         }
+        #regenerateBtn,
+        #resetBtn {
+            font-size: var(--font-size-button);
+        }
+        
 }
 
 /* Extra Large Devices (Laptops / Desktops) */
@@ -1099,6 +1241,42 @@
     .choice-date .date-tab .tooltip-text {
         top: -10px !important;
     }
+
+    /* here  */
+
+    .field label {
+        font-size: var(--font-size-button) !important;
+        margin-bottom: 4px;
+    }
+
+    .card>div>h3 {
+        display: none;
+    }
+
+    body>div>header>h1 {
+        font-size: var(--font-size-subtitl);
+    }
+
+    body>div>section>div:nth-child(3)>h3,
+    #unselectedHeader {
+        font-size: var(--font-size-subtitl);
+    }
+
+    .match-score {
+        font-size: var(--font-size-button);
+    }
+    .match-info {
+        font-size: var(--font-size-button);
+    }
+    .copy-btn,
+    .delete-btn {
+        font-size: var(--font-size-subtitle);
+    }
+    #regenerateBtn,
+    #resetBtn {
+        font-size: var(--font-size-button);
+    }
+    
 }
 
 /* Ultra Wide Screens (Big desktops, TVs) */
@@ -1296,4 +1474,40 @@
     .choice-date .date-tab .tooltip-text {
         top: -10px !important;
     }
+
+    /* here  */
+
+    .field label {
+        font-size: var(--font-size-button) !important;
+        margin-bottom: 4px;
+    }
+
+    .card>div>h3 {
+        display: none;
+    }
+
+    body>div>header>h1 {
+        font-size: var(--font-size-subtitl);
+    }
+
+    body>div>section>div:nth-child(3)>h3,
+    #unselectedHeader {
+        font-size: var(--font-size-subtitl);
+    }
+
+    .match-score {
+        font-size: var(--font-size-button);
+    }
+    .match-info {
+        font-size: var(--font-size-button);
+    }
+    .copy-btn,
+    .delete-btn {
+        font-size: var(--font-size-subtitle);
+    }
+    #regenerateBtn,
+    #resetBtn {
+        font-size: var(--font-size-button);
+    }
+
 }

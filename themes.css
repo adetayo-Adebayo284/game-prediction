@@ -13,7 +13,7 @@ body {
 nav.navbar {
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 1000;
-} 
+}
 
 /* Desktop: sticky top navbar */
 @media (min-width: 992px) {
@@ -154,7 +154,7 @@ nav.navbar {
 
 /* Left fixed filter panel */
 .filters-panel {
-    background: rgba(255, 255, 255, 0.08); 
+    background: rgba(255, 255, 255, 0.08);
     border-radius: 20px;
     border-top: 5px solid #ffd700;
     padding: 1.5rem 1rem 1.5rem 1rem;
@@ -164,7 +164,8 @@ nav.navbar {
     flex-shrink: 0;
     /* Default position for mobile (not sticky) */
     /* position: static; */
-    height: fit-content !important;  /*auto*/
+    height: fit-content !important;
+    /*auto*/
     overflow-y: visible;
     scrollbar-width: none;
     transition: transform 0.3s ease, opacity 0.3s ease;
@@ -331,7 +332,9 @@ nav.navbar {
 
 /* Generate & Reset buttons shared styling */
 .btn-generate,
-.btn-reset, #alert-ok-btn, #applySelectionBtn {
+.btn-reset,
+#alert-ok-btn,
+#applySelectionBtn {
     margin-top: 1.5rem;
     border-radius: 50px;
     font-weight: 700;
@@ -435,7 +438,7 @@ nav.navbar {
 }
 
 #matchList-choice>div,
-#matchCarousel>div{
+#matchCarousel>div {
     padding: 0;
     margin: 0;
 }
@@ -707,10 +710,11 @@ nav.navbar {
     .prediction-details {
         font-size: 0.8rem;
     }
-}  
+}
 
 /* Tooltip container */
-.tooltip-custom, .tooltip-badge {
+.tooltip-custom,
+.tooltip-badge {
     position: relative;
     display: inline-block;
 }
@@ -736,7 +740,7 @@ nav.navbar {
 }
 
 .tooltip-custom:hover .tooltip-text,
-.tooltip-badge:hover .tooltip-texts{
+.tooltip-badge:hover .tooltip-texts {
     visibility: visible;
     opacity: 1;
 }
@@ -943,8 +947,8 @@ footer {
     transition: 0.3s ease-in-out;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-.accordion-item
-.predictions-container {
+
+.accordion-item .predictions-container {
     margin-right: 0;
 }
 
@@ -963,6 +967,7 @@ footer {
         align-items: flex-start;
         height: 60px;
     }
+
     #updatedSelection {
         font-size: 1rem;
         text-align: center;
@@ -982,12 +987,14 @@ footer {
     gap: 10px;
 }
 
-@media (max-width: 600px){
+@media (max-width: 600px) {
+
     .today-matches h3,
     .previous-history h3 {
         font-size: 1.1rem;
     }
 }
+
 .selector-btn {
     display: flex;
     align-items: center;
@@ -1048,7 +1055,8 @@ footer {
     border: none !important;
     box-shadow: none !important;
     /* removes the outline shadow */
-    background-color: rgba(255, 255, 255, 0.08);;
+    background-color: rgba(255, 255, 255, 0.08);
+    ;
     /* Make button background transparent */
     color: #FFFFFF;
     /* Button text color */

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Accumulator Generator</title>
+
+    <!-- Your CSS -->
+    <link rel="stylesheet" href="./generate.css" />
+    <link rel="stylesheet" href="./his.css" />
+    <link rel="stylesheet" href="./response.css" />
+    <link rel="stylesheet" href="./slide.css" />
+    <link rel="stylesheet" href="./sug.css" />
+    <link rel="stylesheet" href="./themes.css" />
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <h1>
+                <a href="./" class="" style="color: #fff; text-decoration: none;">< Back</a>
+            </h1>
+            <div class="spinner" id="spinner">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                Generating…
+            </div>
+        </header>
+
+
+        <section class="card">
+            <div class="controls">
+                <div class="field sport">
+                    <label for="sport">Sport</label>
+                    <select id="sport"></select>
+                </div>
+
+                <div class="field target">
+                    <label for="oddsTarget">Target Odds <b id="oddsTargetLabel" style="opacity: 0;"> 500.00</b></label>
+                    <div class="slider-row">
+                        <input id="oddsTarget" type="range" min="2" max="1000" value="500" step="1" />
+                        <input id="oddsTargetNumber" type="number" min="2" max="1000" value="500" />
+                    </div>
+                </div>
+
+                <div class="field risk">
+                    <label>Risk Level</label>
+                    <div class="pill-group" id="riskGroup"></div>
+                </div>
+
+                <div class="field go">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <button class="btn btn-primary" id="generateBtn">GO</button>
+                </div>
+            </div>
+
+            <div class="meta">
+                <div class="stat">Selected Matches: <b id="selectedCount">0</b></div>
+                <div class="stat">Total Odds: <b id="totalOdds">0</b></div>
+                <div class="stat">Target: <b id="targetEcho">0</b></div>
+                <div class="stat">Tolerance: <b id="toleranceEcho">±10%</b></div>
+                <div class="stat">Risk: <b id="riskEcho">Low</b></div>
+            </div>
+            
+            <!-- NEW: Top container for auto/user-selected matches -->
+            <div id="selectedSection">
+                <h3 id="selectedHeader"></h3>
+                <div id="selectedList"></div>
+            </div>
+            
+            <!-- NEW: Bottom container for remaining matches -->
+            <div id="unselectedSection">
+                <h3 id="unselectedHeader"></h3>
+                <div id="unselectedList"></div>
+            </div>
+
+
+            <div class="footer">
+                <div class="totals">
+                    <div>
+                        <div class="big" id="totalOddsBig">0.00</div>
+                        <div class="hint">Select matches to move closer to your target.</div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-ghost" id="regenerateBtn">Regenerate</button>
+                        <button class="btn" id="resetBtn">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="./generate.js"></script>
+</body>
+
+</html>

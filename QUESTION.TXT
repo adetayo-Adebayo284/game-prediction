@@ -1,0 +1,38 @@
+future style
+
+
+ /* Paste your provided CSS here */
+:root {
+    --bg: #0b1020;
+    --card: #131a33;
+    --soft: #1b244a;
+    --accent: #6ea8ff;
+    --accent-2: #7ef0c1;
+    --text: #eaf0ff;
+    --muted: #9fb0d9;
+    --danger: #ff6b6b;
+    --ok: #8ef0a0;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    --radius: 18px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+
+    /* Updated gradient background */
+    background: linear-gradient(180deg, #0a0f1e, #0b132b 40%, #0a0f1e);
+
+    /* Apply new text color */
+    color: var(--text);
+
+    /* Cleaner font stack */
+    font-family: Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}

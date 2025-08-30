@@ -188,6 +188,7 @@
         font-size: 1.2rem;
     }
 }
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .right-ads.prediction-carousel {
@@ -215,26 +216,29 @@
     .prediction-header {
         font-size: 1rem;
     }
-   /* Predict Header */
-   #toggle {
-       padding: 0.5rem;
-       text-align: center;
-       font-size: 1.2rem;
-       position: fixed;
-       bottom: 60px;
-       /* Default bottom position */
-       left: 0;
-       right: 0;
-       background: rgba(0, 0, 0, 0.7);
-       width: 100%;
-       z-index: 500 !important;
-       transition: bottom 0.3s ease-in-out;
-       /* Smooth transition */
-   }
-   #carouselGroup {
+
+    /* Predict Header */
+    #toggle {
+        padding: 0.5rem;
+        text-align: center;
+        font-size: 1.2rem;
+        position: fixed;
+        bottom: 60px;
+        /* Default bottom position */
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        width: 100%;
+        z-index: 500 !important;
+        transition: bottom 0.3s ease-in-out;
+        /* Smooth transition */
+    }
+
+    #carouselGroup {
         display: none;
     }
-    .main-container{
+
+    .main-container {
         padding: 0;
     }
 }
@@ -246,6 +250,7 @@
         /* let it expand naturally */
         width: 100% !important;
     }
+
     #carouselGroup {
         display: none;
     }
@@ -257,6 +262,7 @@
         bottom: 35px;
         /* Slightly lower for tablets */
     }
+
     .main-container {
         padding: 0;
     }
@@ -267,21 +273,23 @@
     .prediction-carousel {
         width: 100% !important;
         height: auto !important;
-        
+
     }
+
     .main-container {
         padding: 0;
     }
 }
 
 /* predict header */
-#toggle, 
+#toggle,
 .predict-header {
     padding: 1rem 0.5rem;
     text-align: center;
     border-bottom: 2px solid #ffd700;
 }
-#toggle{
+
+#toggle {
     cursor: pointer;
 }
 
@@ -470,7 +478,7 @@
     stroke-width: 1.6;
     stroke-linecap: round;
     stroke-linejoin: round;
-    
+
 }
 
 /* controls */
@@ -559,7 +567,7 @@ body.modal-open {
     transition: transform 0.35s ease-out, opacity 0.35s ease-out;
 }
 
-.selector-options::-webkit-scrollbar{
+.selector-options::-webkit-scrollbar {
     display: none;
 }
 
@@ -709,12 +717,3 @@ body.modal-open {
     background: #f5d200;
     transform: scale(1.02);
 }
-
-
-
-
-
-
-
-
-
