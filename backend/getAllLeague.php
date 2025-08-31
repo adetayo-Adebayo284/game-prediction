@@ -1,7 +1,9 @@
 <?php
+// Suppress warnings/notices to avoid breaking JSON
+error_reporting(0);
 header('Content-Type: application/json');
 
-require_once(__DIR__."./allLeague.php");
+require_once(__DIR__ . "/allLeague.php");
 
 // Receive date in YYYY-MM-DD format
 $inputDate = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
@@ -31,4 +33,5 @@ foreach ($fixtures as $date => $matches) {
     }
 }
 
-echo json_encode($matchesDB, JSON_PRETTY_PRINT);
+// Encode to JSON and exit to prevent extra output
+exit(json_encode($matchesDB, JSON_PRETTY_PRINT));
