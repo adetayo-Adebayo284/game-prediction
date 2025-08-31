@@ -157,7 +157,8 @@ async function loadMatches(dateYYYYMMDD) {
   showLoader();
 
   try {
-    const res = await fetch(`./getAllLeague.php?date=${dateYYYYMMDD}`);
+    const url = `../../game/backend/getAllLeague.php?date=${dateYYYYMMDD}`;
+    const res = await fetch(url);
     const data = await res.json();
 
     // Merge with existing matchesDB

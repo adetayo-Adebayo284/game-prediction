@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-require_once("./allLeague.php");
+require_once(__DIR__."./allLeague.php");
 
 // Receive date in YYYY-MM-DD format
 $inputDate = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');

@@ -231,39 +231,59 @@ input[type="range"]::-moz-range-track {
 
  }
 
- .pill-group {
-     display: flex;
-     gap: 8px;
-     padding: 2px;
-     border-radius: 2px;
-     flex-wrap: wrap;
-     /* allow pills to wrap */
-     align-items: center;
-     justify-content: space-between;
+ .vs{
+    font-size: 1.5em !important;
  }
 
- .pill {
-     padding: 8px 14px;
-     border-radius: 999px;
-     /* border: 2px solid var(--accent-2); */
-     color: #ffd700 !important;
-     cursor: pointer;
-     font-size: 13px;
-     background: transparent;
-     color: var(--muted);
-     flex-shrink: 0;
- }
- .pill:hover {
-     background: #ffc107;
-     color: #1a1a1a !important;
-     font-weight: 700;
- }
+.pill-group {
+    display: flex;
+    gap: 8px;
+    padding: 4px 2px;
+    /* a bit more vertical padding */
+    border-radius: 4px;
+    flex-wrap: nowrap;
+    /* keep in single row */
+    overflow-x: auto;
+    /* enable horizontal scroll */
+    -webkit-overflow-scrolling: touch;
+    /* smooth scroll on mobile */
+    align-items: center;
 
- .pill.active {
+    /* Hide scrollbar */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.pill-group::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Edge */
+}
+
+.pill {
+    padding: 8px 16px;
+    /* slightly wider for easier touch */
+    border-radius: 999px;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    background: transparent;
+    flex-shrink: 0;
+    /* prevent shrinking */
+    transition: all 0.2s ease;
+    /* smooth hover effect */
+}
+
+.pill:hover {
+    background: #ffc107;
+    color: #1a1a1a !important;
+    font-weight: 700;
+}
+
+.pill.active {
     background: #ffd700;
     color: #1a1a1a !important;
     font-weight: 700;
- }
+}
 
 #generateBtn {
     background-color: #ffc107;
