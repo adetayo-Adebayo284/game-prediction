@@ -332,90 +332,21 @@
                     <h2 style="color:#ffd700;">Previous History</h2>
                     <p style="color:#ccc;">Select one category below and hit Apply to re-fetch data from SportMonks.</p>
             
-                    <!-- List-based radio choices -->
-                    <div class="history-list" style="margin-top:1rem; color:#f0f0f0;">
-            
-                        <!-- Fixtures -->
-                        <div class="history-item">
-                            <label style="display:block; margin-bottom:0.5rem;">
-                                <input type="radio" name="historyChoice" value="fixtures_date_range" style="margin-right:0.5rem;">
-                                📅 GET Fixtures by Date Range
-                            </label>
-            
-                            <!-- Extra Fields (hidden by default) -->
-                            <div id="dateRangeFields" style="display:none; margin-left:1.5rem; margin-top:0.5rem;">
-                                <label style="display:block; margin-bottom:0.5rem;">
-                                    Start Date: <input type="date" id="startDate" style="margin-left:0.5rem; padding:0.2rem;">
-                                </label>
-                                <label style="display:block; margin-bottom:0.5rem;">
-                                    End Date: <input type="date" id="endDate" style="margin-left:0.5rem; padding:0.2rem;">
-                                </label>
-            
-                                <p style="margin:0.5rem 0; font-weight:bold; color:#ffd700;">Includes:</p>
-                                <div id="includeOptions"
-                                    style="max-height:150px; overflow-y:auto; border:1px solid #333; padding:0.5rem; border-radius:6px;">
-                                    <label><input type="checkbox" value="sidelined"> sidelined</label><br>
-                                    <label><input type="checkbox" value="formations"> formations</label><br>
-                                    <label><input type="checkbox" value="ballCoordinates"> ballCoordinates</label><br>
-                                    <label><input type="checkbox" value="sport"> sport</label><br>
-                                    <label><input type="checkbox" value="round"> round</label><br>
-                                    <label><input type="checkbox" value="stage"> stage</label><br>
-                                    <label><input type="checkbox" value="group"> group</label><br>
-                                    <label><input type="checkbox" value="aggregate"> aggregate</label><br>
-                                    <label><input type="checkbox" value="league"> league</label><br>
-                                    <label><input type="checkbox" value="season"> season</label><br>
-                                    <label><input type="checkbox" value="referees"> referees</label><br>
-                                    <label><input type="checkbox" value="coaches"> coaches</label><br>
-                                    <label><input type="checkbox" value="tvStations"> tvStations</label><br>
-                                    <label><input type="checkbox" value="venue"> venue</label><br>
-                                    <label><input type="checkbox" value="state"> state</label><br>
-                                    <label><input type="checkbox" value="weatherReport"> weatherReport</label><br>
-                                    <label><input type="checkbox" value="lineups"> lineups</label><br>
-                                    <label><input type="checkbox" value="events"> events</label><br>
-                                    <label><input type="checkbox" value="timeline"> timeline</label><br>
-                                    <label><input type="checkbox" value="comments"> comments</label><br>
-                                    <label><input type="checkbox" value="trends"> trends</label><br>
-                                    <label><input type="checkbox" value="statistics"> statistics</label><br>
-                                    <label><input type="checkbox" value="periods"> periods</label><br>
-                                    <label><input type="checkbox" value="participants"> participants</label><br>
-                                    <label><input type="checkbox" value="odds"> odds</label><br>
-                                    <label><input type="checkbox" value="inplayOdds"> inplayOdds</label><br>
-                                    <label><input type="checkbox" value="prematchNews"> prematchNews</label><br>
-                                    <label><input type="checkbox" value="metadata"> metadata</label><br>
-                                    <label><input type="checkbox" value="predictions"> predictions</label><br>
-                                    <label><input type="checkbox" value="scores"> scores</label><br>
-                                </div>
-                            </div>
-                        </div>
-            
-                        <!-- Other categories -->
-                        <div class="history-item">
-                            <label><input type="radio" name="historyChoice" value="leagues_teams" style="margin-right:0.5rem;"> 🏆
-                                Leagues & Teams</label>
-                        </div>
-                        <div class="history-item">
-                            <label><input type="radio" name="historyChoice" value="odds" style="margin-right:0.5rem;"> 💰
-                                Odds</label>
-                        </div>
-                        <div class="history-item">
-                            <label><input type="radio" name="historyChoice" value="predictions" style="margin-right:0.5rem;"> 🔮
-                                Predictions</label>
-                        </div>
-                        <div class="history-item">
-                            <label><input type="radio" name="historyChoice" value="livescores" style="margin-right:0.5rem;"> ⚡
-                                Livescores</label>
-                        </div>
-                    </div>
-            
-                    <!-- Apply Button -->
-                    <div class="modal-footer" style="margin-top:1rem; text-align:center;">
-                        <button id="applyHistoryBtn" class="apply-btn"
-                            style="padding:0.6rem 1.2rem; background:#ffd700; color:#10141f; border:none; border-radius:6px; cursor:pointer;">
-                            Apply
-                        </button>
-                    </div>
+                    <!-- GO Button -->
+                    <button id="goHistoryBtn"
+                        style="padding:10px 20px; background:#ffd700; color:#000; border:none; border-radius:50px; cursor:pointer; margin-top:15px; font-weight: 700;">
+                        Got it! View History
+                    </button>
                 </div>
             </div>
+            
+            <script>
+                // Navigate to history.html on click
+                document.getElementById("goHistoryBtn").addEventListener("click", () => {
+                    window.location.href = './history.html';
+                });
+            </script>
+
 
             
             <script>
