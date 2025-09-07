@@ -324,6 +324,194 @@
                 </span>
                 <div id="matchesContainer" class="mb-3"></div>
             </section>
+
+            <!-- History Modal -->
+            <div id="historyModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+                <div class="modal-content">
+                    <button class="modal-close" id="closeHistoryBtn" aria-label="Close">&times;</button>
+                    <h2 style="color:#ffd700;">Previous History</h2>
+                    <p style="color:#ccc;">Select one category below and hit Apply to re-fetch data from SportMonks.</p>
+            
+                    <!-- List-based radio choices -->
+                    <div class="history-list" style="margin-top:1rem; color:#f0f0f0;">
+            
+                        <!-- Fixtures -->
+                        <div class="history-item">
+                            <label style="display:block; margin-bottom:0.5rem;">
+                                <input type="radio" name="historyChoice" value="fixtures_date_range" style="margin-right:0.5rem;">
+                                📅 GET Fixtures by Date Range
+                            </label>
+            
+                            <!-- Extra Fields (hidden by default) -->
+                            <div id="dateRangeFields" style="display:none; margin-left:1.5rem; margin-top:0.5rem;">
+                                <label style="display:block; margin-bottom:0.5rem;">
+                                    Start Date: <input type="date" id="startDate" style="margin-left:0.5rem; padding:0.2rem;">
+                                </label>
+                                <label style="display:block; margin-bottom:0.5rem;">
+                                    End Date: <input type="date" id="endDate" style="margin-left:0.5rem; padding:0.2rem;">
+                                </label>
+            
+                                <p style="margin:0.5rem 0; font-weight:bold; color:#ffd700;">Includes:</p>
+                                <div id="includeOptions"
+                                    style="max-height:150px; overflow-y:auto; border:1px solid #333; padding:0.5rem; border-radius:6px;">
+                                    <label><input type="checkbox" value="sidelined"> sidelined</label><br>
+                                    <label><input type="checkbox" value="formations"> formations</label><br>
+                                    <label><input type="checkbox" value="ballCoordinates"> ballCoordinates</label><br>
+                                    <label><input type="checkbox" value="sport"> sport</label><br>
+                                    <label><input type="checkbox" value="round"> round</label><br>
+                                    <label><input type="checkbox" value="stage"> stage</label><br>
+                                    <label><input type="checkbox" value="group"> group</label><br>
+                                    <label><input type="checkbox" value="aggregate"> aggregate</label><br>
+                                    <label><input type="checkbox" value="league"> league</label><br>
+                                    <label><input type="checkbox" value="season"> season</label><br>
+                                    <label><input type="checkbox" value="referees"> referees</label><br>
+                                    <label><input type="checkbox" value="coaches"> coaches</label><br>
+                                    <label><input type="checkbox" value="tvStations"> tvStations</label><br>
+                                    <label><input type="checkbox" value="venue"> venue</label><br>
+                                    <label><input type="checkbox" value="state"> state</label><br>
+                                    <label><input type="checkbox" value="weatherReport"> weatherReport</label><br>
+                                    <label><input type="checkbox" value="lineups"> lineups</label><br>
+                                    <label><input type="checkbox" value="events"> events</label><br>
+                                    <label><input type="checkbox" value="timeline"> timeline</label><br>
+                                    <label><input type="checkbox" value="comments"> comments</label><br>
+                                    <label><input type="checkbox" value="trends"> trends</label><br>
+                                    <label><input type="checkbox" value="statistics"> statistics</label><br>
+                                    <label><input type="checkbox" value="periods"> periods</label><br>
+                                    <label><input type="checkbox" value="participants"> participants</label><br>
+                                    <label><input type="checkbox" value="odds"> odds</label><br>
+                                    <label><input type="checkbox" value="inplayOdds"> inplayOdds</label><br>
+                                    <label><input type="checkbox" value="prematchNews"> prematchNews</label><br>
+                                    <label><input type="checkbox" value="metadata"> metadata</label><br>
+                                    <label><input type="checkbox" value="predictions"> predictions</label><br>
+                                    <label><input type="checkbox" value="scores"> scores</label><br>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Other categories -->
+                        <div class="history-item">
+                            <label><input type="radio" name="historyChoice" value="leagues_teams" style="margin-right:0.5rem;"> 🏆
+                                Leagues & Teams</label>
+                        </div>
+                        <div class="history-item">
+                            <label><input type="radio" name="historyChoice" value="odds" style="margin-right:0.5rem;"> 💰
+                                Odds</label>
+                        </div>
+                        <div class="history-item">
+                            <label><input type="radio" name="historyChoice" value="predictions" style="margin-right:0.5rem;"> 🔮
+                                Predictions</label>
+                        </div>
+                        <div class="history-item">
+                            <label><input type="radio" name="historyChoice" value="livescores" style="margin-right:0.5rem;"> ⚡
+                                Livescores</label>
+                        </div>
+                    </div>
+            
+                    <!-- Apply Button -->
+                    <div class="modal-footer" style="margin-top:1rem; text-align:center;">
+                        <button id="applyHistoryBtn" class="apply-btn"
+                            style="padding:0.6rem 1.2rem; background:#ffd700; color:#10141f; border:none; border-radius:6px; cursor:pointer;">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            
+            <script>
+                // // ---------- Modal Open/Close ----------
+                // const openHistoryBtn = document.getElementById("openHistoryBtn");
+                // const historyModal = document.getElementById("historyModal");
+                // const closeHistoryBtn = document.getElementById("closeHistoryBtn");
+                // const matchesContainer = document.getElementById("matchesContainer");
+
+                // openHistoryBtn.addEventListener("click", () => {
+                //     historyModal.classList.add("show");
+                //     document.body.classList.add("modal-open");
+                // });
+
+                // closeHistoryBtn.addEventListener("click", () => {
+                //     historyModal.classList.remove("show");
+                //     document.body.classList.remove("modal-open");
+                // });
+
+                // // Close modal when clicking outside modal content
+                // window.addEventListener("click", (e) => {
+                //     if (e.target === historyModal) {
+                //         historyModal.classList.remove("show");
+                //         document.body.classList.remove("modal-open");
+                //     }
+                // });
+
+                // // ---------- Radio Logic: Show/Hide Date Range ----------
+                // document.querySelectorAll("input[name='historyChoice']").forEach(radio => {
+                //     radio.addEventListener("change", () => {
+                //         const dateRangeFields = document.getElementById("dateRangeFields");
+                //         if (radio.value === "fixtures_date_range" && radio.checked) {
+                //             dateRangeFields.style.display = "block";
+                //         } else {
+                //             dateRangeFields.style.display = "none";
+                //         }
+                //     });
+                // });
+
+                // // ---------- Apply Button ----------
+                // const applyBtn = document.getElementById("applyHistoryBtn");
+
+                // applyBtn.addEventListener("click", () => {
+                //     const selectedOption = document.querySelector("input[name='historyChoice']:checked");
+                //     if (!selectedOption) {
+                //         alert("Please select a category before applying.");
+                //         return;
+                //     }
+
+                //     // Build payload
+                //     let payload = { type: selectedOption.value };
+
+                //     if (selectedOption.value === "fixtures_date_range") {
+                //         payload.startDate = document.getElementById("startDate").value;
+                //         payload.endDate = document.getElementById("endDate").value;
+                //         payload.includes = Array.from(document.querySelectorAll("#includeOptions input[type=checkbox]:checked"))
+                //             .map(cb => cb.value);
+                //     }
+
+                //     console.log("Payload to send to API:", payload);
+
+                //     // Show spinner
+                //     matchesContainer.innerHTML = `
+                //         <div class="d-flex justify-content-center align-items-center py-4">
+                //             <div class="spinner-border text-warning" role="status">
+                //                 <span class="visually-hidden">Loading...</span>
+                //             </div>
+                //         </div>
+                //     `;
+
+                //     // Keep modal open until spinner shows, then close after rendering results
+                //     setTimeout(() => {
+                //         // Render mocked results (replace with API response)
+                //         matchesContainer.innerHTML = `
+                //             <div style="background:#10141f; padding:1rem; border-radius:8px; color:#fefefe; margin-bottom:1rem;">
+                //                 <h4 style="color:#ffd700;">✅ Your Selection:</h4>
+                //                 <p><b>Category:</b> ${payload.type}</p>
+                //                 ${payload.startDate ? `<p><b>Start Date:</b> ${payload.startDate}</p>` : ""}
+                //                 ${payload.endDate ? `<p><b>End Date:</b> ${payload.endDate}</p>` : ""}
+                //                 ${payload.includes && payload.includes.length > 0
+                //                 ? `<p><b>Includes:</b> ${payload.includes.join(", ")}</p>`
+                //                 : ""}
+                //                 <p>Mocked data fetched successfully from SportMonks.</p>
+                //             </div>
+                //         `;
+
+                //         // Close modal after showing results
+                //         historyModal.classList.remove("show");
+                //         document.body.classList.remove("modal-open");
+
+                //     }, 1200); // spinner visible for ~1.2s
+                // });
+            </script>
+
+
+            
         </section>
         <!-- Custom Alert Box -->
         <div id="custom-alert" class="custom-alert hidden">

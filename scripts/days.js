@@ -40,7 +40,13 @@ for (let offset = -3; offset <= 3; offset++) {
   d.setDate(today.getDate() + offset);
 
   const dayOfWeek = d.toLocaleDateString("default", { weekday: "long" });
-  const formattedDate = `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
+  
+  // FIX → use YYYY-MM-DD format
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const formattedDate = `${yyyy}-${mm}-${dd}`;  // ✅ 2025-09-03
+
   let label = labels[offset] ? labels[offset] : dayOfWeek;
 
   const btn = document.createElement("button");
@@ -57,11 +63,12 @@ for (let offset = -3; offset <= 3; offset++) {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".date-tab").forEach(tab => tab.classList.remove("active"));
     btn.classList.add("active");
-    loadMatches(formattedDate);
+    loadMatches(formattedDate); // ✅ now uses YYYY-MM-DD
   });
 
   choiceDateContainer.appendChild(btn);
 }
+
 
 // Show loader
 function showLoader() {
@@ -177,7 +184,7 @@ async function loadMatches(dateYYYYMMDD) {
 }
 
 // Manual test
-loadMatches("2024-02-25"); 
+loadMatches("2025-08-31"); // Change date for testing
 
 // Dynamic load using today
 // loadMatches(todayYYYYMMDD); // Uncomment for dynamic testing

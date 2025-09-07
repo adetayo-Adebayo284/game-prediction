@@ -59,6 +59,13 @@
     text-shadow: 0 0 3px #ffd700;
 }
 
+.text-muted {
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+    color: #ffd700 !important;
+    margin-left: 8px;
+}
+
 /* History Info Styling */
 #historyInfo {
     /* margin-left: 10px; */

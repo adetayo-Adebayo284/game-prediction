@@ -1,116 +1,181 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        /* ---------------- Accordion Styling ---------------- */
 
-/* Base item */
-.accordion-item {
-    border: none !important;
-    background-color: #1c2536; /* deep dark background */
-    border-radius: 10px;
-    margin-bottom: 10px;
-    overflow: hidden;
-}
 
-/* Header button */
-.accordion-button {
-    border: none !important;
-    box-shadow: none !important;
-    background-color: #2a364d; /* dark header */
-    color: #e6e6e6; /* light gray text */
-    font-weight: 600;
-    font-size: 14px;
-    padding: 8px 12px;   /* compact */
-    cursor: pointer;
-    transition: background 0.25s ease;
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* title left, odds right */
-    gap: 8px;
-    border-radius: 6px;
-}
 
-.accordion-button:hover {
-    background-color: #35476a; /* soft hover */
-}
+<!-- ========== CSS (use your existing + small tweaks) ========== -->
+<style>
+    /* Prevent body scroll when modal open */
+    body.modal-open {
+        overflow: hidden;
+    }
 
-/* Active/expanded header */
-.accordion-button:not(.collapsed) {
-    background-color: #3a4e72; 
-    color: #ffffff;
-}
-
-/* Chevron (arrow) */
-.accordion-button::after {
-    filter: invert(1); /* make it white */
-    transition: transform 0.25s ease;
-}
-
-.accordion-button:not(.collapsed)::after {
-    transform: rotate(-180deg);
-}
-
-/* Collapse body background */
-.accordion-collapse {
-    background-color: #1c2536;
-    border-top: none;
-}
-
-.accordion-collapse.show {
-    background-color: #22304a;
-    animation: fadeSlide 0.25s ease;
-}
-
-/* Body content */
-.accordion-body {
-    padding: 10px 14px;
-    color: #bfc7d5; /* softer gray text */
-    font-size: 13px;
-    line-height: 1.5;
-}
-
-/* Odds text */
-.accordion-odd {
-    font-size: 13px;
-    font-weight: 600;
-    color: #4ade80; /* modern green (tailwind emerald-400) */
-}
-
-/* Smooth animation */
-@keyframes fadeSlide {
-    from {
+    /* Modal backdrop + slide up */
+    .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(10, 15, 25, 0.85);
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        z-index: 9999;
+        overflow: hidden;
+        transform: translateY(100%);
         opacity: 0;
-        transform: translateY(-4px);
+        pointer-events: none;
+        transition: transform 0.35s ease-out, opacity 0.35s ease-out;
     }
-    to {
-        opacity: 1;
+
+    .selector-options::-webkit-scrollbar {
+        display: none;
+    }
+
+    .modal.show {
         transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
     }
-}
 
-    </style>
-</head>
-<body>
-    <div class="accordion" id="betAccordion">
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapseOne">
-                    <span>Manchester United vs Chelsea</span>
-                    <span class="accordion-odd">@ 1.99</span>
-                </button>
-            </h2>
-            <div id="collapseOne" class="accordion-collapse collapse">
-                <div class="accordion-body">
-                    Betting details and breakdown go here...
-                </div>
-            </div>
-        </div>
-    </div>
+    /* Modal content */
+    .modal-content {
+        background: linear-gradient(160deg, #1a1f2f 0%, #10141f 100%);
+        color: #fefefe;
+        width: 100%;
+        max-width: 500px;
+        max-height: 82vh;
+        border-top-left-radius: 22px;
+        border-top-right-radius: 22px;
+        padding: 1.5rem 1.5rem 2rem;
+        box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.55);
+        overflow-y: auto;
+        position: relative;
+        outline: none;
+        animation: fadeSlideUp 0.4s ease;
+    }
 
-</body>
-</html>
+    /* Animations */
+    @keyframes fadeSlideUp {
+        from {
+            transform: translateY(30px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Close button */
+    .modal-close {
+        position: absolute;
+        top: 14px;
+        right: 18px;
+        background: none;
+        border: none;
+        font-size: 2.2rem;
+        color: #ffd700;
+        cursor: pointer;
+        transition: transform 0.25s ease, color 0.3s ease;
+        line-height: 1;
+        padding: 0;
+    }
+
+    .modal-close:hover,
+    .modal-close:focus {
+        color: #fff;
+        transform: rotate(90deg);
+    }
+
+    /* Filter labels */
+    .selector-options h3 {
+        margin-top: 1rem;
+        font-size: 1.1em;
+        color: #ffd700;
+    }
+
+    .selector-options label,
+    .selector-options select {
+        display: block;
+        margin: 6px 0;
+        font-size: 0.95em;
+        color: #eee;
+    }
+
+    .selector-options input[type="checkbox"],
+    .selector-options input[type="radio"] {
+        margin-right: 8px;
+    }
+
+    .selector-options select {
+        width: 100%;
+        padding: 6px;
+        border-radius: 6px;
+        border: none;
+        background: #202637;
+        color: #fff;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+    const openBtn = document.getElementById("openHistoryBtn");
+    const modal = document.getElementById("historyModal");
+    const closeBtn = document.getElementById("closeHistoryBtn");
+    const applyBtn = document.getElementById("applyFilterBtn");
+
+    openBtn.addEventListener("click", () => {
+        modal.classList.add("show");
+        document.body.classList.add("modal-open");
+        openBtn.setAttribute("aria-expanded", "true");
+    });
+
+    closeBtn.addEventListener("click", () => {
+        modal.classList.remove("show");
+        document.body.classList.remove("modal-open");
+        openBtn.setAttribute("aria-expanded", "false");
+    });
+
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            modal.classList.remove("show");
+            document.body.classList.remove("modal-open");
+            openBtn.setAttribute("aria-expanded", "false");
+        }
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal.classList.contains("show")) {
+            modal.classList.remove("show");
+            document.body.classList.remove("modal-open");
+            openBtn.setAttribute("aria-expanded", "false");
+        }
+    });
+
+    // Apply filters: grab selections
+    applyBtn.addEventListener("click", () => {
+        const time = document.querySelector("input[name='time']:checked")?.value || null;
+        const statuses = Array.from(document.querySelectorAll("input[name='status']:checked")).map(el => el.value);
+        const league = document.querySelector("select[name='league']").value;
+        const odds = Array.from(document.querySelectorAll("input[name='odds']:checked")).map(el => el.value);
+
+        console.log("Filters Selected:", { time, statuses, league, odds });
+
+        // Here you would call your API (fixtures, odds, etc.) using selected filters
+        // Example: fetch(`/api/fixtures?date=${time}&league=${league}`)
+
+        modal.classList.remove("show");
+        document.body.classList.remove("modal-open");
+        openBtn.setAttribute("aria-expanded", "false");
+    });
+</script>

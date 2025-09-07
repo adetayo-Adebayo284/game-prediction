@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History Explorer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .card {
+            background: #fff;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-top: 12px;
+            margin-bottom: 6px;
+        }
+
+        .checkbox-row {
+            margin-bottom: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .checkbox-row input {
+            cursor: pointer;
+        }
+
+        .checkbox-row.selected {
+            background: #e0f7fa;
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+
+        button {
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background: #eee;
+        }
+
+        button.secondary {
+            background: #ddd;
+        }
+
+        .results {
+            margin-top: 16px;
+        }
+        .vs {
+            color: #999;
+        }
+
+        .error-box {
+            background: #ffe0e0;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #f00;
+        }
+        .match-card {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 12px 0;
+            background: #f9f9f9;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .match-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .team-logo {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+        }
+        .scores {
+            margin-top: 8px;
+            padding: 6px;
+            background: #fff;
+            border: 1px dashed #bbb;
+            border-radius: 6px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>History Explorer — GUI Output</h1>
+        <p class="small">Select a resource, optional includes, and enter IDs, dates, or date ranges. Errors are
+            displayed clearly.</p>
+
+        <div class="grid" style="display:flex; gap:16px;">
+            <!-- Left: Selection -->
+            <div class="card" style="flex:1;">
+                <div class="input-row">
+                    <input id="identifierInput" type="text"
+                        placeholder="ID, Search, or Date YYYY-MM-DD / Date Range YYYY-MM-DD,YYYY-MM-DD" />
+                    <button id="openModalBtn">Selector</button>
+                </div>
+
+                <div id="selectorContainer" class="list">
+                    <div class="section-title">Resources</div>
+                    <div id="resourcesList"></div>
+
+                    <div class="section-title">Includes / Fields</div>
+                    <div id="includesList"></div>
+                </div>
+
+                <div style="margin-top:12px; display:flex; gap:8px;">
+                    <button id="sendBtn">Send Request</button>
+                    <button id="previewBtn" class="secondary">Preview</button>
+                    <button id="clearHistoryBtn" class="secondary">Clear</button>
+                </div>
+
+                <div class="results">
+                    <div class="meta">GUI Output</div>
+                    <div id="guiOutput" class="gui-output">No request yet</div>
+                    <div class="meta">Raw JSON (click to toggle)</div>
+                    <pre id="lastResponse">No request yet</pre>
+                </div>
+            </div>
+
+            <!-- Right: History + Quick picks -->
+            <div style="flex:1;">
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <strong>History</strong>
+                        <small class="small">Selections & responses</small>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <ol id="historyList"></ol>
+                    </div>
+                </div>
+
+                <div style="height:12px"></div>
+
+                <div class="card">
+                    <strong>Quick picks</strong>
+                    <p class="small">Common queries</p>
+                    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+                        <button class="secondary"
+                            data-quick='{"resource":"fixtures","includes":["sport","scores"],"identifier":"2024-02-16"}'>Fixtures
+                            by Date</button>
+                        <button class="secondary"
+                            data-quick='{"resource":"fixtures","includes":["sport","statistics","odds"],"identifier":"2024-02-25,2024-02-29"}'>Fixtures
+                            by Date Range</button>
+                        <button class="secondary" data-quick='{"resource":"continents","includes":["countries"]}'>All
+                            Continents</button>
+                        <button class="secondary"
+                            data-quick='{"resource":"standings","includes":["form","league","season","stage","group","participant"],"identifier":""}'>Standings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const resourceIncludesMap = {
+            continents: ["countries"],
+            countries: ["leagues", "regions"],
+            regions: ["cities"],
+            cities: ["region"],
+            types: [],
+            my: [],
+            livescores: ["formations", "scores", "sidelined", "sport", "round", "stage", "group", "aggregate", "league", "season", "referees", "coaches", "tvStations", "venue", "state", "weatherReport", "lineups", "events", "timeline", "comments", "trends", "statistics", "periods", "participants", "odds", "inplayOdds", "prematchNews", "metadata", "predictions"],
+            fixtures: ["ballCoordinates", "sidelined", "scores", "formations", "sport", "round", "stage", "group", "aggregate", "league", "season", "referees", "coaches", "tvStations", "venue", "state", "weatherReport", "lineups", "events", "timeline", "comments", "trends", "statistics", "periods", "participants", "odds", "inplayOdds", "prematchNews", "metadata", "predictions"],
+            pre_match_News: ["fixture", "league", "lines"],
+            post_match_News: ["fixture", "league", "lines"],
+            leagues: ["inplay", "today", "sport", "country", "stages", "latest", "upcoming", "seasons", "currentSeason"],
+            seasons: ["teams", "sport", "league", "stages", "currentStage", "fixtures", "groups", "statistics", "topscorers"],
+            teams: ["players", "sport", "country", "venue", "sidelined", "sidelinedHistory", "coaches", "rivals", "statistics", "trophies", "latest", "upcoming", "seasons", "activeSeasons"],
+            commentaries: ["fixture", "player", "relatedPlayer"],
+            referees: ["sport", "country", "statistics", "city", "nationality"],
+            standings: ["form", "sport", "league", "season", "stage", "group", "rule", "details", "round", "participant"],
+            stages: ["topscorers", "league", "season", "type", "sport", "rounds", "currentRound", "groups", "fixtures", "aggregates"],
+            "pre-match-odds": ["market", "bookmaker", "fixture"],
+            "inplay-odds": ["market", "bookmaker", "fixture"],
+            predictions: ["type", "fixture"], // ✅
+        };
+
+        const resourcesWithInput = {
+            countries: true,
+            regions: true,
+            cities: true,
+            fixtures: true,
+            news: true,
+            leagues: true,
+            seasons: true,
+            teams: true,
+            commentaries: true,
+            referees: true
+        };
+
+        // --- Build resources as RADIO buttons ---
+        function buildResources(containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            Object.keys(resourceIncludesMap).forEach(item => {
+                const id = `${containerId}_${item.replace(/[^a-z0-9]/gi, '_')}`;
+                const row = document.createElement('div');
+                row.className = 'checkbox-row';
+                row.innerHTML = `<input type="radio" name="resource" id="${id}" value="${item}"><label for="${id}">${item}${resourcesWithInput[item] ? " (requires input)" : ""}</label>`;
+                container.appendChild(row);
+
+                // highlight + build includes
+                const input = row.querySelector('input');
+                input.addEventListener('change', () => {
+                    document.querySelectorAll('#resourcesList .checkbox-row').forEach(r => r.classList.remove('selected'));
+                    if (input.checked) row.classList.add('selected');
+                    buildIncludes('includesList', resourceIncludesMap[item]);
+                });
+            });
+        }
+
+        // --- Build includes as CHECKBOXES ---
+        function buildIncludes(containerId, items) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            items.forEach(item => {
+                const id = `${containerId}_${item.replace(/[^a-z0-9]/gi, '_')}`;
+                const row = document.createElement('div');
+                row.className = 'checkbox-row';
+                row.innerHTML = `<input type="checkbox" id="${id}" value="${item}"><label for="${id}">${item}</label>`;
+                container.appendChild(row);
+            });
+        }
+
+        buildResources('resourcesList');
+
+        // --- Collect user selection ---
+        function collectSelection() {
+            const selectedResource = Array.from(
+                document.querySelectorAll('#resourcesList input[type="radio"]:checked')
+            ).map(i => i.value)[0] || null;
+
+            const selectedIncludes = Array.from(
+                document.querySelectorAll('#includesList input[type="checkbox"]:checked')
+            ).map(i => i.value);
+
+            const identifier = document.getElementById('identifierInput').value.trim();
+
+            return {
+                resource: selectedResource,
+                includes: selectedIncludes,
+                identifier: identifier || null
+            };
+        }
+
+        // --- History tracking ---
+        let historyData = [];
+
+        function addToHistory(requestObj, responseObj) {
+            const now = new Date();
+            const entry = { time: now.toISOString(), request: requestObj, response: responseObj };
+            historyData.unshift(entry);
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            list.innerHTML = '';
+            historyData.forEach(h => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${h.request.resource}</strong> — <small>${new Date(h.time).toLocaleString()}</small>`;
+                li.style.marginBottom = '8px';
+                li.addEventListener('click', () => {
+                    displayGUI(h.response, h.request.resource);
+                    document.getElementById('lastResponse').textContent = JSON.stringify(h.response, null, 2);
+                });
+                list.appendChild(li);
+            });
+        }
+
+        function displayGUI(data, resource) {
+            const container = document.getElementById('guiOutput');
+            container.innerHTML = '';
+
+            if (!data || !data.data || data.data.length === 0) {
+                container.innerHTML = '<p>No results found.</p>';
+                return;
+            }
+
+            // =========================================================
+            // --- Handle Pre-Match Odds View (Full Details) ---
+            // =========================================================
+            if (resource === "pre-match-odds") {
+                data.data.forEach(odds => {
+                    const card = document.createElement('div');
+                    card.className = 'odds-card';
+                    card.style.border = "1px solid #ccc";
+                    card.style.borderRadius = "8px";
+                    card.style.padding = "15px";
+                    card.style.marginBottom = "20px";
+                    card.style.backgroundColor = "#fefefe";
+
+                    // Bookmaker HTML
+                    const bookmakerHTML = odds.bookmaker ? `
+                        <p><strong>Bookmaker:</strong> ${odds.bookmaker.name}</p>
+                    ` : '<p><strong>Bookmaker:</strong> N/A</p>';
+
+                    // Market HTML
+                    const marketHTML = odds.market ? `
+                        <p><strong>Market:</strong> ${odds.market.name} (${odds.market.developer_name})</p>
+                    ` : '<p><strong>Market:</strong> N/A</p>';
+
+                    // Fixture HTML
+                    const fixtureHTML = odds.fixture ? `
+                        <p><strong>Fixture:</strong> ${odds.fixture.name}</p>
+                        <p><strong>Start Time:</strong> ${odds.fixture.starting_at}</p>
+                        <p><strong>Result Info:</strong> ${odds.fixture.result_info || 'N/A'}</p>
+                        <p><strong>Leg:</strong> ${odds.fixture.leg || 'N/A'}</p>
+                        <p><strong>Length:</strong> ${odds.fixture.length || 'N/A'} mins</p>
+                    ` : '<p><strong>Fixture:</strong> N/A</p>';
+
+                    // Odds Details
+                    const oddsHTML = `
+                        <p><strong>Label:</strong> ${odds.label}</p>
+                        <p><strong>Value:</strong> ${odds.value}</p>
+                        <p><strong>Probability:</strong> ${odds.probability}</p>
+                        <p><strong>DP3:</strong> ${odds.dp3}</p>
+                        <p><strong>Fractional:</strong> ${odds.fractional}</p>
+                        <p><strong>American:</strong> ${odds.american}</p>
+                        <p><strong>Winning:</strong> ${odds.winning ? 'Yes' : 'No'}</p>
+                        <p><strong>Stopped:</strong> ${odds.stopped ? 'Yes' : 'No'}</p>
+                        <p><strong>Total:</strong> ${odds.total ?? 'N/A'}</p>
+                        <p><strong>Handicap:</strong> ${odds.handicap ?? 'N/A'}</p>
+                        <p><strong>Participants:</strong> ${odds.participants}</p>
+                        <p><strong>Created At:</strong> ${odds.created_at}</p>
+                        <p><strong>Original Label:</strong> ${odds.original_label ?? 'N/A'}</p>
+                        <p><strong>Latest Bookmaker Update:</strong> ${odds.latest_bookmaker_update}</p>
+                    `;
+
+                    card.innerHTML = `
+                        <h3>Pre-Match Odds (ID: ${odds.id})</h3>
+                        ${bookmakerHTML}
+                        ${marketHTML}
+                        ${fixtureHTML}
+                        ${oddsHTML}
+                    `;
+
+                    container.appendChild(card);
+                });
+
+                return;
+            }
+
+
+            // =========================================================
+            // --- Handle continents view ---
+            // =========================================================
+            if (resource === "continents") {
+                data.data.forEach(continent => {
+                    const card = document.createElement('div');
+                    card.className = 'continent-card';
+
+                    let countriesHtml = '';
+                    if (continent.countries && continent.countries.length > 0) {
+                        countriesHtml = continent.countries.map(country => `
+                            <li>
+                                <img src="${country.image_path}" alt="${country.name}" class="flag" style="width:20px;height:15px;margin-right:5px;">
+                                <b>${country.name}</b> (${country.official_name}) - FIFA: ${country.fifa_name}, ISO2: ${country.iso2}, ISO3: ${country.iso3}
+                            </li>
+                        `).join('');
+                    } else {
+                        countriesHtml = '<li>No countries available</li>';
+                    }
+
+                    card.innerHTML = `
+                        <h3>Continent: ${continent.name} (${continent.code || "N/A"})</h3>
+                        <ul>${countriesHtml}</ul>
+                    `;
+                    container.appendChild(card);
+                });
+                return;
+            }
+
+            // =========================================================
+            // --- Handle countries view ---
+            // =========================================================
+            if (resource === "countries") {
+                data.data.forEach(country => {
+                    const card = document.createElement('div');
+                    card.className = 'country-card';
+
+                    let countryHTML = `
+                        <h3>
+                            <img src="${country.image_path}" alt="${country.name}" class="flag" style="width:20px;height:15px;margin-right:5px;">
+                            ${country.name} (${country.official_name})
+                        </h3>
+                        <p>FIFA: ${country.fifa_name}, ISO2: ${country.iso2}, ISO3: ${country.iso3}</p>
+                        <p>Latitude: ${country.latitude}, Longitude: ${country.longitude}</p>
+                        <p>Borders: ${country.borders.join(", ") || "None"}</p>
+                    `;
+
+                    // Leagues
+                    if (country.leagues && country.leagues.length > 0) {
+                        countryHTML += `<p><b>Leagues:</b></p><ul>`;
+                        country.leagues.forEach(league => {
+                            countryHTML += `<li>${league.name} (${league.type || "Unknown Type"})</li>`;
+                        });
+                        countryHTML += `</ul>`;
+                    } else {
+                        countryHTML += `<p><b>Leagues:</b> No leagues available</p>`;
+                    }
+
+                    // Regions
+                    if (country.regions && country.regions.length > 0) {
+                        countryHTML += `<p><b>Regions:</b></p><ul>`;
+                        country.regions.forEach(region => {
+                            countryHTML += `<li>${region.name}</li>`;
+                        });
+                        countryHTML += `</ul>`;
+                    } else {
+                        countryHTML += `<p><b>Regions:</b> No regions available</p>`;
+                    }
+
+                    card.innerHTML = countryHTML;
+                    container.appendChild(card);
+                });
+                return;
+            }
+
+            // =========================================================
+            // --- Handle regions view ---
+            // =========================================================
+            if (resource === "regions") {
+                data.data.forEach(region => {
+                    const card = document.createElement('div');
+                    card.className = 'region-card';
+
+                    let regionHTML = `
+                        <h3>Region: ${region.name}</h3>
+                    `;
+
+                    // Cities
+                    if (region.cities && region.cities.length > 0) {
+                        regionHTML += `<p><b>Cities:</b></p><ul>`;
+                        region.cities.forEach(city => {
+                            regionHTML += `<li>${city.name} (Lat: ${city.latitude || "N/A"}, Lon: ${city.longitude || "N/A"})</li>`;
+                        });
+                        regionHTML += `</ul>`;
+                    } else {
+                        regionHTML += `<p><b>Cities:</b> No cities available</p>`;
+                    }
+
+                    card.innerHTML = regionHTML;
+                    container.appendChild(card);
+                });
+                return;
+            }
+
+                // =========================================================
+            // --- Handle cities view ---
+            // =========================================================
+            if (resource === "cities") {
+                data.data.forEach(city => {
+                    const card = document.createElement('div');
+                    card.className = 'city-card';
+
+                    let cityHTML = `
+                        <h3>City: ${city.name}</h3>
+                        <p>Region: ${city.region?.name || "Unknown Region"}</p>
+                        <p>Latitude: ${city.latitude || "N/A"}, Longitude: ${city.longitude || "N/A"}</p>
+                    `;
+
+                    card.innerHTML = cityHTML;
+                    container.appendChild(card);
+                });
+                return;
+            }
+
+
+            // =========================================================
+            // --- Handle types view ---
+            // =========================================================
+            if (resource === "types") {
+                data.data.forEach(type => {
+                    const card = document.createElement('div');
+                    card.className = 'type-card';
+
+                    let typeHTML = `
+                        <h3>Type: ${type.name}</h3>
+                        <p>Code: ${type.code}</p>
+                        <p>Developer Name: ${type.developer_name}</p>
+                        <p>Model Type: ${type.model_type}</p>
+                        <p>Stat Group: ${type.stat_group || "N/A"}</p>
+                    `;
+
+                    card.innerHTML = typeHTML;
+                    container.appendChild(card);
+                });
+                return;
+            }
+
+
+            // =========================================================
+            // --- Handle fixtures view (Better GUI for all fields) ---
+            // =========================================================
+            if (resource === "fixtures") {
+                data.data.forEach(fixture => {
+                    const card = document.createElement('div');
+                    card.className = 'fixture-card';
+                    card.style.border = "1px solid #ccc";
+                    card.style.borderRadius = "8px";
+                    card.style.padding = "15px";
+                    card.style.marginBottom = "20px";
+                    card.style.backgroundColor = "#fefefe";
+
+                    // Participants
+                    let participantsHTML = fixture.participants && fixture.participants.length
+                        ? fixture.participants.map(p => `
+                            <div style="display:flex; align-items:center; margin-bottom:5px;">
+                                <img src="${p.image_path || ''}" alt="${p.name || ''}" 
+                                    style="width:40px;height:40px;border-radius:50%; margin-right:10px;">
+                                <strong>${p.name || 'Unknown'}</strong> (${p.short_code || 'N/A'}) 
+                                - ${p.meta && p.meta.winner ? 'Winner 🏆' : 'Loser'}
+                            </div>
+                        `).join('')
+                        : 'N/A';
+
+                    // Scores
+                    let scoresHTML = fixture.scores && fixture.scores.length
+                        ? `<ul>${fixture.scores.map(s => `
+                            <li>
+                                <strong>${s.description || 'Score'}</strong> - 
+                                Goals: ${s.score?.goals ?? 'N/A'}, 
+                                Participant: ${s.score?.participant ?? 'N/A'}
+                            </li>
+                        `).join('')}</ul>`
+                        : 'N/A';
+
+                    // Formations
+                    let formationsHTML = fixture.formations && fixture.formations.length
+                        ? fixture.formations.map(f => `
+                                <div style="margin-bottom:5px;">
+                                    <strong>${f.participant?.name || 'Team'}:</strong> ${f.formation || 'N/A'}
+                                </div>
+                            `).join('')
+                        : 'N/A';
+
+                    // Statistics
+                    let statsHTML = fixture.statistics && fixture.statistics.length
+                        ? `<ul>${fixture.statistics.map(stat => `
+                            <li>${stat.type?.name || 'Stat'}: ${stat.data?.value ?? 'N/A'}</li>
+                        `).join('')}</ul>`
+                        : 'N/A';
+
+                    // Odds
+                    // --- Odds (compact with toggle) ---
+                    let oddsHTML = 'N/A';
+                    if (fixture.odds && fixture.odds.length) {
+                        const maxToShow = 3;
+                        const oddsList = fixture.odds.slice(0, maxToShow).map(o => `
+                            <li>
+                                <strong>${o.bookmaker?.name || 'Bookmaker'}</strong> - 
+                                Market: ${o.market?.name || 'N/A'}, 
+                                Prob: ${o.probability || 'N/A'}, 
+                                Dec: ${o.dp3 || 'N/A'}, 
+                                Frac: ${o.fractional || 'N/A'}, 
+                                Amer: ${o.american || 'N/A'}
+                            </li>
+                        `).join('');
+
+                                            // Full odds list hidden initially
+                                            const fullOdds = fixture.odds.map(o => `
+                            <li>
+                                <strong>${o.bookmaker?.name || 'Bookmaker'}</strong> - 
+                                Market: ${o.market?.name || 'N/A'}, 
+                                Prob: ${o.probability || 'N/A'}, 
+                                Dec: ${o.dp3 || 'N/A'}, 
+                                Frac: ${o.fractional || 'N/A'}, 
+                                Amer: ${o.american || 'N/A'}
+                            </li>
+                        `).join('');
+
+                                            oddsHTML = `
+                            <ul class="odds-list">${oddsList}</ul>
+                            ${fixture.odds.length > maxToShow ? `
+                                <button class="toggle-odds" style="margin-top:5px;">Show More</button>
+                                <ul class="odds-list-full" style="display:none;">${fullOdds}</ul>
+                            ` : ''}
+                        `;
+                    }
+
+                    // Predictions
+                    let predictionsHTML = fixture.predictions && fixture.predictions.length
+                        ? `<ul>${fixture.predictions.map(p => `
+                            <li>${p.value || 'Prediction'} - Probability: ${p.probability || 'N/A'}</li>
+                        `).join('')}</ul>`
+                        : 'N/A';
+
+                    // Standings (Round/League)
+                    let standingsHTML = fixture.round?.name
+                        ? `Round: ${fixture.round.name}`
+                        : 'N/A';
+
+                    card.innerHTML = `
+                        <h3>${fixture.name || 'Unnamed Fixture'}</h3>
+                        <p><strong>Start:</strong> ${fixture.starting_at || 'N/A'}</p>
+                        <p><strong>Result Info:</strong> ${fixture.result_info || 'N/A'}</p>
+                        <p><strong>Leg:</strong> ${fixture.leg || 'N/A'}</p>
+                        <p><strong>Sport:</strong> ${fixture.sport?.name || 'N/A'} (${fixture.sport?.code || ''})</p>
+                        <p><strong>Stage:</strong> ${fixture.stage?.name || 'N/A'}</p>
+                        <p><strong>League:</strong> ${fixture.league?.name || 'N/A'} (${fixture.league?.short_code || ''})</p>
+                        <p><strong>Venue:</strong> ${fixture.venue?.name || 'N/A'}, ${fixture.venue?.city_name || ''}</p>
+                        
+                        <h4>Participants</h4>
+                        ${participantsHTML}
+                        
+                        <h4>Scores</h4>
+                        ${scoresHTML}
+
+                        <h4>Formations</h4>
+                        ${formationsHTML}
+
+                        <h4>Statistics</h4>
+                        ${statsHTML}
+
+                        <h4>Odds</h4>
+                        ${oddsHTML}
+
+                        <h4>Predictions</h4>
+                        ${predictionsHTML}
+
+                        <p><strong>Standings:</strong> ${standingsHTML}</p>
+                    `;
+
+                    container.appendChild(card);
+                });
+
+                return;
+            }
+
+            // Toggle odds "show more/less"
+            document.addEventListener("click", e => {
+                if (e.target.classList.contains("toggle-odds")) {
+                    const btn = e.target;
+                    const fullList = btn.nextElementSibling;
+                    if (fullList.style.display === "none") {
+                        fullList.style.display = "block";
+                        btn.textContent = "Show Less";
+                    } else {
+                        fullList.style.display = "none";
+                        btn.textContent = "Show More";
+                    }
+                }
+            });
+
+
+
+
+            // =========================================================
+            // --- Handle League View---
+            // =========================================================
+            if (resource === "leagues") {
+                data.data.forEach(league => {
+                    const card = document.createElement('div');
+                    card.className = 'league-card';
+                    card.style.border = "1px solid #ccc";
+                    card.style.borderRadius = "8px";
+                    card.style.padding = "15px";
+                    card.style.marginBottom = "20px";
+                    card.style.backgroundColor = "#fefefe";
+
+                    // Prepare stages HTML
+                    let stagesHTML = league.stages && league.stages.length
+                        ? league.stages.map(stage => {
+                            return `
+                                <li>
+                                    <strong>${stage.name}</strong> (${stage.finished ? 'Finished' : 'Ongoing'})<br>
+                                    Start: ${stage.starting_at || 'N/A'}, End: ${stage.ending_at || 'N/A'}<br>
+                                    Type ID: ${stage.type_id}, Sort Order: ${stage.sort_order}
+                                </li>
+                            `;
+                        }).join('')
+                        : '<li>N/A</li>';
+
+                    // Build card inner HTML
+                    card.innerHTML = `
+                        <h3>${league.name} (${league.short_code})</h3>
+                        <p><strong>Sport:</strong> ${league.sport.name} (${league.sport.code})</p>
+                        <p><strong>Country:</strong> ${league.country.name} (${league.country.iso2})</p>
+                        <p><strong>Active:</strong> ${league.active}</p>
+                        <p><strong>Category:</strong> ${league.category}</p>
+                        <p><strong>Last Played At:</strong> ${league.last_played_at || 'N/A'}</p>
+                        <p><strong>League Logo:</strong> <img src="${league.image_path}" alt="${league.name}" style="width:60px;height:60px;"></p>
+                        <p><strong>Country Flag:</strong> <img src="${league.country.image_path}" alt="${league.country.name}" style="width:40px;height:40px;"></p>
+                        <p><strong>Stages:</strong></p>
+                        <ul>${stagesHTML}</ul>
+                    `;
+
+                    container.appendChild(card);
+                });
+
+                return;
+            }
+
+            // =========================================================
+            // --- Handle Standings View ---
+            // =========================================================
+            if (resource === "standings") {
+                data.data.forEach(standing => {
+                    const card = document.createElement('div');
+                    card.className = 'standing-card';
+                    card.style.border = "1px solid #ccc";
+                    card.style.borderRadius = "8px";
+                    card.style.padding = "15px";
+                    card.style.marginBottom = "20px";
+                    card.style.backgroundColor = "#fefefe";
+
+                    // Extract league info safely
+                    const leagueName = standing.league?.name || `League ID: ${standing.league_id}`;
+                    const leagueShort = standing.league?.short_code || '';
+                    const sportName = standing.league?.sport?.name || 'N/A';
+                    const sportCode = standing.league?.sport?.code || '';
+                    const countryName = standing.league?.country?.name || 'N/A';
+                    const countryFlag = standing.league?.country?.image_path || '';
+                    const leagueLogo = standing.league?.image_path || '';
+
+                    // Form history
+                    const formHTML = standing.form && standing.form.length
+                        ? standing.form.map(f => `<li>${f.form}</li>`).join('')
+                        : 'N/A';
+
+                    card.innerHTML = `
+                        <h3>${leagueName} (${leagueShort})</h3>
+                        <p><strong>Sport:</strong> ${sportName} (${sportCode})</p>
+                        <p><strong>Country:</strong> ${countryName}</p>
+                        <p><strong>Logo:</strong> <img src="${leagueLogo}" alt="${leagueName}" style="width:60px;height:60px;"></p>
+                        <p><strong>Country Flag:</strong> <img src="${countryFlag}" alt="${countryName}" style="width:40px;height:40px;"></p>
+                        <p><strong>Position:</strong> ${standing.position}</p>
+                        <p><strong>Points:</strong> ${standing.points}</p>
+                        <p><strong>Result:</strong> ${standing.result}</p>
+                        <p><strong>Form:</strong></p>
+                        <ul>${formHTML}</ul>
+                    `;
+
+                    container.appendChild(card);
+                });
+
+                return;
+            }
+
+            // =========================================================
+            // --- Handle Seasons View ---
+            // =========================================================
+            if (resource === "seasons") {
+                data.data.forEach(season => {
+                    const card = document.createElement('div');
+                    card.className = 'season-card';
+                    card.style.border = "1px solid #ccc";
+                    card.style.borderRadius = "8px";
+                    card.style.padding = "15px";
+                    card.style.marginBottom = "20px";
+                    card.style.backgroundColor = "#fefefe";
+
+                    // Teams in season
+                    const teamsHTML = season.teams && season.teams.length
+                        ? season.teams.map(team => `
+                            <li>
+                                ${team.name} (${team.short_code || 'N/A'}) 
+                                - Founded: ${team.founded} 
+                                - Last Played: ${team.last_played_at}
+                                <br>
+                                <img src="${team.image_path}" alt="${team.name}" style="width:50px;height:50px;">
+                            </li>
+                        `).join('')
+                        : 'N/A';
+
+                    card.innerHTML = `
+                        <h3>Season: ${season.name} ${season.is_current ? '(Current)' : ''}</h3>
+                        <p><strong>League ID:</strong> ${season.league_id}</p>
+                        <p><strong>Finished:</strong> ${season.finished}</p>
+                        <p><strong>Pending:</strong> ${season.pending}</p>
+                        <p><strong>Starting At:</strong> ${season.starting_at}</p>
+                        <p><strong>Ending At:</strong> ${season.ending_at}</p>
+                        <p><strong>Standings Recalculated At:</strong> ${season.standings_recalculated_at}</p>
+                        <p><strong>Games This Week:</strong> ${season.games_in_current_week}</p>
+                        <p><strong>Teams:</strong></p>
+                        <ul>${teamsHTML}</ul>
+                    `;
+
+                    container.appendChild(card);
+                });
+
+                return;
+            }
+
+            // =========================================================
+            // --- Handle Teams View ---
+            // =========================================================
+            if (resource === "teams") {
+                data.data.forEach(team => {
+                    const card = document.createElement('div');
+                    card.className = 'team-card';
+                    card.style.border = "1px solid #ccc";
+                    card.style.borderRadius = "8px";
+                    card.style.padding = "15px";
+                    card.style.marginBottom = "20px";
+                    card.style.backgroundColor = "#fefefe";
+
+                    // Players HTML
+                    const playersHTML = team.players && team.players.length
+                        ? team.players.map(player => `
+                                <li>
+                                    Player ID: ${player.player_id} 
+                                    - Jersey: ${player.jersey_number || 'N/A'} 
+                                    - Captain: ${player.captain ? 'Yes' : 'No'} 
+                                    - Position ID: ${player.position_id}
+                                </li>
+                            `).join('')
+                        : 'N/A';
+
+                    // Coaches HTML
+                    const coachesHTML = team.coaches && team.coaches.length
+                        ? team.coaches.map(coach => `
+                                <li>
+                                    Coach ID: ${coach.coach_id} 
+                                    - Active: ${coach.active ? 'Yes' : 'No'} 
+                                    - Position ID: ${coach.position_id} 
+                                    - From: ${coach.start || 'N/A'} 
+                                    - To: ${coach.end || 'N/A'}
+                                </li>
+                            `).join('')
+                        : 'N/A';
+
+                    // Rivals HTML
+                    const rivalsHTML = team.rivals && team.rivals.length
+                        ? team.rivals.map(rival => `
+                                <li>
+                                    ${rival.name} (${rival.short_code || 'N/A'}) 
+                                    - Founded: ${rival.founded} 
+                                    - Last Played: ${rival.last_played_at}
+                                    <br>
+                                    <img src="${rival.image_path}" alt="${rival.name}" style="width:50px;height:50px;">
+                                </li>
+                            `).join('')
+                        : 'N/A';
+
+                    card.innerHTML = `
+                        <h3>Team: ${team.name} (${team.short_code || 'N/A'})</h3>
+                        <p><strong>Sport:</strong> ${team.sport?.name || 'N/A'}</p>
+                        <p><strong>Country ID:</strong> ${team.country_id}</p>
+                        <p><strong>Venue ID:</strong> ${team.venue_id}</p>
+                        <p><strong>Founded:</strong> ${team.founded}</p>
+                        <p><strong>Last Played At:</strong> ${team.last_played_at}</p>
+                        <p><img src="${team.image_path}" alt="${team.name}" style="width:100px;height:100px;"></p>
+
+                        <p><strong>Players:</strong></p>
+                        <ul>${playersHTML}</ul>
+
+                        <p><strong>Coaches:</strong></p>
+                        <ul>${coachesHTML}</ul>
+
+                        <p><strong>Rivals:</strong></p>
+                        <ul>${rivalsHTML}</ul>
+                    `;
+
+                    container.appendChild(card);
+                });
+
+                return;
+            }
+
+
+            // =========================================================
+            // --- Handle Commentaries View ---
+            // =========================================================
+            if (resource === "commentaries") {
+                data.data.forEach(event => {
+                    const card = document.createElement('div');
+                    card.className = 'commentary-card';
+                    card.style.border = "1px solid #ccc";
+                    card.style.borderRadius = "8px";
+                    card.style.padding = "15px";
+                    card.style.marginBottom = "20px";
+                    card.style.backgroundColor = "#fefefe";
+
+                    // Player HTML
+                    const playerHTML = event.player ? `
+                        <p>
+                            <strong>Player Name:</strong> ${event.player.name} (${event.player.common_name})<br>
+                            <img src="${event.player.image_path}" alt="${event.player.name}" style="width:50px;height:50px;"><br>
+                            <strong>Position ID:</strong> ${event.player.position_id}<br>
+                            <strong>DOB:</strong> ${event.player.date_of_birth}<br>
+                            <strong>Height:</strong> ${event.player.height || 'N/A'} cm<br>
+                            <strong>Nationality ID:</strong> ${event.player.nationality_id}<br>
+                            <strong>Country ID:</strong> ${event.player.country_id}
+                        </p>
+                    ` : '<p><strong>Player:</strong> N/A</p>';
+
+                    // Fixture HTML
+                    const fixture = event.fixture;
+                    const fixtureHTML = fixture ? `
+                        <p><strong>Fixture Name:</strong> ${fixture.name}</p>
+                        <p><strong>Result Info:</strong> ${fixture.result_info || 'N/A'}</p>
+                        <p><strong>Starting At:</strong> ${fixture.starting_at}</p>
+                        <p><strong>Leg:</strong> ${fixture.leg}</p>
+                        <p><strong>Length:</strong> ${fixture.length} mins</p>
+                        <p><strong>Venue ID:</strong> ${fixture.venue_id}</p>
+                        <p><strong>League ID:</strong> ${fixture.league_id}</p>
+                    ` : '';
+
+                    card.innerHTML = `
+                        <h3>Commentary Event #${event.order}</h3>
+                        <p><strong>Comment:</strong> ${event.comment}</p>
+                        <p><strong>Minute:</strong> ${event.minute !== null ? event.minute : 'N/A'}</p>
+                        <p><strong>Extra Minute:</strong> ${event.extra_minute !== null ? event.extra_minute : 'N/A'}</p>
+                        <p><strong>Goal:</strong> ${event.is_goal ? 'Yes' : 'No'}</p>
+                        <p><strong>Important:</strong> ${event.is_important ? 'Yes' : 'No'}</p>
+                        ${playerHTML}
+                        ${fixtureHTML}
+                    `;
+
+                    container.appendChild(card);
+                });
+
+                return;
+            }
+
+
+            // =========================================================
+            // --- Handle Referees View ---
+            // =========================================================
+            if (resource === "referees") {
+                data.data.forEach(ref => {
+                    const card = document.createElement('div');
+                    card.className = 'referee-card';
+                    card.style.border = "1px solid #ccc";
+                    card.style.borderRadius = "8px";
+                    card.style.padding = "15px";
+                    card.style.marginBottom = "20px";
+                    card.style.backgroundColor = "#fefefe";
+
+                    // Referee Image
+                    const imageHTML = ref.image_path ? `
+                        <img src="${ref.image_path}" alt="${ref.name}" style="width:50px;height:50px;border-radius:50%;"><br>
+                    ` : '';
+
+                    // Country HTML
+                    const countryHTML = ref.country ? `
+                        <p>
+                            <strong>Country:</strong> ${ref.country.name} (${ref.country.fifa_name})<br>
+                            <img src="${ref.country.image_path}" alt="${ref.country.name}" style="width:30px;height:20px;">
+                        </p>
+                    ` : '<p><strong>Country:</strong> N/A</p>';
+
+                    // Sport HTML
+                    const sportHTML = ref.sport ? `
+                        <p><strong>Sport:</strong> ${ref.sport.name} (${ref.sport.code})</p>
+                    ` : '<p><strong>Sport:</strong> N/A</p>';
+
+                    // Statistics HTML
+                    const statsHTML = ref.statistics && ref.statistics.length > 0 ? `
+                    <p><strong>Statistics:</strong></p>
+                    <ul>
+                        ${ref.statistics.map(stat => `
+                            <li>ID: ${stat.id}, Season ID: ${stat.season_id}</li>
+                        `).join('')}
+                    </ul>
+                         ` : '<p><strong>Statistics:</strong> N/A</p>';
+
+                            card.innerHTML = `
+                    <h3>Referee: ${ref.name} (${ref.common_name})</h3>
+                    ${imageHTML}
+                    ${sportHTML}
+                    ${countryHTML}
+                    ${statsHTML}
+                `;
+
+                    container.appendChild(card);
+                });
+
+                return;
+            }
+
+
+            // =========================================================
+            // --- Handle Stages View ---
+            // =========================================================
+            if (resource === "stages") {
+                data.data.forEach(stage => {
+                    const card = document.createElement('div');
+                    card.className = 'stage-card';
+                    card.style.border = "1px solid #ccc";
+                    card.style.borderRadius = "8px";
+                    card.style.padding = "15px";
+                    card.style.marginBottom = "20px";
+                    card.style.backgroundColor = "#fefefe";
+
+                    // League HTML
+                    const leagueHTML = stage.league ? `
+                        <p><strong>League:</strong> ${stage.league.name} (${stage.league.short_code})</p>
+                        <img src="${stage.league.image_path}" alt="${stage.league.name}" style="width:50px;height:50px;">
+                    ` : '<p><strong>League:</strong> N/A</p>';
+
+                    // Season HTML
+                    const seasonHTML = stage.season ? `
+                        <p><strong>Season:</strong> ${stage.season.name}</p>
+                        <p><strong>Start:</strong> ${stage.season.starting_at}</p>
+                        <p><strong>End:</strong> ${stage.season.ending_at}</p>
+                        <p><strong>Finished:</strong> ${stage.season.finished ? 'Yes' : 'No'}</p>
+                    ` : '<p><strong>Season:</strong> N/A</p>';
+
+                    // Type HTML
+                    const typeHTML = stage.type ? `
+                        <p><strong>Stage Type:</strong> ${stage.type.name} (${stage.type.code})</p>
+                    ` : '<p><strong>Stage Type:</strong> N/A</p>';
+
+                    // Sport HTML
+                    const sportHTML = stage.sport ? `
+                        <p><strong>Sport:</strong> ${stage.sport.name} (${stage.sport.code})</p>
+                    ` : '<p><strong>Sport:</strong> N/A</p>';
+
+                    // Rounds HTML
+                    const roundsHTML = stage.rounds && stage.rounds.length > 0 ? `
+                        <p><strong>Rounds:</strong></p>
+                        <ul>
+                            ${stage.rounds.map(round => `
+                                <li>
+                                    Round: ${round.name} | Start: ${round.starting_at} | End: ${round.ending_at} | Finished: ${round.finished ? 'Yes' : 'No'} | Current: ${round.is_current ? 'Yes' : 'No'}
+                                </li>
+                            `).join('')}
+                        </ul>
+                ` : '<p><strong>Rounds:</strong> N/A</p>';
+
+                    card.innerHTML = `
+                        <h3>Stage: ${stage.name} (ID: ${stage.id})</h3>
+                        ${typeHTML}
+                        ${sportHTML}
+                        ${leagueHTML}
+                        ${seasonHTML}
+                        ${roundsHTML}
+                    `;
+
+                    container.appendChild(card);
+                });
+
+                return;
+            }
+
+
+
+
+        }
+
+
+
+
+        // --- Send request ---
+        document.getElementById('sendBtn').addEventListener('click', async () => {
+            const selection = collectSelection();
+
+            if (!selection.resource) {
+                alert('Please select a resource.');
+                return;
+            }
+
+            let endpointType = "list", dateFrom = null, dateTo = null;
+            let resourcePath = selection.resource; // default
+
+            if (selection.resource === "fixtures") {
+                if (/^\d{4}-\d{2}-\d{2}$/.test(selection.identifier)) {
+                    endpointType = "byDate";
+                } else if (/^\d{4}-\d{2}-\d{2},\d{4}-\d{2}-\d{2}$/.test(selection.identifier)) {
+                    endpointType = "between";
+                    [dateFrom, dateTo] = selection.identifier.split(",");
+                } else if (/^\d+$/.test(selection.identifier)) {
+                    endpointType = "byID";
+                }
+            } else if (/^\d+$/.test(selection.identifier)) {
+                endpointType = "byID";
+            }
+
+            console.log(selection.resource);
+            
+            // --- Special cases mapping ---
+            if (selection.resource === "predictions") {
+                resourcePath = "predictions/probabilities";
+            } else if (selection.resource === "pre-match-odds") {
+                resourcePath = "odds/pre-match";
+            } else if (selection.resource === "inplay-odds") {
+                resourcePath = "odds/inplay";
+            } else if (selection.resource === "pre_match_News") {
+                resourcePath = "news/pre-match";
+            } else if (selection.resource === "post_match_News") {
+                resourcePath = "news/post-match";
+            }
+
+            const payload = {
+                resource: resourcePath,   // ✅ use modified path
+                endpointType,
+                identifier: selection.identifier || null,
+                dateFrom,
+                dateTo,
+                includes: selection.includes,
+                params: {}
+            };
+
+
+            document.getElementById('guiOutput').textContent = 'Requesting...';
+            document.getElementById('lastResponse').textContent = 'Requesting...';
+
+            try {
+                const response = await fetch('sportmonks_request.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`Network error ${response.status}`);
+                const data = await response.json();
+
+                addToHistory(payload, data);
+                displayGUI(data, selection.resource);
+                document.getElementById('lastResponse').textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                console.error('Request failed:', err);
+                document.getElementById('guiOutput').innerHTML = `<h4>Error:</h4><p>${err}</p>`;
+                document.getElementById('lastResponse').textContent = 'Request failed: ' + String(err);
+            }
+        });
+
+        // --- Quick picks ---
+        document.querySelectorAll('[data-quick]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const q = JSON.parse(btn.getAttribute('data-quick'));
+                document.querySelectorAll('#resourcesList input').forEach(i => i.checked = (i.value === q.resource));
+                buildIncludes('includesList', resourceIncludesMap[q.resource] || []);
+                document.querySelectorAll('#includesList input').forEach(i => i.checked = q.includes && q.includes.includes(i.value));
+                document.getElementById('identifierInput').value = q.identifier || '';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -636,6 +636,11 @@ body.modal-open {
     padding-right: 0.6rem;
     scroll-behavior: smooth;
 }
+#includeOptions::-webkit-scrollbar, 
+.selector-options::-webkit-scrollbar,
+.modal-content::-webkit-scrollbar {
+    display: none;
+}
 
 /* Section headings */
 .selector-section strong {

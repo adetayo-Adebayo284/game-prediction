@@ -1,545 +1,366 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Eagle Predict - Sports Prediction Dashboard with Leagues</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SportMonks Explorer — GUI Output</title>
     <style>
-        /* Same styling as before */
         body {
-            background: linear-gradient(135deg, #0a1f44, #021d3a);
-            color: #e0e6f1;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+            margin: 20px;
+            background: #f7f7f7;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e6e6e6;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03);
+        }
+
+        .list {
+            max-height: 480px;
+            overflow: auto;
+            padding-right: 6px;
+        }
+
+        .section-title {
+            font-weight: 600;
+            margin: 8px 0;
+        }
+
+        .checkbox-row {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin: 6px 0;
         }
 
-        .navbar {
-            background-color: rgba(0, 0, 0, 0.7);
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #ffd700 !important;
-        }
-
-        .header-section {
-            text-align: center;
-            padding: 3rem 1rem 1rem;
-        }
-
-        .header-section h1 {
-            font-size: 3.2rem;
-            font-weight: 800;
-            color: #ffd700;
-            margin-bottom: 0.5rem;
-        }
-
-        .header-section p {
-            font-size: 1.2rem;
-            color: #cfd8e6;
-            max-width: 600px;
-            margin: 0 auto 2rem;
-        }
-
-        .controls {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 1.8rem 1.5rem 2rem;
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.15);
+        button {
+            background: #0b74ff;
             color: #fff;
-            margin-bottom: 2rem;
-        }
-
-        .controls h5 {
-            font-weight: 700;
-            color: #ffd700;
-            margin-bottom: 0.8rem;
-        }
-
-        .btn-odds,
-        .btn-sport {
-            border-radius: 50px;
-            font-weight: 600;
-            color: #222;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-        }
-
-        .btn-odds {
-            background: #ffd700;
             border: none;
-            margin: 0 5px 10px 0;
-            padding: 0.4rem 1rem;
-            font-size: 1rem;
-        }
-
-        .btn-odds.active,
-        .btn-sport.active {
-            background: #ffc107;
-            box-shadow: 0 0 8px #ffc107;
-            color: #1a1a1a;
-        }
-
-        .btn-sport {
-            background: #1f2e4a;
-            border: 2px solid #ffd700;
-            margin: 0 8px 12px 0;
-            padding: 0.5rem 1.4rem;
-            font-size: 1rem;
-            color: #ffd700;
-            min-width: 110px;
-        }
-
-        .btn-sport:hover {
-            background: #ffc107;
-            color: #1a1a1a;
-            box-shadow: 0 0 10px #ffc107;
-        }
-
-        .risk-options label {
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
-            user-select: none;
-        }
-
-        .risk-options input[type="radio"] {
-            margin-right: 8px;
+            padding: 10px 12px;
+            border-radius: 7px;
             cursor: pointer;
         }
 
-        #generateBtn {
-            margin-top: 1.5rem;
-            background: #ffd700;
-            border-radius: 50px;
-            font-weight: 700;
-            color: #222;
-            font-size: 1.2rem;
-            padding: 0.7rem 2rem;
-            border: none;
-            width: 100%;
-            box-shadow: 0 0 12px #ffc107;
-            transition: background-color 0.3s ease;
-        }
-
-        #generateBtn:hover {
-            background-color: #ffc107;
+        button.secondary {
+            background: #f1f1f1;
             color: #111;
         }
 
-        .prediction-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.15);
-            padding: 1.8rem 1.5rem 2rem;
-            transition: transform 0.3s ease;
-            color: #fefefe;
+        .small {
+            font-size: 13px;
+            color: #666;
         }
 
-        .prediction-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 35px rgba(255, 215, 0, 0.4);
+        input[type="text"] {
+            flex: 1;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
         }
 
-        .match-header {
+        .input-row {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
+            gap: 8px;
+            margin-bottom: 8px;
         }
 
-        .team {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            min-width: 110px;
+        .results {
+            margin-top: 12px;
         }
 
-        .team-logo {
-            width: 48px;
-            height: 48px;
-            object-fit: contain;
-            border-radius: 8px;
-            border: 2px solid #ffd700;
-            background: #0a1f44;
+        .meta {
+            font-size: 12px;
+            color: #777;
+            margin-bottom: 8px;
         }
 
-        .team-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #ffd700;
-            text-shadow: 0 0 5px #ffd700;
-            white-space: nowrap;
+        pre {
+            background: #0f1724;
+            color: #e6eef8;
+            padding: 12px;
+            border-radius: 6px;
+            max-height: 280px;
+            overflow: auto;
         }
 
-        .match-score {
-            font-weight: 700;
-            font-size: 1.7rem;
-            color: #fff;
-            background: #1f2e4a;
-            padding: 0.2rem 1rem;
-            border-radius: 12px;
-            min-width: 70px;
-            text-align: center;
-            box-shadow: 0 0 10px #ffd700;
+        .gui-output {
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 6px;
+            background: #f9f9f9;
+            margin-bottom: 12px;
         }
 
-        .match-info {
-            font-size: 0.9rem;
-            color: #bbb;
-            margin-bottom: 1rem;
-            text-align: center;
+        .gui-output h4 {
+            margin: 0 0 6px 0;
+            font-size: 14px;
         }
 
-        .prediction-details {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #ffe066;
-            margin-bottom: 0.6rem;
-            text-align: center;
+        .gui-output p {
+            margin: 2px 0;
+            font-size: 13px;
         }
 
-        .confidence-badge {
-            display: inline-block;
-            background-color: #ffc107;
-            color: #1a1a1a;
-            font-weight: 700;
-            padding: 0.3rem 0.9rem;
-            border-radius: 25px;
-            font-size: 0.9rem;
-            text-align: center;
-            width: fit-content;
-            margin: 0 auto;
-            box-shadow: 0 0 8px #ffc107;
-        }
-
-        footer {
-            margin-top: auto;
-            background: rgba(0, 0, 0, 0.7);
-            color: #999;
-            text-align: center;
-            padding: 1rem 0;
-            font-size: 0.9rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 992px) {
-            .team-name {
-                font-size: 1rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .match-header {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .match-score {
-                min-width: auto;
-                padding: 0.3rem 0.8rem;
-            }
-
-            .btn-sport {
-                min-width: auto;
-                font-size: 0.9rem;
-                padding: 0.4rem 1rem;
-            }
-
-            .btn-odds {
-                font-size: 0.9rem;
-                padding: 0.3rem 0.7rem;
-            }
+        ol {
+            padding-left: 18px;
+            margin: 0;
         }
     </style>
 </head>
 
 <body>
+    <div class="container">
+        <h1>SportMonks Explorer — GUI Output</h1>
+        <p class="small">Select a resource, optional includes, and enter IDs, dates, or date ranges. Errors are
+            displayed
+            clearly.</p>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">Eagle Predict</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navMenu">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Predictions</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+        <div class="grid">
+            <!-- Left: Selection -->
+            <div class="card">
+                <div class="input-row">
+                    <input id="identifierInput" type="text"
+                        placeholder="ID, Search, or Date YYYY-MM-DD / Date Range YYYY-MM-DD,YYYY-MM-DD" />
+                    <button id="openModalBtn">Selector</button>
+                </div>
 
-    <!-- Header Section -->
-    <section class="header-section">
-        <h1>Accurate Sports Predictions</h1>
-        <p>Choose your sport, league, odds, risk level, and generate predicted matches with confidence metrics.</p>
-    </section>
+                <div id="selectorContainer" class="list">
+                    <div class="section-title">Resources</div>
+                    <div id="resourcesList"></div>
 
-    <div class="container mb-5">
-        <div class="row g-4">
-            <!-- Controls panel -->
-            <div class="col-lg-4">
-                <div class="controls">
+                    <div class="section-title">Includes / Fields</div>
+                    <div id="includesList"></div>
+                </div>
 
-                    <h5>Choose Sport</h5>
-                    <div id="sportBtns" class="d-flex flex-wrap mb-4">
-                        <button class="btn btn-sport me-2 mb-2" data-sport="Soccer">Soccer</button>
-                        <button class="btn btn-sport me-2 mb-2" data-sport="Basketball">Basketball</button>
-                        <button class="btn btn-sport me-2 mb-2" data-sport="Hockey">Hockey</button>
-                        <button class="btn btn-sport me-2 mb-2" data-sport="American Football">American
-                            Football</button>
-                        <button class="btn btn-sport me-2 mb-2" data-sport="Table Tennis">Table Tennis</button>
-                        <button class="btn btn-sport me-2 mb-2" data-sport="Horse Race">Horse Race</button>
-                    </div>
+                <div style="margin-top:12px; display:flex; gap:8px;">
+                    <button id="sendBtn">Send Request</button>
+                    <button id="previewBtn" class="secondary">Preview</button>
+                    <button id="clearHistoryBtn" class="secondary">Clear</button>
+                </div>
 
-                    <h5>Choose League/Tournament</h5>
-                    <select id="leagueSelect" class="form-select mb-4" aria-label="Select League">
-                        <option value="">-- Select a league --</option>
-                    </select>
-
-                    <h5>Choose Odds</h5>
-                    <div id="oddsBtns" class="d-flex flex-wrap mb-4">
-                        <button class="btn btn-odds me-2 mb-2" data-odd="2">2 odds</button>
-                        <button class="btn btn-odds me-2 mb-2" data-odd="5">5 odds</button>
-                        <button class="btn btn-odds me-2 mb-2" data-odd="10">10 odds</button>
-                        <button class="btn btn-odds me-2 mb-2" data-odd="20">20 odds</button>
-                        <button class="btn btn-odds me-2 mb-2" data-odd="50">50 odds</button>
-                        <button class="btn btn-odds me-2 mb-2" data-odd="100">100 odds</button>
-                        <button class="btn btn-odds me-2 mb-2" data-odd="1000">1000 odds</button>
-                    </div>
-
-                    <h5>Limit Risk</h5>
-                    <div class="risk-options mb-4">
-                        <div>
-                            <input type="radio" id="riskLow" name="risk" value="Low risk" />
-                            <label for="riskLow">Low risk</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="riskVeryLow" name="risk" value="Very low risk" />
-                            <label for="riskVeryLow">Very low risk</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="riskLeast" name="risk" value="Least risk" />
-                            <label for="riskLeast">Least risk</label>
-                        </div>
-                    </div>
-
-                    <button id="generateBtn">Generate Matches</button>
+                <div class="results">
+                    <div class="meta">GUI Output</div>
+                    <div id="guiOutput" class="gui-output">No request yet</div>
+                    <div class="meta">Raw JSON (click to toggle)</div>
+                    <pre id="lastResponse">No request yet</pre>
                 </div>
             </div>
 
-            <!-- Predictions list -->
-            <div class="col-lg-8" id="predictionsList">
-                <!-- Predictions will appear here -->
+            <!-- Right: History + Quick picks -->
+            <div>
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <strong>History</strong>
+                        <small class="small">Selections & responses</small>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <ol id="historyList"></ol>
+                    </div>
+                </div>
+
+                <div style="height:12px"></div>
+
+                <div class="card">
+                    <strong>Quick picks</strong>
+                    <p class="small">Common queries</p>
+                    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+                        <button class="secondary"
+                            data-quick='{"resource":"fixtures","includes":["sport","scores"],"identifier":"2024-02-16"}'>Fixtures
+                            by Date</button>
+                        <button class="secondary"
+                            data-quick='{"resource":"fixtures","includes":["sport","statistics","odds"],"identifier":"2024-02-25,2024-02-29"}'>Fixtures
+                            by Date Range</button>
+                        <button class="secondary" data-quick='{"resource":"continents","includes":["countries"]}'>All
+                            Continents</button>
+                        <button class="secondary"
+                            data-quick='{"resource":"standings","includes":["form","league","season","stage","group","participant"],"identifier":""}'>Standings</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <footer>
-        <p>© 2025 Eagle Predict. All rights reserved.</p>
-    </footer>
-
     <script>
-        // Leagues by sport (you can expand)
-        const leaguesBySport = {
-            Soccer: [
-                "Champions League",
-                "Europa League",
-                "Conference League",
-                "Premier League",
-                "Championship",
-                "League One",
-                "LaLiga",
-                "Serie A",
-                "Bundesliga",
-                "Ligue 1",
-                "Liga Portugal",
-                "Super Lig",
-                "Premier Soccer League",
-                "Kenyan Premier League",
-                "NPFL Premier League",
-                "Major League Soccer",
-                "Saudi Pro League"
-            ],
-            Basketball: [
-                "NBA",
-                "EuroLeague",
-                "FIBA World Cup"
-            ],
-            Hockey: [
-                "NHL",
-                "KHL"
-            ],
-            "American Football": [
-                "NFL",
-                "NCAA"
-            ],
-            "Table Tennis": [
-                "World TT Championship",
-                "ITTF World Tour"
-            ],
-            "Horse Race": [
-                "Grand National",
-                "Kentucky Derby"
-            ]
-        };
+        const resources = [
+            "continents", "countries", "regions", "cities", "types", "my", "livescores",
+            "fixtures", "news", "leagues", "schedules", "seasons", "teams", "commentaries",
+            "referees", "standings", "players", "stages", "coaches", "topscorers", "rivals",
+            "venues", "rounds", "pre-match-odds", "inplay-odds", "squads", "tv-stations",
+            "predictions", "transfers", "states"
+        ];
 
-        // Sample matches - simplified for demo
-        const sampleMatches = {
-            Soccer: [
-                { home: "Manchester United", away: "Chelsea", league: "Premier League", time: "2025-08-12 19:45", score: "1 - 1", prediction: "BTTS - No", confidence: 85, homeLogo: "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg", awayLogo: "https://upload.wikimedia.org/wikipedia/en/c/c2/Chelsea_FC.svg" },
-                { home: "Barcelona", away: "Real Madrid", league: "LaLiga", time: "2025-08-13 21:00", score: "3 - 2", prediction: "Over 2.5 Goals", confidence: 78, homeLogo: "https://upload.wikimedia.org/wikipedia/en/0/09/FC_Barcelona_%28crest%29.svg", awayLogo: "https://upload.wikimedia.org/wikipedia/en/f/fc/Real_Madrid_CF.svg" },
-                { home: "PSG", away: "Lyon", league: "Ligue 1", time: "2025-08-14 18:30", score: "2 - 0", prediction: "Home Win", confidence: 90, homeLogo: "https://upload.wikimedia.org/wikipedia/en/e/e1/Paris_Saint-Germain_F.C..svg", awayLogo: "https://upload.wikimedia.org/wikipedia/en/7/7c/Olympique_Lyonnais.svg" }
-            ],
-            Basketball: [
-                { home: "LA Lakers", away: "Boston Celtics", league: "NBA", time: "2025-08-15 20:00", score: "102 - 99", prediction: "Home Win", confidence: 88, homeLogo: "https://upload.wikimedia.org/wikipedia/commons/3/3c/Los_Angeles_Lakers_logo.svg", awayLogo: "https://upload.wikimedia.org/wikipedia/en/8/8f/Boston_Celtics.svg" }
-            ],
-            Hockey: [
-                { home: "Toronto Maple Leafs", away: "Montreal Canadiens", league: "NHL", time: "2025-08-16 19:30", score: "4 - 3", prediction: "Away Win", confidence: 72, homeLogo: "https://upload.wikimedia.org/wikipedia/en/7/7f/Toronto_Maple_Leafs_logo.svg", awayLogo: "https://upload.wikimedia.org/wikipedia/en/1/12/Montreal_Canadiens_logo.svg" }
-            ],
-            "American Football": [
-                { home: "Dallas Cowboys", away: "Green Bay Packers", league: "NFL", time: "2025-08-17 18:00", score: "21 - 17", prediction: "Home Win", confidence: 83, homeLogo: "https://upload.wikimedia.org/wikipedia/commons/1/15/Dallas_Cowboys.svg", awayLogo: "https://upload.wikimedia.org/wikipedia/commons/5/53/Green_Bay_Packers_logo.svg" }
-            ],
-            "Table Tennis": [
-                { home: "Player A", away: "Player B", league: "World TT Championship", time: "2025-08-18 14:00", score: "3 - 1", prediction: "Home Win", confidence: 76, homeLogo: "https://upload.wikimedia.org/wikipedia/commons/4/45/Table_tennis_pictogram.svg", awayLogo: "https://upload.wikimedia.org/wikipedia/commons/4/45/Table_tennis_pictogram.svg" }
-            ],
-            "Horse Race": [
-                { home: "Thunderbolt", away: "Speed King", league: "Grand National", time: "2025-08-19 16:30", score: "N/A", prediction: "Winner: Thunderbolt", confidence: 81, homeLogo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Horse_silhouette_icon.svg", awayLogo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Horse_silhouette_icon.svg" }
-            ]
-        };
+        const includes = [
+            "sidelined", "formations", "ballCoordinates", "sport", "round", "stage", "group",
+            "aggregate", "league", "season", "referees", "coaches", "tvStations", "venue", "state",
+            "weatherReport", "lineups", "events", "timeline", "comments", "trends", "statistics",
+            "periods", "participants", "odds", "inplayOdds", "prematchNews", "metadata",
+            "predictions", "scores", "form", "rule", "details"
+        ];
 
-        const sportBtns = document.querySelectorAll("#sportBtns button");
-        const leagueSelect = document.getElementById("leagueSelect");
-        const oddsBtns = document.querySelectorAll("#oddsBtns button");
-        const riskRadios = document.querySelectorAll("input[name='risk']");
-        const generateBtn = document.getElementById("generateBtn");
-        const predictionsList = document.getElementById("predictionsList");
-
-        let selectedSport = null;
-        let selectedLeague = null;
-        let selectedOdds = null;
-        let selectedRisk = null;
-
-        // On sport selection, populate leagues dropdown
-        sportBtns.forEach(btn => btn.addEventListener("click", () => {
-            sportBtns.forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-            selectedSport = btn.dataset.sport;
-
-            // Populate leagues for this sport
-            leagueSelect.innerHTML = `<option value="">-- Select a league --</option>`;
-            if (leaguesBySport[selectedSport]) {
-                leaguesBySport[selectedSport].forEach(league => {
-                    const option = document.createElement("option");
-                    option.value = league;
-                    option.textContent = league;
-                    leagueSelect.appendChild(option);
-                });
-            }
-            selectedLeague = null;
-            leagueSelect.value = "";
-        }));
-
-        leagueSelect.addEventListener("change", e => {
-            selectedLeague = e.target.value || null;
-        });
-
-        oddsBtns.forEach(btn => btn.addEventListener("click", () => {
-            oddsBtns.forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-            selectedOdds = parseInt(btn.dataset.odd, 10);
-        }));
-
-        riskRadios.forEach(radio => radio.addEventListener("change", () => {
-            selectedRisk = radio.value;
-        }));
-
-        // Filter matches demo logic with league filter
-        function filterMatches(matches, odds, risk, league) {
-            if (!matches) return [];
-
-            // Filter by league if selected
-            let filtered = league ? matches.filter(m => m.league === league) : matches;
-
-            // Filter by odds - fewer matches with higher odds
-            filtered = filtered.slice(0, Math.max(1, Math.floor(filtered.length * (2 / odds))));
-
-            // Filter by risk level
-            if (risk === "Low risk") {
-                filtered = filtered.filter(m => m.confidence >= 80);
-            } else if (risk === "Very low risk") {
-                filtered = filtered.filter(m => m.confidence >= 70);
-            }
-            // Least risk shows all
-
-            return filtered;
-        }
-
-        function renderPredictions(matches) {
-            predictionsList.innerHTML = "";
-            if (!matches || matches.length === 0) {
-                predictionsList.innerHTML = `<p class="text-center fs-4 text-warning">No predictions available for the selected filters.</p>`;
-                return;
-            }
-            matches.forEach(match => {
-                const card = document.createElement("div");
-                card.className = "prediction-card mb-4";
-                card.innerHTML = `
-        <div class="match-header">
-          <div class="team">
-            <img src="${match.homeLogo}" alt="${match.home}" class="team-logo" />
-            <div class="team-name">${match.home}</div>
-          </div>
-          <div class="match-score">${match.score}</div>
-          <div class="team">
-            <img src="${match.awayLogo}" alt="${match.away}" class="team-logo" />
-            <div class="team-name">${match.away}</div>
-          </div>
-        </div>
-        <div class="match-info">${match.league} • ${match.time}</div>
-        <div class="prediction-details">Prediction: ${match.prediction}</div>
-        <div class="confidence-badge">Confidence: ${match.confidence}%</div>
-      `;
-                predictionsList.appendChild(card);
+        function buildList(containerId, items) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            items.forEach(item => {
+                const id = `${containerId}_${item.replace(/[^a-z0-9]/gi, '_')}`;
+                const row = document.createElement('div');
+                row.className = 'checkbox-row';
+                row.innerHTML = `<input type="checkbox" id="${id}" value="${item}"><label for="${id}">${item}</label>`;
+                container.appendChild(row);
             });
         }
 
-        generateBtn.addEventListener("click", () => {
-            if (!selectedSport) {
-                alert("Please select a sport.");
+        buildList('resourcesList', resources);
+        buildList('includesList', includes);
+
+        let historyData = [];
+        function addToHistory(requestObj, responseObj) {
+            const now = new Date();
+            const entry = { time: now.toISOString(), request: requestObj, response: responseObj };
+            historyData.unshift(entry);
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            list.innerHTML = '';
+            historyData.forEach(h => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${h.request.resource}</strong> — <small>${new Date(h.time).toLocaleString()}</small>`;
+                li.style.marginBottom = '8px';
+                li.addEventListener('click', () => {
+                    displayGUI(h.response);
+                    document.getElementById('lastResponse').textContent = JSON.stringify(h.response, null, 2);
+                });
+                list.appendChild(li);
+            });
+        }
+
+        function collectSelection() {
+            const selectedResource = Array.from(document.querySelectorAll('#resourcesList input:checked')).map(i => i.value)[0] || null;
+            const selectedIncludes = Array.from(document.querySelectorAll('#includesList input:checked')).map(i => i.value);
+            const identifier = document.getElementById('identifierInput').value.trim();
+            return { resource: selectedResource, includes: selectedIncludes, identifier: identifier || null };
+        }
+
+        function displayGUI(data) {
+            const gui = document.getElementById('guiOutput');
+            if (!data) {
+                gui.innerHTML = 'No data';
                 return;
             }
-            if (!selectedOdds) {
-                alert("Please select odds.");
+            if (data.errors || data.message) {
+                gui.innerHTML = `<h4>Error:</h4>
+                    <p>${data.message || JSON.stringify(data.errors)}</p>
+                    ${data.link ? `<p>More info: <a href="${data.link}" target="_blank">${data.link}</a></p>` : ''}
+                    <p>Code: ${data.code || ''}</p>`;
+            } else if (data.data) {
+                // simple GUI for arrays or objects
+                if (Array.isArray(data.data)) {
+                    gui.innerHTML = data.data.slice(0, 10).map(d => `<div><strong>${d.id || d.name || d.league?.name || d.sport?.name || 'Item'}</strong></div>`).join('');
+                } else {
+                    gui.innerHTML = `<div><strong>${data.data.id || data.data.name || 'Result'}</strong></div>`;
+                }
+            } else {
+                gui.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            }
+        }
+
+        document.getElementById('previewBtn').addEventListener('click', () => {
+            const sel = collectSelection();
+            console.log("Preview:", sel);
+            alert("Preview:\n" + JSON.stringify(sel, null, 2));
+        });
+
+        document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+            if (!confirm('Clear history?')) return;
+            historyData = [];
+            renderHistory();
+            document.getElementById('lastResponse').textContent = 'No request yet';
+            document.getElementById('guiOutput').textContent = 'No request yet';
+        });
+
+        document.getElementById('sendBtn').addEventListener('click', async () => {
+            const selection = collectSelection();
+            if (!selection.resource) {
+                alert('Select a resource.');
                 return;
             }
-            if (!selectedRisk) {
-                alert("Please select a risk level.");
-                return;
+
+            let endpointType = "list";
+            let dateFrom = null, dateTo = null;
+
+            if (selection.resource === "fixtures") {
+                if (/^\d{4}-\d{2}-\d{2}$/.test(selection.identifier)) {
+                    endpointType = "byDate";
+                } else if (/^\d{4}-\d{2}-\d{2},\d{4}-\d{2}-\d{2}$/.test(selection.identifier)) {
+                    endpointType = "between";
+                    [dateFrom, dateTo] = selection.identifier.split(",");
+                } else if (/^\d+$/.test(selection.identifier)) {
+                    endpointType = "byID";
+                }
+            } else if (/^\d+$/.test(selection.identifier)) {
+                endpointType = "byID";
             }
-            // League optional
-            let matches = sampleMatches[selectedSport];
-            if (!matches) {
-                predictionsList.innerHTML = `<p class="text-center fs-4 text-warning">No data available for selected sport.</p>`;
-                return;
+
+            const payload = { resource: selection.resource, endpointType, identifier: selection.identifier, dateFrom, dateTo, includes: selection.includes, params: {} };
+
+            document.getElementById('guiOutput').textContent = 'Requesting...';
+            document.getElementById('lastResponse').textContent = 'Requesting...';
+
+            try {
+                const res = await fetch('sportmonks_request.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('Network not ok ' + res.status);
+                const data = await res.json();
+                addToHistory(payload, data);
+                displayGUI(data);
+                document.getElementById('lastResponse').textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                console.error('Request failed:', err);
+                document.getElementById('guiOutput').innerHTML = `<h4>Error:</h4><p>${err}</p>`;
+                document.getElementById('lastResponse').textContent = 'Request failed: ' + String(err);
             }
-            const filtered = filterMatches(matches, selectedOdds, selectedRisk, selectedLeague);
-            renderPredictions(filtered);
+        });
+
+        document.querySelectorAll('[data-quick]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const q = JSON.parse(btn.getAttribute('data-quick'));
+                document.querySelectorAll('#resourcesList input').forEach(i => i.checked = (i.value === q.resource));
+                document.querySelectorAll('#includesList input').forEach(i => i.checked = q.includes && q.includes.includes(i.value));
+                document.getElementById('identifierInput').value = q.identifier || '';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        document.getElementById('openModalBtn').addEventListener('click', () => {
+            alert('Page UI used as selector. Modal version can be added.');
         });
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 
 </html>
