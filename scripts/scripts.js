@@ -326,27 +326,6 @@ predictionsList.addEventListener("click", () => {
   stickToBottom = !stickToBottom;
 });
 
-// Auto-scroll logic
-// predictionsList.addEventListener("scroll", () => {
-//   const scrollTop = predictionsList.scrollTop;
-//   const scrollHeight = predictionsList.scrollHeight;
-//   const clientHeight = predictionsList.clientHeight;
-
-//   // If user scrolls up, disable stick-to-bottom temporarily
-//   if (scrollTop < lastScrollTop) {
-//     stickToBottom = false;
-//   }
-
-//   // Only auto-scroll if stick-to-bottom is enabled
-//   if (stickToBottom) {
-//     predictionsList.scrollTo({
-//       top: scrollHeight,
-//       behavior: "smooth",
-//     });
-//   }
-
-//   lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-// });
 
 // Scroll clicked card into view AND enable stick-to-bottom
 function scrollCardIntoView(card) {
