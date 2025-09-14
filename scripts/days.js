@@ -256,7 +256,7 @@ async function loadMatches(dateYYYYMMDD) {
   showLoader();
 
   try {
-    const url = `../../game/backend/getAllLeague.php?date=${dateYYYYMMDD}`;
+    const url = `https://point-sport.vercel.app/game/backend/getAllLeague.php?date=${dateYYYYMMDD}`;
     const res = await fetch(url);
     const data = await res.json();
 
