@@ -31,8 +31,11 @@ foreach ($fixtures as $date => $matches) {
             "confidence"    => intval(str_replace("%", "", $fixture["confidence"] ?? "0")),
             "xgHome"        => $fixture["xg"]["home"] ?? "0.00",
             "xgAway"        => $fixture["xg"]["away"] ?? "0.00",
-            "pressureIndex" => $fixture["pressureIndex"] ?? "N/A",
+            "pressureIndex" => $fixture["pressureIndex"] ?? "90.00",
             "valueBet"      => isset($fixture["valueBet"]) ? (bool)$fixture["valueBet"] : false,
+            "homeWinProbability" => "60.94",
+            "awayWinProbability" => "25.06",
+            "drawProbability" =>  "15.00",
             "odds" => [
                 "home" => $fixture["odds"]["home"] ?? "N/A",
                 "draw" => $fixture["odds"]["draw"] ?? "N/A",
@@ -45,6 +48,10 @@ foreach ($fixtures as $date => $matches) {
 
 // Encode to JSON and exit to prevent extra output
 exit(json_encode($matchesDB, JSON_PRETTY_PRINT));
+
+
+
+
 
 
 // good for testing

@@ -2,7 +2,7 @@
     Demo Data Setup (production-ready)
 ----------------------------*/
 const DEMO_RESPONSE = {
-    sports: ["Soccer", "Basketball", "Volleyball", "Hockey", "Tennis", "Cricket", "Rugby"],
+    sports: ["Soccer"], //, "Basketball", "Volleyball", "Hockey", "Tennis", "Cricket", "Rugby"
     risk_levels: { 
         very_low:  [1.10, 1.40],
         low:       [1.41, 1.80],

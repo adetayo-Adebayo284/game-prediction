@@ -2,156 +2,168 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Prediction UI</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamic Match Prediction Card</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #f0f2f5;
+      font-family: 'Segoe UI', sans-serif;
+    }
 
-    <style>
-        .team-logo {
-        width: 40px;
-        height: 40px;
-        object-fit: contain;
-        }
-        .team-name {
-        font-size: 0.9rem;
-        }
-        .match-score {
-        font-size: 1.5rem;
-        }
-        .progress-bar {
-        transition: width 1s ease-in-out;
-        }
-    </style>
+    .match-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: auto;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .team-logo {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+    }
+
+    .progress-bar {
+      transition: width 1s ease-in-out;
+    }
+
+    .explore-btn {
+      border-radius: 50px;
+      padding: 6px 16px;
+      font-weight: 500;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .explore-section {
+      display: none;
+      margin-top: 1rem;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
 
-<body style="background-color:#f0f2f5;">
-    <div class="container py-5">
-        <h2 class="mb-4 fw-bold text-center">⚽ Match Predictions</h2>
-        <div id="predictionContainer"></div>
-    </div>
+<body>
+  <div class="container py-5">
+    <div id="matchCard" class="match-card"></div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
-</body>
+  <script>
+    const matchData = {
+      home: {
+        name: "Silkeborg",
+        logo: "https://upload.wikimedia.org/wikipedia/en/4/4d/Silkeborg_IF_logo.svg",
+        winProbability: 20.0,
+        xg: 1.9,
+        odds: "2.10",
+        liveOdds: "2.25"
+      },
+      away: {
+        name: "Odense",
+        logo: "https://upload.wikimedia.org/wikipedia/en/4/4e/Odense_BK_logo.svg",
+        winProbability: 80.0,
+        xg: 1.2,
+        odds: "3.60",
+        liveOdds: "3.50"
+      },
+      drawOdds: "3.30",
+      liveDrawOdds: "3.20",
+      kickoff: "Sunday, September 14 at 5:00 PM",
+      status: "Regular Season",
+      score: "2 - 5",
+      prediction: "Home Win",
+      pressure: 65,
+      confidence: 78
+    };
 
+    const card = document.getElementById("matchCard");
 
-<script>
-    const matches = [
-  {
-    home: "Silkeborg IF",
-    away: "Odense BK",
-    homeLogo: "https://upload.wikimedia.org/wikipedia/en/4/4d/Silkeborg_IF_logo.svg",
-    awayLogo: "https://upload.wikimedia.org/wikipedia/en/4/4e/Odense_BK_logo.svg",
-    score: "2 - 1",
-    league: "Danish Superliga",
-    time: "18:00",
-    status: "Finished",
-    prediction: "Home Win",
-    confidence: 78,
-    xgHome: "1.9",
-    xgAway: "1.2",
-    pressureIndex: 65,
-    valueBet: true,
-    odds: {
-      home: "2.10",
-      draw: "3.30",
-      away: "3.60"
-    },
-    liveOdds: "Home 2.25 • Draw 3.20 • Away 3.50"
-  }
-];
+    card.innerHTML = `
+      <div class="text-muted mb-2">${matchData.status} • ${matchData.kickoff}</div>
 
-const container = document.getElementById("predictionContainer");
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="text-center">
+          <img src="${matchData.home.logo}" class="team-logo mb-1" />
+          <div class="fw-semibold">${matchData.home.name}</div>
+        </div>
+        <div class="fs-4 fw-bold text-primary">${matchData.score}</div>
+        <div class="text-center">
+          <img src="${matchData.away.logo}" class="team-logo mb-1" />
+          <div class="fw-semibold">${matchData.away.name}</div>
+        </div>
+      </div>
 
-matches.forEach((match, index) => {
-  const accordionId = `accordionItem${index}`;
-  const collapseId = `collapse${index}`;
-  const headingId = `heading${index}`;
-  const detailsId = `details${index}`;
-
-  const card = document.createElement("article");
-  card.className = "prediction-card mb-4 shadow-sm border rounded";
-  card.style.paddingRight = "0";
-
-  card.innerHTML = `
-    <div class="accordion accordion-flush" id="${accordionId}">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="${headingId}">
-          <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" aria-expanded="false" aria-controls="${collapseId}">
-            ${match.home} vs ${match.away} • ${match.league}
-          </button>
-        </h2>
-        <div id="${collapseId}" class="accordion-collapse collapse" aria-labelledby="${headingId}">
-          <div class="accordion-body" style="background-color:#f9f9f9;">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <div class="team text-center">
-                <img src="${match.homeLogo}" alt="${match.home} logo" class="team-logo mb-1" style="width:40px;height:40px;object-fit:contain;" />
-                <div class="team-name fw-semibold">${match.home}</div>
-              </div>
-              <div class="match-score fs-4 fw-bold text-primary">${match.score}</div>
-              <div class="team text-center">
-                <img src="${match.awayLogo}" alt="${match.away} logo" class="team-logo mb-1" style="width:40px;height:40px;object-fit:contain;" />
-                <div class="team-name fw-semibold">${match.away}</div>
-              </div>
-            </div>
-
-            <div class="match-meta mb-2 text-muted" style="font-size:0.9rem;">
-              Kickoff: ${match.time} • Status: ${match.status}
-            </div>
-
-            <button class="btn btn-outline-primary btn-sm mb-3" onclick="document.getElementById('${detailsId}').classList.toggle('d-none')">
-              Explore More
-            </button>
-
-            <div id="${detailsId}" class="d-none">
-              <div class="prediction-section mb-3">
-                <div><strong>Prediction:</strong> ${match.prediction}</div>
-
-                <div class="mt-2">
-                  <strong>Confidence:</strong>
-                  <div class="progress" style="height: 20px;">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: ${match.confidence}%; transition: width 1s;" aria-valuenow="${match.confidence}" aria-valuemin="0" aria-valuemax="100">
-                      ${match.confidence}%
-                    </div>
-                  </div>
-                </div>
-
-                <div class="mt-3">
-                  <strong>Expected Goals <span title="Expected Goals (xG)" style="cursor:help;">📈</span>:</strong>
-                  ${match.xgHome} - ${match.xgAway}
-                </div>
-
-                <div class="mt-2">
-                  <strong>Pressure Index <span title="Team pressure level" style="cursor:help;">⚡</span>:</strong>
-                  <div class="progress" style="height: 20px;">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: ${match.pressureIndex}%; transition: width 1s;" aria-valuenow="${match.pressureIndex}" aria-valuemin="0" aria-valuemax="100">
-                      ${match.pressureIndex}%
-                    </div>
-                  </div>
-                </div>
-
-                <div class="mt-2">
-                  <strong>Value Bet:</strong> ${match.valueBet ? "<span class='badge bg-success'>✅ Yes</span>" : "<span class='badge bg-danger'>❌ No</span>"}
-                </div>
-              </div>
-
-              <div class="odds-section mt-3">
-                <div><strong>Pre-Match Odds:</strong> Home ${match.odds.home} • Draw ${match.odds.draw} • Away ${match.odds.away}</div>
-                <div><strong>Live Odds:</strong> ${match.liveOdds ? match.liveOdds : "Not available"}</div>
-              </div>
-
-              <button class="btn btn-outline-secondary btn-sm mt-3" onclick="document.getElementById('${detailsId}').classList.add('d-none')">
-                Close Details
-              </button>
-            </div>
+      <div class="mb-3">
+        <strong>Win Probability:</strong>
+        <div class="progress" style="height: 20px;">
+          <div class="progress-bar bg-danger" style="width: ${matchData.home.winProbability}%;">
+            ${matchData.home.name} ${matchData.home.winProbability}%
+          </div>
+          <div class="progress-bar bg-info" style="width: ${matchData.away.winProbability}%;">
+            ${matchData.away.name} ${matchData.away.winProbability}%
           </div>
         </div>
       </div>
-    </div>
-  `;
-  container.appendChild(card);
-});
-</script>
+
+      <div class="text-end">
+        <button id="toggleBtn" class="btn btn-outline-primary explore-btn" onclick="toggleExplore()">Explore more</button>
+      </div>
+
+      <div id="exploreSection" class="explore-section">
+        <hr />
+        <div><strong>🔮 Prediction:</strong> ${matchData.prediction}</div>
+        <div><strong>📈 Expected Goals (xG):</strong> ${matchData.home.xg} - ${matchData.away.xg}</div>
+        <div class="mt-2">
+          <strong>⚡ Pressure Index:</strong>
+          <div class="progress" style="height: 20px;">
+            <div class="progress-bar bg-warning" style="width: ${matchData.pressure}%;">${matchData.pressure}%</div>
+          </div>
+        </div>
+        <div class="mt-2">
+          <strong>🎯 Confidence Level:</strong>
+          <div class="progress" style="height: 20px;">
+            <div class="progress-bar bg-success" style="width: ${matchData.confidence}%;">${matchData.confidence}%</div>
+          </div>
+        </div>
+        <div class="mt-2"><strong>💰 Pre-Match Odds:</strong> Home ${matchData.home.odds} • Draw ${matchData.drawOdds} • Away ${matchData.away.odds}</div>
+        <div class="mt-1"><strong>📺 Live Odds:</strong> Home ${matchData.home.liveOdds} • Draw ${matchData.liveDrawOdds} • Away ${matchData.away.liveOdds}</div>
+      </div>
+    `;
+
+    function toggleExplore() {
+      const section = document.getElementById("exploreSection");
+      const btn = document.getElementById("toggleBtn");
+
+      if (section.style.display === "none" || section.style.display === "") {
+        section.style.display = "block";
+        btn.textContent = "✖ Close";
+        btn.classList.remove("btn-outline-primary");
+        btn.classList.add("btn-danger");
+      } else {
+        section.style.display = "none";
+        btn.textContent = "Explore more";
+        btn.classList.remove("btn-danger");
+        btn.classList.add("btn-outline-primary");
+      }
+    }
+  </script>
+</body>
 
 </html>
