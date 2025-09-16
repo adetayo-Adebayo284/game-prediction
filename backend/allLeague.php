@@ -1,4 +1,8 @@
 <?php
+
+
+// USE THIS GANGAN FOR PRODUCTION CODE ONLY
+
 function getFootballFixtures($dates) {
     $apiToken = '4jDTLmQ5n2VWB1tEobA1jYZRvUql6aA03CUkNLBDtHgz0q1VsM1a2ufM7CGa';
     $fixturesArray = [];
@@ -115,10 +119,9 @@ function getFootballFixtures($dates) {
 }
 
 
-// REAL PRODUCTION FUNCTION
 
 
-
+// REAL PRODUCTION FUNCTION: nOTE THIS WAS WRITTEN BEFORE THE ONE ABOVE
 
 // function getFootballFixtures($dates) {
 //     $apiToken = '4jDTLmQ5n2VWB1tEobA1jYZRvUql6aA03CUkNLBDtHgz0q1VsM1a2ufM7CGa';
