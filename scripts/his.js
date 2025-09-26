@@ -1,6 +1,34 @@
 // ---------- Load history data ----------
 let historyData = [];
 
+// async function loadHistoryData() {
+//     const container = document.getElementById("matchesContainer");
+    
+//     // Show spinner while loading
+//     container.innerHTML = `
+//         <div class="d-flex justify-content-center align-items-center py-4">
+//             <div class="spinner-border text-warning" role="status">
+//                 <span class="visually-hidden">Loading...</span>
+//             </div>
+//         </div>
+//     `;
+
+//     try {
+//         const response = await fetch(`./backend/getPreHistory.php?start=2025-08-01&end=2025-08-31`);
+//         const data = await response.json();
+//         console.log("Fetched history data:", data);
+
+//         historyData = data;
+//         console.log("History data assigned:", historyData);
+
+//         renderHistory();
+//     } catch (err) {
+//         console.error("Error fetching history:", err);
+//         historyData = [];
+//         renderHistory(); // still render empty
+//     }
+// }
+
 async function loadHistoryData() {
     const container = document.getElementById("matchesContainer");
     
@@ -14,20 +42,62 @@ async function loadHistoryData() {
     `;
 
     try {
-        const response = await fetch(`./backend/getPreHistory.php?start=2025-08-01&end=2025-08-31`);
+        const today = new Date();
+
+        // ✅ Yesterday (we only count completed days)
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+
+        // ✅ Find the last full week block
+        const day = yesterday.getDate();
+        let startDay, endDay;
+
+        if (day >= 22) {
+            startDay = 16;
+            endDay = 22;
+        } else if (day >= 15) {
+            startDay = 8;
+            endDay = 14;
+        } else if (day >= 8) {
+            startDay = 1;
+            endDay = 7;
+        } else {
+            // yesterday is between 1–7 → take last block of previous month (22–end)
+            const prevMonth = new Date(yesterday.getFullYear(), yesterday.getMonth(), 0); // last day of prev month
+            endDay = prevMonth.getDate(); // e.g. 30 or 31
+            startDay = 22;
+            yesterday.setMonth(yesterday.getMonth() - 1); // shift to previous month
+        }
+
+        const startDateObj = new Date(yesterday.getFullYear(), yesterday.getMonth(), startDay);
+        const endDateObj = new Date(yesterday.getFullYear(), yesterday.getMonth(), endDay);
+
+        // ✅ Format YYYY-MM-DD
+        const formatDate = (d) => {
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, "0");
+            const dd = String(d.getDate()).padStart(2, "0");
+            return `${yyyy}-${mm}-${dd}`;
+        };
+
+        const startDate = formatDate(startDateObj);
+        const endDate = formatDate(endDateObj);
+
+        console.log("Fetching history between:", startDate, "to", endDate);
+
+        const response = await fetch(`./backend/getPreHistory.php?start=${startDate}&end=${endDate}`);
         const data = await response.json();
         console.log("Fetched history data:", data);
 
         historyData = data;
-        console.log("History data assigned:", historyData);
-
         renderHistory();
     } catch (err) {
         console.error("Error fetching history:", err);
         historyData = [];
-        renderHistory(); // still render empty
+        renderHistory();
     }
 }
+
 
 // ---------- ALERT FUNCTION ----------
 function showCustomAlert(title, message, type = "info") {
@@ -99,8 +169,8 @@ function renderHistory(showAll = false) {
                             <span class="team-name">${match.away}</span>
                         </div>
                     </div>
-                    <div class="match-info">${match.league} • ${match.date}</div>
-                    <div class="prediction-details">Prediction: ${match.prediction}</div>
+                    <div class="match-info">${match.league.name} • ${match.date}</div>
+                    <div class="prediction-details">Prediction: ${match.result_info}</div>
                     <div class="confidence-badge tooltip-badge">
                         Confidence: ${match.confidence}
                         <span class="tooltip-texts">Prediction confidence level</span>
@@ -132,7 +202,6 @@ function renderHistory(showAll = false) {
 
         // Add padding & rounded corners
         resultEl.classList.add("p-1", "rounded");
-
 
         container.appendChild(matchCard);
     });
