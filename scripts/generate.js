@@ -304,7 +304,7 @@ function renderList(){
                                     style="width:40px;height:40px;border-radius:50%;margin-right:6px;" />
                                 <div class="team-name">${m.away}</div>
                             </div>
-                            <div class="match-score" style="margin: 0 1rem 0 0;">@ ${fmtOdds(m.odds)}</div>
+                            <div class="match-score" style="margin: 0 1rem 0 0; padding: 5px; background: #2a356b; ">@ ${fmtOdds(m.odds)}</div>
                         </div>
                         <div class="match-info" style="margin-bottom:10px;">
                             ${m.market} • 
@@ -408,6 +408,7 @@ function renderList(){
 
 }
 
+
 /* ----------------------------
     Auto-select matches
 ----------------------------*/
@@ -446,18 +447,65 @@ async function generate(){showSpinner(true);await wait(200);autoSelectMatches();
 async function regenerate(){showSpinner(true);await wait(200);autoSelectMatches();showSpinner(false);}
 
 /* ----------------------------
-    Load API matches
+   Load API matches dynamically with confidence and risk
 ----------------------------*/
-function loadApiMatches(apiData){
-    state.rows=apiData.map(m=>{
-        let risk='unclassified';
-        for(const [level,[min,max]] of Object.entries(DEMO_RESPONSE.risk_levels)){
-            if(m.odds>=min && m.odds<=max){risk=level;break;}
+function loadApiMatches(apiData) {
+    if (!Array.isArray(apiData) || apiData.length === 0) return;
+
+    // Determine min and max odds for normalization
+    const oddsArray = apiData.map(m => m.odds);
+    const minOdd = Math.min(...oddsArray);
+    const maxOdd = Math.max(...oddsArray);
+
+    state.rows = apiData.map(match => {
+        // --- 1. Calculate highest prediction probability ---
+        let highestPrediction = 0;
+        if (Array.isArray(match.prediction) && match.prediction.length > 0) {
+            highestPrediction = Math.max(
+                ...match.prediction.map(p => Math.max(p.home || 0, p.away || 0, p.draw || 0))
+            );
         }
-        return {...m,risk};
+
+        // --- 2. Normalize odds (0-100 scale) ---
+        const normalizedOdd = ((maxOdd - match.odds) / (maxOdd - minOdd)) * 100;
+
+        // --- 3. Weighted confidence (70% prediction, 30% odds) ---
+        const confidence = Number(((highestPrediction * 0.7) + (normalizedOdd * 0.3)).toFixed(2));
+
+        // --- 4. Classify risk ---
+        let risk = 'unclassified';
+        for (const [level, [min, max]] of Object.entries(DEMO_RESPONSE.risk_levels)) {
+            if (match.odds >= min && match.odds <= max) {
+                risk = level;
+                break;
+            }
+        }
+
+        return {
+            ...match,
+            confidence,
+            risk
+        };
     });
-    renderList(); autoSelectMatches();
+
+    // // --- 5. Store updated matches in localStorage ---
+    // localStorage.setItem("defaultPredictions", JSON.stringify(state.rows));
+
+    // --- 6. Render and auto-select ---
+    renderList();
+    autoSelectMatches();
 }
+
+
+resetBtn.addEventListener("click", async () => {
+    showSpinner(true);
+    await wait(300); // simulate processing
+    state.selectedIds.clear();
+    renderList();
+    updateTotals();
+    showSpinner(false);
+});
+
 
 /* ----------------------------
     Initialization
@@ -474,3 +522,5 @@ function loadApiMatches(apiData){
     resetBtn.addEventListener('click',()=>{state.selectedIds.clear();renderList();updateTotals();});
     syncTargetUI(); setRisk('low');
 })();
+
+                

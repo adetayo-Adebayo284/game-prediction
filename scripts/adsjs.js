@@ -42,9 +42,11 @@
     try {
       const res = await fetch(`../../game/backend/getAllLeague.php?date=${dateStr}`);
       const data = await res.json();
-      if (data && typeof data === "object") {
+      if (data ) {
         matchesDB = { ...matchesDB, ...data };
-        localStorage.setItem("matchesDB", JSON.stringify(matchesDB));
+        console.log("hE: ", matchesDB);
+        
+        // localStorage.setItem("matchesDB", JSON.stringify(matchesDB));
       }
     } catch (err) {
       console.error("Error fetching matches:", err);

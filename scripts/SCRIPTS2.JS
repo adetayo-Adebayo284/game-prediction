@@ -1,237 +1,107 @@
-// // Sample data for predicted matches per sport and odds - normally from API
-// const sampleMatches = 
-// {
-//     Soccer: [
-//         {
-//             home: "Manchester United",
-//             away: "Chelsea",
-//             league: "Premier League",
-//             time: "2025-08-12 19:45",
-//             score: "1 - 2",
-//             prediction: "BTTS - No",
-//             confidence: 85,
-//             homeLogo: "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg",
-//             awayLogo: "https://upload.wikimedia.org/wikipedia/en/c/c2/Chelsea_FC.svg"
-//         },
-//         {
-//             home: "Barcelona",
-//             away: "Real Madrid",
-//             league: "La Liga",
-//             time: "2025-08-13 21:00",
-//             score: "3 - 2",
-//             prediction: "Over 2.5 Goals",
-//             confidence: 78,
-//             homeLogo: "https://upload.wikimedia.org/wikipedia/en/0/09/FC_Barcelona_%28crest%29.svg",
-//             awayLogo: "https://upload.wikimedia.org/wikipedia/en/f/fc/Real_Madrid_CF.svg"
-//         },
-//         {
-//             home: "Paris Saint-Germain",
-//             away: "Lyon",
-//             league: "Ligue 1",
-//             time: "2025-08-14 18:30",
-//             score: "2 - 0",
-//             prediction: "Home Win",
-//             confidence: 90,
-//             homeLogo: "https://upload.wikimedia.org/wikipedia/en/e/e1/Paris_Saint-Germain_F.C..svg",
-//             awayLogo: "https://upload.wikimedia.org/wikipedia/en/7/7c/Olympique_Lyonnais.svg"
-//         }
-//     ],
-//     Basketball: [
-//         {
-//             home: "LA Lakers",
-//             away: "Boston Celtics",
-//             league: "NBA",
-//             time: "2025-08-15 20:00",
-//             score: "102 - 99",
-//             prediction: "Home Win",
-//             confidence: 88,
-//             homeLogo: "https://upload.wikimedia.org/wikipedia/commons/3/3c/Los_Angeles_Lakers_logo.svg",
-//             awayLogo: "https://upload.wikimedia.org/wikipedia/en/8/8f/Boston_Celtics.svg"
-//         }
-//     ],
-//     Hockey: [
-//         {
-//             home: "Toronto Maple Leafs",
-//             away: "Montreal Canadiens",
-//             league: "NHL",
-//             time: "2025-08-16 19:30",
-//             score: "4 - 3",
-//             prediction: "Away Win",
-//             confidence: 72,
-//             homeLogo: "https://upload.wikimedia.org/wikipedia/en/7/7f/Toronto_Maple_Leafs_logo.svg",
-//             awayLogo: "https://upload.wikimedia.org/wikipedia/en/1/12/Montreal_Canadiens_logo.svg"
-//         }
-//     ],
-//     "American Football": [
-//         {
-//             home: "Dallas Cowboys",
-//             away: "Green Bay Packers",
-//             league: "NFL",
-//             time: "2025-08-17 18:00",
-//             score: "21 - 17",
-//             prediction: "Home Win",
-//             confidence: 83,
-//             homeLogo: "https://upload.wikimedia.org/wikipedia/commons/1/15/Dallas_Cowboys.svg",
-//             awayLogo: "https://upload.wikimedia.org/wikipedia/commons/5/53/Green_Bay_Packers_logo.svg"
-//         }
-//     ],
-//     "Table Tennis": [
-//         {
-//             home: "Player A",
-//             away: "Player B",
-//             league: "World TT Championship",
-//             time: "2025-08-18 14:00",
-//             score: "3 - 1",
-//             prediction: "Home Win",
-//             confidence: 76,
-//             homeLogo: "https://upload.wikimedia.org/wikipedia/commons/4/45/Table_tennis_pictogram.svg",
-//             awayLogo: "https://upload.wikimedia.org/wikipedia/commons/4/45/Table_tennis_pictogram.svg"
-//         }
-//     ],
-//     "Horse Race": [
-//         {
-//             home: "Thunderbolt",
-//             away: "Speed King",
-//             league: "Grand National",
-//             time: "2025-08-19 16:30",
-//             score: "N/A",
-//             prediction: "Winner: Thunderbolt",
-//             confidence: 81,
-//             homeLogo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Horse_silhouette_icon.svg",
-//             awayLogo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Horse_silhouette_icon.svg"
-//         }
-//     ]
-// };
-
-
-// // Initialize sampleMatches object with all sports (empty arrays)
-// const sampleMatches = {
-//   Soccer: [],
-//   Basketball: [],
-//   Hockey: [],
-//   "American Football": [],
-//   "Table Tennis": [],
-//   "Horse Race": []
-// };
-
-// // Function to populate sampleMatches from localStorage
-// function populateSampleMatches() {
-//   try {
-//     const stored = localStorage.getItem("defaultPredictions");
-//     if (!stored) {
-//       console.warn("No 'predictedMatches' key found.");
-//       return;
-//     }
-
-//     const storedMatches = JSON.parse(stored);    
-
-//     if (!Array.isArray(storedMatches)) {
-//       console.error("'predictedMatches' is not an array!");
-//       return;
-//     }
-
-//     // Group matches by sport
-//     const sports = [...new Set(storedMatches.map(m => m.sport))];
-
-//     sports.forEach(sport => {
-//       // Filter matches for this sport
-//       const matches = storedMatches.filter(m => m.sport === sport);
-
-//       // Group by home+away+league+time
-//       const grouped = {};
-//       matches.forEach(m => {
-//         const key = `${m.home}|${m.away}|${m.league}|${m.time}`;
-//         if (!grouped[key]) {
-//           grouped[key] = {
-//             home: m.home,
-//             away: m.away,
-//             league: m.league,
-//             time: m.kick,
-//             odd: m.odds,
-//             score: m.score || "",
-//             prediction: m.prediction || "",
-//             confidence: m.confidence || 0,
-//             homeLogo: m.homeLogo || "",
-//             awayLogo: m.awayLogo || ""
-//           };
-//         }
-//       });
-
-//       // Convert grouped matches to array and assign to sampleMatches[sport]
-//       sampleMatches[sport] = Object.values(grouped);
-//     });
-
-//     console.log("sampleMatches populated:", sampleMatches);
-//   } catch (error) {
-//     console.error("Error parsing 'predictedMatches' from localStorage:", error);
-//   }
-// }
-
-// // Wait 20 seconds before fetching
-// setTimeout(populateSampleMatches, 20000);
-// // ENDS HERE 
-
-// Initialize sampleMatches object with all sports (empty arrays)
-const sampleMatches = {
-  Soccer: [],
-  Basketball: [],
-  Hockey: [],
-  "American Football": [],
-  "Table Tennis": [],
-  "Horse Race": []
+// Sample data for predicted matches per sport and odds - normally from API
+const sampleMatches = 
+{
+    Soccer: [
+        {
+            home: "Manchester United",
+            away: "Chelsea",
+            league: "Premier League",
+            time: "2025-08-12 19:45",
+            score: "1 - 2",
+            prediction: "BTTS - No",
+            confidence: 85,
+            homeLogo: "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg",
+            awayLogo: "https://upload.wikimedia.org/wikipedia/en/c/c2/Chelsea_FC.svg"
+        },
+        {
+            home: "Barcelona",
+            away: "Real Madrid",
+            league: "La Liga",
+            time: "2025-08-13 21:00",
+            score: "3 - 2",
+            prediction: "Over 2.5 Goals",
+            confidence: 78,
+            homeLogo: "https://upload.wikimedia.org/wikipedia/en/0/09/FC_Barcelona_%28crest%29.svg",
+            awayLogo: "https://upload.wikimedia.org/wikipedia/en/f/fc/Real_Madrid_CF.svg"
+        },
+        {
+            home: "Paris Saint-Germain",
+            away: "Lyon",
+            league: "Ligue 1",
+            time: "2025-08-14 18:30",
+            score: "2 - 0",
+            prediction: "Home Win",
+            confidence: 90,
+            homeLogo: "https://upload.wikimedia.org/wikipedia/en/e/e1/Paris_Saint-Germain_F.C..svg",
+            awayLogo: "https://upload.wikimedia.org/wikipedia/en/7/7c/Olympique_Lyonnais.svg"
+        }
+    ],
+    // Basketball: [
+    //     {
+    //         home: "LA Lakers",
+    //         away: "Boston Celtics",
+    //         league: "NBA",
+    //         time: "2025-08-15 20:00",
+    //         score: "102 - 99",
+    //         prediction: "Home Win",
+    //         confidence: 88,
+    //         homeLogo: "https://upload.wikimedia.org/wikipedia/commons/3/3c/Los_Angeles_Lakers_logo.svg",
+    //         awayLogo: "https://upload.wikimedia.org/wikipedia/en/8/8f/Boston_Celtics.svg"
+    //     }
+    // ],
+    // Hockey: [
+    //     {
+    //         home: "Toronto Maple Leafs",
+    //         away: "Montreal Canadiens",
+    //         league: "NHL",
+    //         time: "2025-08-16 19:30",
+    //         score: "4 - 3",
+    //         prediction: "Away Win",
+    //         confidence: 72,
+    //         homeLogo: "https://upload.wikimedia.org/wikipedia/en/7/7f/Toronto_Maple_Leafs_logo.svg",
+    //         awayLogo: "https://upload.wikimedia.org/wikipedia/en/1/12/Montreal_Canadiens_logo.svg"
+    //     }
+    // ],
+    // "American Football": [
+    //     {
+    //         home: "Dallas Cowboys",
+    //         away: "Green Bay Packers",
+    //         league: "NFL",
+    //         time: "2025-08-17 18:00",
+    //         score: "21 - 17",
+    //         prediction: "Home Win",
+    //         confidence: 83,
+    //         homeLogo: "https://upload.wikimedia.org/wikipedia/commons/1/15/Dallas_Cowboys.svg",
+    //         awayLogo: "https://upload.wikimedia.org/wikipedia/commons/5/53/Green_Bay_Packers_logo.svg"
+    //     }
+    // ],
+    // "Table Tennis": [
+    //     {
+    //         home: "Player A",
+    //         away: "Player B",
+    //         league: "World TT Championship",
+    //         time: "2025-08-18 14:00",
+    //         score: "3 - 1",
+    //         prediction: "Home Win",
+    //         confidence: 76,
+    //         homeLogo: "https://upload.wikimedia.org/wikipedia/commons/4/45/Table_tennis_pictogram.svg",
+    //         awayLogo: "https://upload.wikimedia.org/wikipedia/commons/4/45/Table_tennis_pictogram.svg"
+    //     }
+    // ],
+    // "Horse Race": [
+    //     {
+    //         home: "Thunderbolt",
+    //         away: "Speed King",
+    //         league: "Grand National",
+    //         time: "2025-08-19 16:30",
+    //         score: "N/A",
+    //         prediction: "Winner: Thunderbolt",
+    //         confidence: 81,
+    //         homeLogo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Horse_silhouette_icon.svg",
+    //         awayLogo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Horse_silhouette_icon.svg"
+    //     }
+    // ]
 };
-
-// Function to populate sampleMatches from localStorage
-function populateSampleMatches() {
-  try {
-    const stored = localStorage.getItem("defaultPredictions");
-    if (!stored) {
-      console.warn("No 'defaultPredictions' key found.");
-      return;
-    }
-
-    const storedMatches = JSON.parse(stored);    
-
-    if (!Array.isArray(storedMatches)) {
-      console.error("'defaultPredictions' is not an array!");
-      return;
-    }
-
-    // Group matches by sport **without deduplicating**
-    const sports = [...new Set(storedMatches.map(m => m.sport))];
-
-    sports.forEach(sport => {
-      // Filter matches for this sport
-      const matches = storedMatches
-        .filter(m => m.sport === sport)
-        .map(m => ({
-          home: m.home,
-          away: m.away,
-          league: m.league,
-          time: m.time || m.kick,       // use either time or kick if present
-          odd: m.odd || m.odds || null,  // numeric odd
-          score: m.score || "",
-          prediction: m.prediction || [],
-          confidence: m.confidence || 0,
-          homeLogo: m.homeLogo || "",
-          awayLogo: m.awayLogo || ""
-        }));
-
-      // Assign all matches directly
-      sampleMatches[sport] = matches;
-    });
-
-    console.log("AA:", sampleMatches);
-  } catch (error) {
-    console.error("Error parsing 'defaultPredictions' from localStorage:", error);
-  }
-}
-
-// Wait 20 seconds before fetching
-setTimeout(populateSampleMatches, 20000);
-
-
-
 
 document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', function() {
@@ -488,40 +358,12 @@ sportBtns.forEach(btn =>
 // ]; // Example odds values
 
 const oddsOptions = [
-    "Win - Home",
-    "Win - Away",
-    "Draw",
-    "First Team to Score",
-    "Half-time/Full-time",
-    "Over/Under 5.5 Goals",
-    "Win to Nil",
-    "Both Halves Over 1.5",
-    "Goal Line",
-    "Over/Under 7.5 Goals",
-    "Draw No Bet",
-    "Half-time Result",
-    "Asian Handicap",
-    "Over/Under Total Goals",
-    "Fulltime Result (1X2)",
-    "Odd/Even Goals",
-    "Red Card?",
-    "Corners",
-    "Over/Under 1.5 Goals",
-    "Double Chance",
-    "Exact Goals",
-    "Yellow Card?",
-    "Over/Under 2.5 Goals",
-    "Over/Under 3.5 Goals",
-    "Over/Under 4.5 Goals",
-    "Clean Sheet",
-    "Correct Score",
-    "Over/Under 6.5 Goals",
-    "Penalty Awarded?",
-    "Over/Under 0.5 Goals",
-    "Both Teams To Score",
-     1, 2, 3, 5,
-];
+    "Straight Win", "Most Scoring Halves",
+    "Multi Goals", "Correct Score", "DNB", "Over 1.5",
+    "Over 2.5", "Under 3.5", "Under 4.5",
+    "Double Chance", 1, 2, 3, 5
 
+]; // Example odds values
 
 
 // Create the odds buttons dynamically
@@ -599,7 +441,23 @@ function copyToClipboard(text) {
 
 // Function to generate prediction cards
 function renderPredictions(matches) {
-   
+    // if (!matches || matches.length === 0) {
+    //     setTimeout(() => {
+    //     showCustomAlert(
+    //         "warning",
+    //         "No predictions are available for the selected filters. You will be redirected to today’s predictions.",
+    //         "warning"
+    //     );
+    //     window.location.href = "http://localhost/game/#todayPredictionHeader";
+    //     }, 20);
+    //     return;
+    // }
+    
+    // predictionsList.innerHTML = "";
+    // if (!matches || matches.length === 0) {
+    //     predictionsList.innerHTML = `<p class="text-center fs-4 text-warning">No predictions available for the selected filters.</p>`;
+    //     return;
+    // }
     console.log(matches);
     
     predictionsList.innerHTML = "";
@@ -620,17 +478,6 @@ function renderPredictions(matches) {
         const accordionId = `accordionItem${index}`;
         const collapseId = `collapse${index}`;
         const headingId = `heading${index}`;
-
-        // Prepare a readable prediction string
-        let predictionText = "No prediction available";
-        if (Array.isArray(match.prediction) && match.prediction.length > 0) {
-            const preds = match.prediction[0].predictions;
-            if (preds && typeof preds === "object") {
-                predictionText = Object.entries(preds)
-                    .map(([key, value]) => `${key.replace(/_/g, " ")}: ${value.toFixed(2)}%`)
-                    .join(" | ");
-            }
-        }
 
         card.innerHTML = `
             <div class="accordion accordion-flush" id="${accordionId}">
@@ -654,7 +501,7 @@ function renderPredictions(matches) {
                                 </div>
                             </div>
                             <div class="match-info">${match.league} • ${match.time}</div>
-                            <div class="prediction-details">Prediction: ${predictionText}</div>
+                            <div class="prediction-details">Prediction: ${match.prediction}</div>
                             <div class="tooltip-badge confidence-badge" tabindex="0" aria-describedby="tooltip-${key}">
                                 Confidence: ${match.confidence}%
                                 <span class="tooltip-texts" role="tooltip" id="tooltip-${key}">Confidence indicates likelihood of prediction accuracy</span>
@@ -737,110 +584,23 @@ function renderPredictions(matches) {
 }
 
 
-// Function to remove duplicates from matches
-function removeDuplicates(matches) {
-    const seen = new Set();
-    return matches.filter(m => {
-        const key = `${m.sport}|${m.home}|${m.away}|${m.market}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-    });
-}
+// Function to filter matches by odds and risk (demo logic)
+function filterMatches(matches, odds, risk) {
+    if (!matches) return [];
 
-function filterMatches(matches, selectedOdds, selectedRisk) {
-    if (!Array.isArray(matches)) return [];
+    // Filter by odds - demo: show fewer matches for higher odds
+    let filtered = matches.slice(0, Math.max(1, Math.floor(matches.length * (2 / odds))));
 
-    // Step 0: Remove duplicates first
-    let uniqueMatches = removeDuplicates(matches);
-
-    // Normalize odds input
-    const isNumericOdd = !isNaN(Number(selectedOdds));
-    const numericOdds = isNumericOdd ? Number(selectedOdds) : null;
-
-    // Step 1: Filter by selected odds
-    let filtered = uniqueMatches
-        .map(match => {
-            const m = { ...match };
-
-            if (!isNumericOdd) {
-                // Filter by market name
-                if (Array.isArray(m.prediction)) {
-                    const marketMatch = m.prediction.find(
-                        p => p.market.toLowerCase().trim() === selectedOdds.toLowerCase().trim()
-                    );
-                    if (marketMatch) {
-                        m.prediction = [marketMatch]; // Keep only selected market
-                    } else {
-                        return null;
-                    }
-                } else {
-                    return null;
-                }
-            } else {
-                // Filter by numeric odd
-                if (m.odd === undefined || m.odd !== numericOdds) {
-                    return null;
-                }
-            }
-
-            return m;
-        })
-        .filter(m => m !== null);
-
-    // Step 2: Filter by risk level
-    switch (selectedRisk) {
-        case "Low risk":
-            filtered = filtered.filter(m => m.confidence >= 80);
-            break;
-        case "Very low risk":
-            filtered = filtered.filter(m => m.confidence >= 70);
-            break;
-        case "Least risk":
-        default:
-            // No filtering — show all
-            break;
+    // Filter by risk - demo: low risk => top confident matches; least risk => show all
+    if (risk === "Low risk") {
+        filtered = filtered.filter(m => m.confidence >= 80);
+    } else if (risk === "Very low risk") {
+        filtered = filtered.filter(m => m.confidence >= 70);
     }
+    // "Least risk" shows everything
 
     return filtered;
 }
-
-// function filterMatches(matches, selectedOdds, selectedRisk) {
-//   if (!Array.isArray(matches)) return [];
-
-//   // Normalize odds input
-//   const isNumericOdd = !isNaN(Number(selectedOdds));
-//   const numericOdds = isNumericOdd ? Number(selectedOdds) : null;
-
-//   // Step 1: Filter by odds (if numeric)
-//   let filtered = matches;
-//   if (isNumericOdd && numericOdds > 0) {
-//     const oddsThreshold = Math.max(1, Math.floor(matches.length * (2 / numericOdds)));
-//     filtered = matches.slice(0, oddsThreshold);
-//   }
-
-//   // Step 2: Filter by risk level
-//   switch (selectedRisk) {
-//     case "High risk":
-//       filtered = filtered.filter(m => m.confidence < 70); // lower confidence
-//       break;
-//     case "Low risk":
-//       filtered = filtered.filter(m => m.confidence >= 80); // high confidence
-//       break;
-//     case "Very low risk":
-//       filtered = filtered.filter(m => m.confidence >= 70); // moderate confidence
-//       break;
-//     case "Least risk":
-//     default:
-//       // No filtering — show all
-//       break;
-//   }
-
-//   return filtered;
-// }
-
-
-// ------------------- Example Usage -------------------
 
 generateBtn.addEventListener("click", () => {
     if (!selectedSport) {
@@ -866,17 +626,15 @@ generateBtn.addEventListener("click", () => {
     }
 
     let matches = sampleMatches[selectedSport];
-
     if (!matches) {
         predictionsList.innerHTML = `<p class="text-center fs-4 text-warning">No data available for selected sport.</p>`;
         return;
     }
     
-
-    console.log("CALL FILTERMA..: ",matches, " ODD: ",  selectedOdds, "RISK: ", selectedRisk);
     const filteredMatches = filterMatches(matches, selectedOdds, selectedRisk);
-    console.log("S: ",filteredMatches);
-
+    // console.log(filteredMatches);
+    // console.log(!filteredMatches || filteredMatches.length === 0);
+    
     if (!filteredMatches || filteredMatches.length === 0) {
         setTimeout(() => {
             generateBtn.classList.add("d-none");
@@ -890,7 +648,6 @@ generateBtn.addEventListener("click", () => {
         }, 20);
         return;
     }
-    
     
     renderPredictions(filteredMatches);
     
@@ -1342,7 +1099,5 @@ riskGroup.addEventListener('keydown', (e) => {
 // Initialize first option as selected/focused if none selected
 const initiallyCheckedIndex = Array.from(radios).findIndex((r) => r.checked);
 updateAriaChecked(initiallyCheckedIndex >= 0 ? initiallyCheckedIndex : 0);
-
-
 
 

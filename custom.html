@@ -322,7 +322,7 @@
         const dd = String(today.getDate()).padStart(2, "0");
         const todayYYYYMMDD = `${yyyy}-${mm}-${dd}`;
 
-        // Fetch matches from backend
+        // // Fetch matches from backend
         async function fetchMatchesFromAPI() {
             try {
                 const res = await fetch(`./backend/t.php?date=${todayYYYYMMDD}`);
@@ -336,6 +336,138 @@
             } catch (err) {
                 showCustomAlert("Failed to load matches: " + err.message, "error");
             }
+        }
+
+        async function fetchMatchesFromAPI() {
+            try {
+                const res = await fetch(`./backend/t.php?date=${todayYYYYMMDD}`);
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+                const apiData = await res.json();
+                console.log("Fetched Data:", apiData);
+
+                // Process predictions by sport
+                processPredictions(apiData);
+
+                // Continue with your existing rendering
+                loadApiMatches(apiData);
+
+                // ✅ Save everything into one key
+                localStorage.setItem("defaultPredictions", JSON.stringify(apiData));
+
+                console.log("Saved apiData Predictions:", apiData);
+            } catch (err) {
+                showCustomAlert("Failed to load matches: " + err.message, "error");
+            }
+        }
+
+
+        // async function fetchMatchesFromAPI() {
+        //     try {
+        //         const res = await fetch(`./backend/t.php?date=${todayYYYYMMDD}`);
+        //         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+        //         const apiData = await res.json();
+        //         console.log("Fetched Data:", apiData);
+
+        //         // Add confidence to each match
+        //         apiData.forEach(match => {
+        //             if (Array.isArray(match.prediction) && match.prediction.length > 0) {
+        //                 const predObj = match.prediction[0].predictions;
+        //                 if (predObj && typeof predObj === "object") {
+        //                     // Calculate confidence as the highest prediction probability
+        //                     const maxVal = Math.max(...Object.values(predObj));
+        //                     match.confidence = parseFloat(maxVal.toFixed(2)); // attach confidence
+        //                 } else {
+        //                     match.confidence = 0;
+        //                 }
+        //             } else {
+        //                 match.confidence = 0;
+        //             }
+        //         });
+
+        //         // Process predictions by sport (existing function)
+        //         processPredictions(apiData);
+
+        //         // Continue with your existing rendering
+        //         loadApiMatches(apiData);
+
+        //         // ✅ Save everything into one key
+        //         localStorage.setItem("defaultPredictions", JSON.stringify(apiData));
+
+        //         console.log("Saved apiData with confidence:", apiData);
+        //     } catch (err) {
+        //         showCustomAlert("Failed to load matches: " + err.message, "error");
+        //     }
+        // }
+
+
+        
+        function processPredictions(matches) {
+            if (!Array.isArray(matches)) return;
+
+            const thresholds = {
+                very_low: 0,
+                low: 20,
+                medium: 40,
+                high: 60,
+                very_high: 80
+            };
+
+            let best = {
+                very_low: null,
+                low: null,
+                medium: null,
+                high: null,
+                very_high: null
+            };
+
+            matches.forEach(match => {
+                if (match.sport !== "Soccer") return; // only Soccer for now
+                if (!Array.isArray(match.prediction)) return;
+
+                match.prediction.forEach(pred => {
+                    if (!pred.predictions) return;
+
+                    const values = Object.values(pred.predictions).map(Number).filter(v => !isNaN(v));
+                    if (values.length === 0) return;
+
+                    const maxProb = Math.max(...values);
+
+                    let category = null;
+                    if (maxProb < thresholds.low) category = "very_low";
+                    else if (maxProb < thresholds.medium) category = "low";
+                    else if (maxProb < thresholds.high) category = "medium";
+                    else if (maxProb < thresholds.very_high) category = "high";
+                    else category = "very_high";
+
+                    if (!best[category] || maxProb > best[category].confidence) {
+                        const outcomeKey = Object.keys(pred.predictions).reduce((bestKey, key) => {
+                            return pred.predictions[key] > (pred.predictions[bestKey] || 0) ? key : bestKey;
+                        }, null);
+
+                        best[category] = {
+                            time: match.kick || match.time || "",
+                            teams: `${match.home} vs ${match.away}`,
+                            league: match.league || "",
+                            homeLogo: match.homeLogo || "",
+                            awayLogo: match.awayLogo || "",
+                            home: match.home || "",
+                            away: match.away || "",
+                            odd: match.odds || "",
+                            score: match.score || "0 - 0",
+                            prediction: outcomeKey ? `${pred.market} - ${outcomeKey}` : pred.market,
+                            confidence: maxProb,
+                            isFavorited: false
+                        };
+                    }
+                });
+            });
+
+            // ✅ Save everything into one key
+            localStorage.setItem("bestPredictions", JSON.stringify(best));
+
+            console.log("Saved Best Predictions:", best);
         }
 
         // Call the function

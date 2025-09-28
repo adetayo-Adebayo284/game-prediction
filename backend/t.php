@@ -74,7 +74,7 @@ function mapPredictions($predictions, $marketTypes){
     if(!is_array($predictions)) return $predictions;
     foreach($predictions as &$pred){
         if(isset($pred['type_id'])){
-            $pred['market'] = $marketTypes[$pred['type_id']] ?? "Unknown Market";
+            $pred['market'] = $marketTypes[$pred['type_id']] ?? "";
             unset($pred['type_id']);
         }
     }
