@@ -1,5 +1,7 @@
 <?php
 
+// USE THIS ITS THE ONE YOU USE BEFORE BUT ODDS ARE NOT PRESENT
+
 error_reporting(0);
 header('Content-Type: application/json');
 
@@ -290,7 +292,7 @@ exit(json_encode($matchesDB, JSON_PRETTY_PRINT));
 
 
 
-// NO 3 ODDS INCLUDED
+// // NO 3 ODDS INCLUDED
 
 // error_reporting(0);
 // header('Content-Type: application/json');

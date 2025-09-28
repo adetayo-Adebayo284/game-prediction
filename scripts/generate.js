@@ -87,6 +87,85 @@ function showCustomAlert(msg,type="info"){
     document.getElementById("alert-ok-btn").onclick=()=>alertBox.classList.add("hidden");
 }
 
+// /* ----------------------------
+//     Render matches
+// ----------------------------*/
+// function renderList(){
+//     const selC=document.getElementById('selectedList');
+//     const unselC=document.getElementById('unselectedList');
+//     const selH=document.getElementById('selectedHeader');
+//     const unselH=document.getElementById('unselectedHeader');
+//     selC.innerHTML=''; unselC.innerHTML='';
+
+//     const filtered=state.rows.filter(m=>m.sport.toLowerCase()===state.sport);
+//     const selCount=filtered.filter(m=>state.selectedIds.has(m.id)).length;
+//     const unselCount=filtered.length-selCount;
+
+//     selH.textContent=selCount?`Selected Matches (${selCount})`:"No Matches Selected";
+//     unselH.textContent=unselCount?`Other Matches (${unselCount})`:"No Other Matches";
+
+//     filtered.forEach(m=>{
+//         const isSel = state.selectedIds.has(m.id);
+//         const row = document.createElement('div');
+//         row.className='row'+(isSel?' selected':'');
+//         row.dataset.id = m.id;
+//         const accordionId=`accordion-${m.id}`;
+//         const headingId=`heading-${m.id}`;
+//         const collapseId=`collapse-${m.id}`;
+//         const prediction = pick(["Home Win","Away Win","Draw","Over 2.5","Under 2.5"]);
+//         const badgeColor=riskColors[m.risk]||"gray";
+
+//         row.innerHTML=`
+//         <div class="accordion" id="${accordionId}">
+//           <div class="accordion-item">
+//             <h2 class="accordion-header" id="${headingId}" data-target="#${collapseId}">
+//               <button class="accordion-button" type="button">${m.home} vs ${m.away}</button>
+//               <span class="select-btn ${isSel?'selected':''}" title="${isSel?'Deselect':'Select'}">${isSel?'✅':'⭕'}</span>
+//             </h2>
+//             <div id="${collapseId}" class="accordion-collapse" style="display:none;">
+//               <div class="accordion-body">
+//                 <div class="match-header">
+//                   <div class="team"><img src="${m.homeLogo}" alt="${m.home}" class="team-logo" /><div class="team-name">${m.home}</div></div>
+//                   <div class="vs">vs</div>
+//                   <div class="team"><img src="${m.awayLogo}" alt="${m.away}" class="team-logo" /><div class="team-name">${m.away}</div></div>
+//                   <div class="match-score">@ ${fmtOdds(m.odds)}</div>
+//                 </div>
+//                 <div class="match-info">
+//                     ${m.market} • 
+//                     <span class="risk-badge" style="color:${badgeColor};font-weight:bold;">
+//                         ${prettyRisk(m.risk)}
+//                     </span> • 
+//                     ${m.league} • ${m.kick}
+//                 </div>
+//                 <div class="prediction-details">Prediction: ${prediction}</div>
+//                 <div class="card-actions">
+//                   <button class="copy-btn" 
+//                           data-text="${m.home} vs ${m.away} | Prediction: ${prediction} | Odds: ${fmtOdds(m.odds)}">🔗</button>
+//                   <button class="delete-btn" data-id="${m.id}">🗑️</button>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>`;
+//         (isSel?selC:unselC).appendChild(row);
+//     });
+
+//     ['selectedList','unselectedList'].forEach(id=>{
+//         const cont=document.getElementById(id);
+//         cont.onclick=e=>{
+//             const copyBtn=e.target.closest('.copy-btn');
+//             if(copyBtn){navigator.clipboard.writeText(copyBtn.dataset.text).then(()=>showCustomAlert("Copied!","success"));return;}
+//             const delBtn=e.target.closest('.delete-btn');
+//             if(delBtn){state.rows=state.rows.filter(r=>r.id!==delBtn.dataset.id);state.selectedIds.delete(delBtn.dataset.id);renderList();updateTotals();return;}
+//             const selBtn=e.target.closest('.select-btn');
+//             if(selBtn){const row=selBtn.closest('.row');if(!row)return;const rowId=row.dataset.id;state.selectedIds.has(rowId)?state.selectedIds.delete(rowId):state.selectedIds.add(rowId);renderList();updateTotals();return;}
+//             const header=e.target.closest('.accordion-header');
+//             if(header){const collapseId=header.getAttribute('data-target');const el=cont.querySelector(collapseId);if(!el)return;const show=el.style.display==='block';cont.querySelectorAll('.accordion-collapse').forEach(x=>x.style.display='none');el.style.display=show?'none':'block';}
+//         };
+//     });
+// }
+
+
 /* ----------------------------
     Render matches
 ----------------------------*/
@@ -101,68 +180,232 @@ function renderList(){
     const selCount=filtered.filter(m=>state.selectedIds.has(m.id)).length;
     const unselCount=filtered.length-selCount;
 
-    selH.textContent=selCount?`Selected Matches (${selCount})`:"No Matches Selected";
-    unselH.textContent=unselCount?`Other Matches (${unselCount})`:"No Other Matches";
+    // --- Inject custom scrollbar CSS once ---
+    if (!document.getElementById("custom-scrollbar-style")) {
+        const style = document.createElement("style");
+        style.id = "custom-scrollbar-style";
+        style.innerHTML = `
+            /* Custom scrollbar for swiper slides */
+            .swiper-slide::-webkit-scrollbar {
+                width: 6px;   /* thin scrollbar */
+            }
+            .swiper-slide::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .swiper-slide::-webkit-scrollbar-thumb {
+                background: #ffc107;   /* yellow thumb */
+                border-radius: 6px;
+            }
+            .swiper-slide::-webkit-scrollbar-thumb:hover {
+                background: #ffdd33;   /* lighter on hover */
+            }
+            /* Firefox support */
+            .swiper-slide {
+                scrollbar-width: thin;
+                scrollbar-color: #ffc107 transparent;
+            }
+        `;
+        document.head.appendChild(style);
+    }
 
-    filtered.forEach(m=>{
+    // --- Safely update headers ---
+    if (selH) {
+        selH.textContent = selCount ? `Selected Matches (${selCount})` : "No Matches Selected";
+    }
+    if (unselH) {
+        unselH.textContent = unselCount ? `Other Matches (${unselCount})` : "No Other Matches";
+    }
+
+    filtered.forEach(m => {
         const isSel = state.selectedIds.has(m.id);
         const row = document.createElement('div');
-        row.className='row'+(isSel?' selected':'');
+        row.className = 'row' + (isSel ? ' selected' : '');
         row.dataset.id = m.id;
-        const accordionId=`accordion-${m.id}`;
-        const headingId=`heading-${m.id}`;
-        const collapseId=`collapse-${m.id}`;
-        const prediction = pick(["Home Win","Away Win","Draw","Over 2.5","Under 2.5"]);
-        const badgeColor=riskColors[m.risk]||"gray";
+        const accordionId = `accordion-${m.id}`;
+        const headingId = `heading-${m.id}`;
+        const collapseId = `collapse-${m.id}`;
+        const badgeColor = riskColors[m.risk] || "gray";
 
-        row.innerHTML=`
-        <div class="accordion" id="${accordionId}">
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="${headingId}" data-target="#${collapseId}">
-              <button class="accordion-button" type="button">${m.home} vs ${m.away}</button>
-              <span class="select-btn ${isSel?'selected':''}" title="${isSel?'Deselect':'Select'}">${isSel?'✅':'⭕'}</span>
-            </h2>
-            <div id="${collapseId}" class="accordion-collapse" style="display:none;">
-              <div class="accordion-body">
-                <div class="match-header">
-                  <div class="team"><img src="${m.homeLogo}" alt="${m.home}" class="team-logo" /><div class="team-name">${m.home}</div></div>
-                  <div class="vs">vs</div>
-                  <div class="team"><img src="${m.awayLogo}" alt="${m.away}" class="team-logo" /><div class="team-name">${m.away}</div></div>
-                  <div class="match-score">@ ${fmtOdds(m.odds)}</div>
+        // --- Build Swiper slides for predictions ---
+        let predictionSwiperHTML = "";
+        if (Array.isArray(m.prediction) && m.prediction.length) {
+            const slides = m.prediction.map(p => {
+                const values = Object.entries(p.predictions)
+                    .map(([key, val]) => {
+                        if (val == null) return `<div>${key.replace(/_/g,' ')}: N/A</div>`;
+                        const percent = Number(val).toFixed(2);
+
+                        let color = "#9e9e9e";
+                        if (percent >= 70) color = "#4CAF50"; // green
+                        else if (percent >= 50) color = "#FB8C00"; // orange
+                        else color = "#E53935"; // red
+
+                        return `<div style="font-size:13px;color:${color};font-weight:bold;margin-bottom:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+                            ${key.replace(/_/g,' ')}: ${percent}%
+                        </div>`;
+                    }).join("");
+
+                return `<div class="swiper-slide" style="
+                            background: #000;
+                            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                            padding: 12px;
+                            border-radius: 12px;
+                            width: 150px;  /* reduced width */
+                            height: 160px; /* slightly smaller */
+                            overflow-y: auto;
+                            font-family: 'Segoe UI', sans-serif;
+                            color: #fff;
+                            box-sizing: border-box;
+                        ">
+                            <strong style="display:block;margin-bottom:6px;">${p.market}</strong>
+                            ${values}
+                        </div>`;
+            }).join("");
+
+            predictionSwiperHTML = `
+            <div class="swiper-container swiper-predictions-${m.id}" style="padding:10px 0;">
+                <div class="swiper-wrapper">
+                    ${slides}
                 </div>
-                <div class="match-info">
-                    ${m.market} • 
-                    <span class="risk-badge" style="color:${badgeColor};font-weight:bold;">
-                        ${prettyRisk(m.risk)}
-                    </span> • 
-                    ${m.league} • ${m.kick}
+                <div class="swiper-pagination" style="opacity: 0;"></div>
+                <div class="swiper-button-prev" style="color:#ffc107; opacity: 0;"></div>
+                <div class="swiper-button-next" style="color:#ffc107; opacity: 0;"></div>
+            </div>`;
+        }
+
+        // --- Build the main card ---
+        row.innerHTML = `
+        <div class="accordion" id="${accordionId}" style="
+            background: rgba(30, 30, 40, 0.95);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Segoe UI', sans-serif;
+            color: #f5f5f5;
+            margin: 20px 0;
+        ">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="${headingId}" data-target="#${collapseId}">
+                    <button class="accordion-button" type="button">${m.home} vs ${m.away}</button>
+                    <span class="select-btn ${isSel ? 'selected' : ''}" 
+                        title="${isSel ? 'Deselect' : 'Select'}">${isSel ? '✅' : '⭕'}</span>
+                </h2>
+                <div id="${collapseId}" class="accordion-collapse" style="display:none;">
+                    <div class="accordion-body">
+                        <div class="match-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                            <div class="team" style="display:flex;align-items:center;">
+                                <img src="${m.homeLogo}" alt="${m.home}" class="team-logo" 
+                                    style="width:40px;height:40px;border-radius:50%;margin-right:6px;" />
+                                <div class="team-name">${m.home}</div>
+                            </div>
+                            <div class="vs">vs</div>
+                            <div class="team" style="display:flex;align-items:center;">
+                                <img src="${m.awayLogo}" alt="${m.away}" class="team-logo" 
+                                    style="width:40px;height:40px;border-radius:50%;margin-right:6px;" />
+                                <div class="team-name">${m.away}</div>
+                            </div>
+                            <div class="match-score" style="margin: 0 1rem 0 0;">@ ${fmtOdds(m.odds)}</div>
+                        </div>
+                        <div class="match-info" style="margin-bottom:10px;">
+                            ${m.market} • 
+                            <span class="risk-badge" style="color:${badgeColor};font-weight:bold;">
+                                ${prettyRisk(m.risk)}
+                            </span> • 
+                            ${m.league} • ${m.kick}
+                        </div>
+                        <div class="prediction-details">${predictionSwiperHTML}</div>
+                        <div class="card-actions" style="margin-top:10px;">
+                            <button class="copy-btn"
+                                style="cursor: pointer;"  
+                                data-text="${m.home} vs ${m.away} | Prediction: ${predictionSwiperHTML.replace(/<[^>]*>?/gm, '')} | Odds: ${fmtOdds(m.odds)}">🔗</button>
+                            <button class="delete-btn" style="cursor: pointer;" data-id="${m.id}">🗑️</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="prediction-details">Prediction: ${prediction}</div>
-                <div class="card-actions">
-                  <button class="copy-btn" 
-                          data-text="${m.home} vs ${m.away} | Prediction: ${prediction} | Odds: ${fmtOdds(m.odds)}">🔗</button>
-                  <button class="delete-btn" data-id="${m.id}">🗑️</button>
-                </div>
-              </div>
             </div>
-          </div>
         </div>`;
-        (isSel?selC:unselC).appendChild(row);
+
+        (isSel ? selC : unselC).appendChild(row);
+
+        // --- Initialize Swiper for this match ---
+        if (Array.isArray(m.prediction) && m.prediction.length) {
+            new Swiper(`.swiper-predictions-${m.id}`, {
+                slidesPerView: "auto",
+                spaceBetween: 8,
+                pagination: { 
+                    el: `.swiper-predictions-${m.id} .swiper-pagination`, 
+                    clickable: true 
+                },
+                navigation: {
+                    nextEl: `.swiper-predictions-${m.id} .swiper-button-next`,
+                    prevEl: `.swiper-predictions-${m.id} .swiper-button-prev`,
+                },
+                mousewheel: true,
+                freeMode: true,
+                centerInsufficientSlides: true,
+            });
+        }
     });
+
+
+
+
 
     ['selectedList','unselectedList'].forEach(id=>{
         const cont=document.getElementById(id);
-        cont.onclick=e=>{
+        cont.onclick=async e=>{
             const copyBtn=e.target.closest('.copy-btn');
-            if(copyBtn){navigator.clipboard.writeText(copyBtn.dataset.text).then(()=>showCustomAlert("Copied!","success"));return;}
+            if(copyBtn){
+                navigator.clipboard.writeText(copyBtn.dataset.text)
+                .then(()=>showCustomAlert("Copied!","success"));
+                return;
+            }
+
+            // 🗑️ Delete button with spinner
             const delBtn=e.target.closest('.delete-btn');
-            if(delBtn){state.rows=state.rows.filter(r=>r.id!==delBtn.dataset.id);state.selectedIds.delete(delBtn.dataset.id);renderList();updateTotals();return;}
+            if(delBtn){
+                showSpinner(true);
+                await wait(600); // simulate processing
+                state.rows=state.rows.filter(r=>r.id!==delBtn.dataset.id);
+                state.selectedIds.delete(delBtn.dataset.id);
+                renderList(); updateTotals();
+                showSpinner(false);
+                return;
+            }
+
+            // ✅ Select / Deselect with spinner
             const selBtn=e.target.closest('.select-btn');
-            if(selBtn){const row=selBtn.closest('.row');if(!row)return;const rowId=row.dataset.id;state.selectedIds.has(rowId)?state.selectedIds.delete(rowId):state.selectedIds.add(rowId);renderList();updateTotals();return;}
+            if(selBtn){
+                const row=selBtn.closest('.row');
+                if(!row) return;
+                const rowId=row.dataset.id;
+
+                showSpinner(true);
+                await wait(600); // simulate processing
+                if(state.selectedIds.has(rowId)){
+                    state.selectedIds.delete(rowId);
+                } else {
+                    state.selectedIds.add(rowId);
+                }
+                renderList(); updateTotals();
+                showSpinner(false);
+                return;
+            }
+
+            // Accordion toggle
             const header=e.target.closest('.accordion-header');
-            if(header){const collapseId=header.getAttribute('data-target');const el=cont.querySelector(collapseId);if(!el)return;const show=el.style.display==='block';cont.querySelectorAll('.accordion-collapse').forEach(x=>x.style.display='none');el.style.display=show?'none':'block';}
+            if(header){
+                const collapseId=header.getAttribute('data-target');
+                const el=cont.querySelector(collapseId);
+                if(!el) return;
+                const show=el.style.display==='block';
+                cont.querySelectorAll('.accordion-collapse')
+                    .forEach(x=>x.style.display='none');
+                el.style.display=show?'none':'block';
+            }
         };
     });
+
 }
 
 /* ----------------------------
