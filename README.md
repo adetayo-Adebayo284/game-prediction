@@ -180,16 +180,17 @@ Create a folder:
 ```
 assets/screenshots/
 ```
+
 ## 📸 Screenshots
 
 ### Dashboard
-![Dashboard](assets/screenshots/sport.png)
+![Dashboard](assets/screenshots/sport.PNG)
 
 ### Daily Matches
 ![Daily Matches](assets/screenshots/all.jpg)
 
 ### Mobile View
-![Mobile](assets/screenshots/sport_mobile.png)
+![Mobile](assets/screenshots/sport%20mobile.PNG)
 
 ### Custom Prediction Page
 ![Custom](assets/screenshots/custom.jpg)
