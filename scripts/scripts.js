@@ -655,10 +655,10 @@ function renderPredictions(matches) {
                             </div>
                             <div class="match-info">${match.league} • ${match.time}</div>
                             <div class="prediction-details">Prediction: ${predictionText}</div>
-                            <div class="tooltip-badge confidence-badge" tabindex="0" aria-describedby="tooltip-${key}">
+                            <!--<div class="tooltip-badge confidence-badge" tabindex="0" aria-describedby="tooltip-${key}">
                                 Confidence: ${match.confidence}%
                                 <span class="tooltip-texts" role="tooltip" id="tooltip-${key}">Confidence indicates likelihood of prediction accuracy</span>
-                            </div>
+                            </div>-->
 
                             <div class="card-actions" role="group" aria-label="Prediction actions">
                                 <button class="action-btn btn-save" aria-pressed="${isFavorited}" aria-label="${isFavorited ? "Remove from favorites" : "Add to favorites"}" title="${isFavorited ? "Remove from favorites" : "Add to favorites"}">

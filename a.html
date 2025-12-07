@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Predictions UI — Grouped Markets</title>
+    <style>
+        :root {
+            --bg: #f7f8fb;
+            --card: #fff;
+            --accent: #0b69ff;
+            --muted: #6b7280;
+            --radius: 10px;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+
+        body {
+            background: var(--bg);
+            margin: 24px;
+            color: #111;
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .match-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 12px;
+            box-shadow: 0 6px 18px rgba(12, 16, 32, 0.06);
+            margin-bottom: 14px;
+        }
+
+        .match-top {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .team {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .team img {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            object-fit: contain;
+            background: #fff;
+            border: 1px solid #eee;
+        }
+
+        .teams {
+            flex: 1;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .teams .vs {
+            font-size: 12px;
+            color: var(--muted);
+            margin: 0 8px;
+        }
+
+        .meta {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+
+        .markets {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .market-group {
+            background: #f2f6ff;
+            border-radius: 8px;
+            padding: 8px;
+            min-width: 160px;
+        }
+
+        .market-group h4 {
+            margin: 0 0 6px 0;
+            font-size: 12px;
+            color: var(--accent);
+        }
+
+        .market-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 6px;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            background: #fff;
+            border: 1px solid #e8eefc;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .market-line.small {
+            font-size: 12px;
+            padding: 6px;
+        }
+
+        .market-line .odds {
+            font-weight: 600;
+            color: #0b69ff;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        select,
+        input[type="text"] {
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: #fff;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .no-data {
+            padding: 18px;
+            text-align: center;
+            color: var(--muted);
+            background: #fff;
+            border-radius: 8px;
+        }
+
+        footer.small {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Matches — grouped markets UI (frontend mock)</h1>
+
+        <div class="controls" aria-hidden="false">
+            <label>
+                Sport:
+                <select id="sportSelect">
+                    <option>Soccer</option>
+                    <!-- add future sports -->
+                </select>
+            </label>
+
+            <label>
+                Risk:
+                <select id="riskSelect">
+                    <option value="Least risk">Least risk</option>
+                    <option value="Very low risk">Very low risk</option>
+                    <option value="Low risk">Low risk</option>
+                </select>
+            </label>
+
+            <label>
+                Market search:
+                <input id="marketSearch" placeholder="e.g. Over/Under or First Team to Score" />
+            </label>
+
+            <button id="applyBtn" class="btn">Apply</button>
+        </div>
+
+        <div id="matchesContainer"></div>
+
+        <footer class="small">
+            Demo: markets from API are kept distinct but grouped in UI (Over/Under grouped under "Over/Under Goals").
+        </footer>
+    </div>
+
+    <script>
+        /*
+          Demo frontend code:
+          - groups markets like "Over/Under 2.5 Goals" into parent "Over/Under Goals"
+          - lets user pick a line (2.5, 3.5, etc) and filters by risk and text search
+        */
+
+        // ----- sample data (replace with your actual fetch/populate logic) -----
+        const sampleMatches = [
+            {
+                home: "Leicester W",
+                away: "Tottenham W",
+                league: "Women's Super League",
+                time: "2025-09-28 11:00:00",
+                score: "",
+                // 'odd' here represents a single odds entry; in real data you'll have many rows per fixture (one per market/line)
+                odd: 1.91,
+                homeLogo: "https://cdn.sportmonks.com/images/soccer/teams/26/228634.png",
+                awayLogo: "https://cdn.sportmonks.com/images/soccer/teams/27/132699.png",
+                // predictions is the API array of markets for this fixture
+                prediction: [
+                    { market: "First Team to Score", predictions: { home: 30.0, away: 40.0, draw: 30.0 } },
+                    { market: "Fulltime Result (1X2)", predictions: { home: 25.29, draw: 39.8, away: 34.91 } },
+                    { market: "Over/Under 2.5 Goals", predictions: { yes: 75.68, no: 15.59, equal: 8.74 } },
+                    { market: "Over/Under 3.5 Goals", predictions: { yes: 65.28, no: 24.32, equal: 10.39 } },
+                    { market: "Yellow Card?", predictions: { yes: 67.71, no: 32.29 } }
+                ],
+                // if API doesn't provide confidence per fixture, we'll compute it from markets below
+                confidence: 0
+            },
+
+            // Add more fixtures to simulate many items - you can push the whole array from localStorage
+            {
+                home: "Manchester City W",
+                away: "London City Lionesses W",
+                league: "Women's Super League",
+                time: "2025-09-28 11:00:00",
+                score: "",
+                odd: 1.34,
+                homeLogo: "https://cdn.sportmonks.com/images/soccer/teams/10/132699.png",
+                awayLogo: "https://cdn.sportmonks.com/images/soccer/teams/26/228634.png",
+                prediction: [
+                    { market: "Fulltime Result (1X2)", predictions: { home: 60, draw: 10, away: 30 } },
+                    { market: "Over/Under 2.5 Goals", predictions: { yes: 20, no: 70, equal: 10 } }
+                ],
+                confidence: 0
+            }
+        ];
+
+        // ----- helper: group markets into UI categories -----
+        // Strategy: for a market name, produce a parent name and a line label
+        function splitMarket(marketName) {
+            if (!marketName || typeof marketName !== 'string') return { parent: 'Other', line: marketName || '' };
+
+            const lower = marketName.toLowerCase().trim();
+
+            // detect Over/Under X Goals -> parent: Over/Under Goals; line: X (e.g. 2.5)
+            const ouMatch = marketName.match(/over\/under\s+([0-9]+(?:\.[05])?)\s*goals/i);
+            if (ouMatch) {
+                return { parent: 'Over/Under Goals', line: ouMatch[1] };
+            }
+
+            // e.g. "Over/Under 2.5" without the 'Goals' word
+            const ouMatch2 = marketName.match(/over\/under\s*([0-9]+(?:\.[05])?)/i);
+            if (ouMatch2) return { parent: 'Over/Under Goals', line: ouMatch2[1] };
+
+            // First Team to Score -> parent exact
+            if (lower.includes('first team to score')) return { parent: 'First Team to Score', line: '' };
+
+            // Fulltime Result (1X2) -> keep parent 'Fulltime Result'
+            if (lower.includes('fulltime result') || lower.includes('1x2')) return { parent: 'Fulltime Result (1X2)', line: '' };
+
+            // Yellow Card? / Red Card? / Corners etc - they can be their own parent
+            const singleParents = ['yellow card', 'red card', 'corners', 'correct score', 'double chance', 'asian handicap', 'draw no bet', 'odd/even goals', 'exact goals'];
+            for (const sp of singleParents) {
+                if (lower.includes(sp)) return { parent: sp.split(' ').map((w, i) => i === 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w).join(' '), line: '' };
+            }
+
+            // default: parent == marketName (no grouping)
+            return { parent: marketName, line: '' };
+        }
+
+        // compute confidence from predictions: measure "peak strength" across markets
+        function computeConfidenceForFixture(fixture) {
+            // We'll loop predictions and derive a score:
+            // Approach (simple, explainable):
+            // - For each market: find the max probability value among its prediction values
+            // - Normalize / weight markets: markets like Fulltime Result, BTTS, Over/Under 2.5 are more important
+            // - We'll average top N market maxes with small weighting
+            if (!fixture.prediction || !Array.isArray(fixture.prediction) || fixture.prediction.length === 0) return 0;
+
+            const importanceWeights = {
+                'fulltime result (1x2)': 3,
+                'fulltime result': 3,
+                'both teams to score': 2,
+                'over/under goals': 2,
+                'over/under goals line': 1.5,
+                'first team to score': 1.8,
+                'asian handicap': 2,
+                'double chance': 1.5,
+                'draw no bet': 1.5,
+                // fallback
+                default: 1
+            };
+
+            // map markets to a normalized parent and max probability
+            const marketScores = fixture.prediction.map(p => {
+                const parent = splitMarket(p.market).parent.toLowerCase();
+                const preds = p.predictions || {};
+                const numericValues = Object.values(preds).map(v => Number(v)).filter(v => !isNaN(v));
+                const maxVal = numericValues.length ? Math.max(...numericValues) : 0;
+                // determine weight
+                let weight = importanceWeights[parent] || importanceWeights.default;
+                return { parent, maxVal, weight };
+            });
+
+            // sort by (maxVal * weight) descending
+            marketScores.sort((a, b) => (b.maxVal * b.weight) - (a.maxVal * a.weight));
+
+            // take top N (to avoid noise) — but also consider at least top 3
+            const topN = Math.min(5, marketScores.length);
+            const top = marketScores.slice(0, topN);
+
+            // compute weighted average of their maxVal percentages
+            const totalWeight = top.reduce((s, t) => s + t.weight, 0) || 1;
+            const weightedSum = top.reduce((s, t) => s + (t.maxVal * t.weight), 0);
+
+            // convert to percentage / confidence (cap at 99.99)
+            const raw = (weightedSum / totalWeight);
+            const conf = Math.max(0, Math.min(99.99, raw)); // keep in 0-99.99
+            return Number(conf.toFixed(2));
+        }
+
+        // render a single match card
+        function renderMatches(matches) {
+            const container = document.getElementById('matchesContainer');
+            container.innerHTML = '';
+            if (!matches || matches.length === 0) {
+                container.innerHTML = '<div class="no-data">No matches found.</div>';
+                return;
+            }
+
+            matches.forEach((fx, idx) => {
+                // compute confidence if not present
+                if (!fx.confidence || fx.confidence === 0) {
+                    fx.confidence = computeConfidenceForFixture(fx);
+                }
+
+                const card = document.createElement('article');
+                card.className = 'match-card';
+                card.innerHTML = `
+      <div class="match-top">
+        <div class="teams">
+          <div class="team">
+            <img src="${fx.homeLogo || ''}" alt="${fx.home} logo" />
+            <div>
+              <div style="font-weight:600">${fx.home}</div>
+              <div style="font-size:12px;color:${fx.confidence > 70 ? '#067a00' : '#6b7280'}">Confidence: ${fx.confidence}%</div>
+            </div>
+          </div>
+
+          <div class="vs">• ${fx.league} •</div>
+
+          <div class="team">
+            <img src="${fx.awayLogo || ''}" alt="${fx.away} logo" />
+            <div>
+              <div style="font-weight:600">${fx.away}</div>
+              <div style="font-size:12px;color:#6b7280">${new Date(fx.time.replace(' ', 'T')).toLocaleString()}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="markets" id="markets-${idx}"></div>
+    `;
+                container.appendChild(card);
+
+                // group markets for this fixture
+                const grouped = {}; // parent -> array of lines {line, marketObj}
+                (fx.prediction || []).forEach(p => {
+                    const { parent, line } = splitMarket(p.market);
+                    if (!grouped[parent]) grouped[parent] = [];
+                    grouped[parent].push({ line, marketObj: p });
+                });
+
+                // render groups inside markets container
+                const marketsEl = document.getElementById(`markets-${idx}`);
+                for (const [parent, items] of Object.entries(grouped)) {
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'market-group';
+                    const title = document.createElement('h4');
+                    title.textContent = parent;
+                    groupDiv.appendChild(title);
+
+                    // sort items by numeric line if numeric, otherwise by label
+                    items.sort((a, b) => {
+                        const na = parseFloat(a.line);
+                        const nb = parseFloat(b.line);
+                        if (!isNaN(na) && !isNaN(nb)) return na - nb;
+                        return (a.line || '').localeCompare(b.line || '');
+                    });
+
+                    items.forEach(it => {
+                        const m = it.marketObj;
+                        // find best outcome label & value (for quick glance)
+                        const preds = m.predictions || {};
+                        // convert to array of [label, value]
+                        const pairs = Object.entries(preds).map(([k, v]) => [k, Number(v)]);
+                        // pick the highest (label & value)
+                        pairs.sort((a, b) => b[1] - a[1]);
+                        const best = pairs[0] || ['—', 0];
+
+                        const lineEl = document.createElement('div');
+                        lineEl.className = 'market-line small';
+                        lineEl.tabIndex = 0;
+                        lineEl.innerHTML = `
+          <div>
+            <div style="font-weight:600">${it.line ? (parent + ' • ' + it.line) : parent}</div>
+            <div style="font-size:12px;color:var(--muted)">${best[0]} (${best[1]}%)</div>
+          </div>
+          <div class="odds">${fx.odd ? fx.odd.toFixed(2) : '-'}</div>
+        `;
+
+                        // clicking a line highlights and can trigger further behavior
+                        lineEl.addEventListener('click', () => {
+                            // simple highlight + log
+                            document.querySelectorAll('.market-line').forEach(el => el.style.outline = 'none');
+                            lineEl.style.outline = '3px solid rgba(11,105,255,0.12)';
+                            console.log('Selected market:', { fixture: fx.home + ' vs ' + fx.away, market: m.market, bestOutcome: best });
+                        });
+
+                        groupDiv.appendChild(lineEl);
+                    });
+
+                    marketsEl.appendChild(groupDiv);
+                }
+            });
+        }
+
+        // initial render
+        renderMatches(sampleMatches);
+
+        // ----- filtering logic -----
+        function applyFilters() {
+            const sport = document.getElementById('sportSelect').value;
+            const risk = document.getElementById('riskSelect').value;
+            const search = document.getElementById('marketSearch').value.trim().toLowerCase();
+
+            // in real usage you'd load sampleMatches from localStorage keyed by sport
+            let list = sampleMatches.slice(); // shallow copy
+
+            // compute confidence for all fixtures (if not done)
+            list.forEach(f => {
+                if (!f.confidence || f.confidence === 0) f.confidence = computeConfidenceForFixture(f);
+            });
+
+            // risk filter
+            list = list.filter(f => {
+                if (risk === 'Low risk') return f.confidence >= 80;
+                if (risk === 'Very low risk') return f.confidence >= 70;
+                return true;
+            });
+
+            // market search filter
+            if (search) {
+                list = list.filter(f => {
+                    if (!Array.isArray(f.prediction)) return false;
+                    return f.prediction.some(p => (p.market || '').toLowerCase().includes(search));
+                });
+            }
+
+            renderMatches(list);
+        }
+
+        // wire UI
+        document.getElementById('applyBtn').addEventListener('click', applyFilters);
+        document.getElementById('marketSearch').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') applyFilters();
+        });
+    </script>
+</body>
+
+</html>

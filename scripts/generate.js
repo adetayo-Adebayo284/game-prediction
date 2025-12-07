@@ -169,6 +169,33 @@ function showCustomAlert(msg,type="info"){
 /* ----------------------------
     Render matches
 ----------------------------*/
+// === Universal Time Converter Function ===
+function convertKickTime(kickStr, operation = 'subtract', hours = 0) {
+    if (!kickStr) return '';
+
+    // Parse kick string assuming Nigeria local time (UTC+1)
+    const localDate = new Date(kickStr.replace(' ', 'T') + '+01:00');
+
+    // Determine offset direction
+    const offset = hours * 60 * 60 * 1000;
+    const adjustedDate = new Date(
+        operation === 'add'
+            ? localDate.getTime() + offset
+            : localDate.getTime() - offset
+    );
+
+    // Format output
+    const options = {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    };
+    return adjustedDate.toLocaleString('en-US', options) + ' CST';
+}
+
 function renderList(){
     const selC=document.getElementById('selectedList');
     const unselC=document.getElementById('unselectedList');
@@ -311,7 +338,7 @@ function renderList(){
                             <span class="risk-badge" style="color:${badgeColor};font-weight:bold;">
                                 ${prettyRisk(m.risk)}
                             </span> • 
-                            ${m.league} • ${m.kick}
+                            ${m.league} • ${ convertKickTime(m.kick, 'subtract', 7)}
                         </div>
                         <div class="prediction-details">${predictionSwiperHTML}</div>
                         <div class="card-actions" style="margin-top:10px;">

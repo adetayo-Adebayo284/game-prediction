@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Odds</title>
+
+    <style>
+        /* Dropdown container */
+        .dropdown {
+            position: relative;
+            width: 100%;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        /* Selected button */
+        .dropdown .selected {
+            padding: 8px 12px;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            background: #0a1f44;
+            color: #ffd700;
+            font-weight: 500;
+            text-align: left;
+        }
+
+        /* Options container as bottom modal */
+        .dropdown .options {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px; /* reduced height */
+            overflow-y: auto;
+            background: #0a1f44;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.6);
+            z-index: 1000;
+            padding: 0;
+        }
+
+        /* Hide scrollbars */
+        .dropdown .options::-webkit-scrollbar {
+            display: none;
+        }
+        .dropdown .options {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        /* Header with close button */
+        .dropdown .options-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: #1f2e4a;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        /* Close button */
+        .dropdown .options-header .close-btn {
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* Option styling */
+        .dropdown .option {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255,215,0,0.2);
+            color: #ffd700;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown .option:last-child {
+            border-bottom: none;
+        }
+
+        /* Hover effect */
+        .dropdown .option:hover {
+            background-color: rgba(255,215,0,0.1);
+            color: #ffc107;
+        }
+
+        /* Open state */
+        .dropdown.open .options {
+            display: block;
+        }
+
+        /* Prevent body scroll while modal open */
+        body.no-scroll {
+            overflow: hidden;
+        }
+
+    </style>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="./styles/generate.css" />
+    <link rel="stylesheet" href="./styles/his.css" />
+    <link rel="stylesheet" href="./styles/response.css" />
+    <link rel="stylesheet" href="./styles/slide.css" />
+    <link rel="stylesheet" href="./styles/sug.css" />
+    <link rel="stylesheet" href="./styles/themes.css" />
+</head>
+
+
+<body>
+    <div class="wrap">
+        <header>
+            <h1>
+                <a href="./" style="color: #fff; text-decoration: none;">&lt; Back</a>
+            </h1>
+            <div class="spinner" id="spinner">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                Generating…
+            </div>
+        </header>
+
+        <section class="card">
+            <div class="controls">
+                <div class="field sport">
+                    <label for="sport">Sport</label>
+                    <select id="sport">
+                        <!-- options will be dynamically inserted by your JS -->
+                    </select>
+                </div>
+
+                <div class="field target">
+                    <label for="oddsTarget">Target Odds <b id="oddsTargetLabel" style="opacity: 0;">500.00</b></label>
+                    <div class="slider-row">
+                        <input id="oddsTarget" type="range" min="2" max="1000" value="10" step="1" />
+                        <input id="oddsTargetNumber" type="number" min="2" max="1000" value="10" />
+                    </div>
+                </div>
+
+                <div class="field risk">
+                    <label>Risk Level</label>
+                    <div class="pill-group" id="riskGroup"></div>
+                </div>
+
+                <div class="field go">
+                    <button class="btn btn-primary" id="generateBtn">GO</button>
+                </div>
+            </div>
+
+            <div class="meta">
+                <div class="stat">Selected Matches: <b id="selectedCount">0</b></div>
+                <div class="stat">Total Odds: <b id="totalOdds">0</b></div>
+                <div class="stat">Target: <b id="targetEcho">0</b></div>
+                <div class="stat">Tolerance: <b id="toleranceEcho">±10%</b></div>
+                <div class="stat">Risk: <b id="riskEcho">Low</b></div>
+            </div>
+
+            <!-- Loading placeholder -->
+            <div id="loadingPlaceholder" style="
+                  text-align:center;
+                  padding:40px;
+                  color:#ffc107;
+                  display:block;
+                  opacity:1;
+                  transition: opacity 0.6s ease;
+              ">
+                <div style="
+                      border:4px solid rgba(255,193,7,0.2);
+                      border-top:4px solid #ffc107;
+                      border-radius:50%;
+                      width:40px;
+                      height:40px;
+                      margin:0 auto 10px auto;
+                      animation: spin 1s linear infinite;
+                  "></div>
+                <span>Loading matches...</span>
+            </div>
+            
+            <!-- Auto/User-selected matches -->
+            <div id="selectedSection" style="display:none; opacity:0; transition:opacity 0.6s ease;">
+                <h3 id="selectedHeader">Selected Matches</h3>
+                <div id="selectedList">⚽ Match 1</div>
+            </div>
+            
+            <!-- Remaining matches -->
+            <div id="unselectedSection" style="display:none; opacity:0; transition:opacity 0.6s ease;">
+                <h3 id="unselectedHeader">Other Matches</h3>
+                <div id="unselectedList">⚽ Match 2</div>
+            </div>
+
+            <!-- Scroll-to-top button -->
+            <div id="scrollTopBtn" style="position:fixed; bottom:100px; right:20px;
+                        width:50px; height:50px; border-radius:50%;
+                        background:#ffc107; display:flex; align-items:center;
+                        justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.25);
+                        cursor:pointer; transition:opacity 0.3s, transform 0.3s;
+                        font-size:28px; font-weight:bold; color:#000;
+                        z-index:9999; opacity:0; visibility:hidden;">
+                ↑
+            </div>
+            
+            <script>
+                const scrollBtn = document.getElementById("scrollTopBtn");
+
+                // Show/hide button on scroll
+                window.addEventListener("scroll", () => {
+                    const scrollY = window.scrollY || document.documentElement.scrollTop;
+                    const pageHeight = document.documentElement.scrollHeight;
+                    const clientHeight = document.documentElement.clientHeight;
+
+                    if (scrollY > 100 && pageHeight > clientHeight + 150) {
+                        scrollBtn.style.opacity = "1";
+                        scrollBtn.style.visibility = "visible";
+                    } else {
+                        scrollBtn.style.opacity = "0";
+                        scrollBtn.style.visibility = "hidden";
+                    }
+                });
+
+                // Smooth scroll to top on click
+                scrollBtn.addEventListener("click", () => {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                });
+            </script>
+
+
+            
+            <script>
+                // Spin animation inline
+                const style = document.createElement("style");
+                style.innerHTML = `
+                  @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                  }
+                `;
+                document.head.appendChild(style);
+
+                function showLoading() {
+                    const loader = document.getElementById("loadingPlaceholder");
+                    loader.style.display = "block";
+                    loader.style.opacity = "1";
+
+                    document.getElementById("selectedSection").style.display = "none";
+                    document.getElementById("unselectedSection").style.display = "none";
+                }
+
+                function hideLoading() {
+                    const loader = document.getElementById("loadingPlaceholder");
+                    loader.style.opacity = "0"; // fade out
+
+                    setTimeout(() => {
+                        loader.style.display = "none";
+
+                        const selected = document.getElementById("selectedSection");
+                        const unselected = document.getElementById("unselectedSection");
+
+                        selected.style.display = "block";
+                        unselected.style.display = "block";
+
+                        // trigger fade-in
+                        setTimeout(() => {
+                            selected.style.opacity = "1";
+                            unselected.style.opacity = "1";
+                        }, 50);
+                    }, 600); // match transition duration
+                }
+
+                // Example usage
+                showLoading();
+                // Simulate data fetching (2s)
+                setTimeout(() => {
+                    hideLoading();
+                }, 2000);
+            </script>
+
+
+            <div class="footer">
+                <div class="totals">
+                    <div>
+                        <div class="big" id="totalOddsBig">0.00</div>
+                        <div class="hint">Select matches to move closer to your target.</div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-ghost" id="regenerateBtn">Regenerate</button>
+                        <button class="btn" id="resetBtn">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Custom Alert Box -->
+    <div id="custom-alert" class="custom-alert hidden">
+        <div class="custom-alert-content">
+            <div id="alert-icon" class="alert-icon"></div>
+            <h3 id="alert-title"></h3>
+            <p id="alert-message"></p>
+            <button id="alert-ok-btn">OK</button>
+        </div>
+    </div>
+
+    <script src="./scripts/generate.js"></script>
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    
+    <script>
+        // Get today's date in YYYY-MM-DD format
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, "0");
+        const dd = String(today.getDate()).padStart(2, "0");
+        const todayYYYYMMDD = `${yyyy}-${mm}-${dd}`;
+
+        async function fetchMatchesFromAPI() {
+            try {
+                const res = await fetch(`./backend/t.php?date=${todayYYYYMMDD}`);
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+                const apiData = await res.json();
+                console.log("Fetched Data:", apiData);
+
+                // Process predictions by sport
+                processPredictions(apiData);
+
+                // Continue with your existing rendering
+                loadApiMatches(apiData);
+
+                // ✅ Save everything into one key
+                localStorage.setItem("defaultPredictions", JSON.stringify(apiData));
+
+                console.log("Saved apiData Predictions:", apiData);
+            } catch (err) {
+                showCustomAlert("Failed to load matches: " + err.message, "error");
+            }
+        }
+
+        
+        function processPredictions(matches) {
+            if (!Array.isArray(matches)) return;
+
+            const thresholds = {
+                very_low: 0,
+                low: 20,
+                medium: 40,
+                high: 60,
+                very_high: 80
+            };
+
+            let best = {
+                very_low: null,
+                low: null,
+                medium: null,
+                high: null,
+                very_high: null
+            };
+
+            matches.forEach(match => {
+                if (match.sport !== "Soccer") return; // only Soccer for now
+                if (!Array.isArray(match.prediction)) return;
+
+                match.prediction.forEach(pred => {
+                    if (!pred.predictions) return;
+
+                    const values = Object.values(pred.predictions).map(Number).filter(v => !isNaN(v));
+                    if (values.length === 0) return;
+
+                    const maxProb = Math.max(...values);
+
+                    let category = null;
+                    if (maxProb < thresholds.low) category = "very_low";
+                    else if (maxProb < thresholds.medium) category = "low";
+                    else if (maxProb < thresholds.high) category = "medium";
+                    else if (maxProb < thresholds.very_high) category = "high";
+                    else category = "very_high";
+
+                    if (!best[category] || maxProb > best[category].confidence) {
+                        const outcomeKey = Object.keys(pred.predictions).reduce((bestKey, key) => {
+                            return pred.predictions[key] > (pred.predictions[bestKey] || 0) ? key : bestKey;
+                        }, null);
+
+                        best[category] = {
+                            time: match.kick || match.time || "",
+                            teams: `${match.home} vs ${match.away}`,
+                            league: match.league || "",
+                            homeLogo: match.homeLogo || "",
+                            awayLogo: match.awayLogo || "",
+                            home: match.home || "",
+                            away: match.away || "",
+                            odd: match.odds || "",
+                            score: match.score || "0 - 0",
+                            prediction: outcomeKey ? `${pred.market} - ${outcomeKey}` : pred.market,
+                            confidence: maxProb,
+                            isFavorited: false
+                        };
+                    }
+                });
+            });
+
+            // ✅ Save everything into one key
+            localStorage.setItem("bestPredictions", JSON.stringify(best));
+
+            console.log("Saved Best Predictions:", best);
+        }
+
+        // Call the function
+        fetchMatchesFromAPI();
+
+
+        // Example: load matches from API
+        // async function fetchMatchesFromAPI() {
+        //     const apiData = [
+        //         // Soccer (10 matches)
+        //         { id: '1', sport: 'Soccer', home: 'Real Madrid', away: 'Barcelona', odds: 1.75, market: 'Win', league: 'La Liga', kick: '2025-08-30 18:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '2', sport: 'Soccer', home: 'Liverpool', away: 'Man City', odds: 2.10, market: 'Win', league: 'Premier League', kick: '2025-08-31 20:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '3', sport: 'Soccer', home: 'Chelsea', away: 'Arsenal', odds: 1.95, market: 'Win', league: 'Premier League', kick: '2025-09-01 19:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '4', sport: 'Soccer', home: 'Juventus', away: 'AC Milan', odds: 1.85, market: 'Win', league: 'Serie A', kick: '2025-09-02 17:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '5', sport: 'Soccer', home: 'PSG', away: 'Marseille', odds: 1.90, market: 'Win', league: 'Ligue 1', kick: '2025-09-03 20:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '6', sport: 'Soccer', home: 'Bayern', away: 'Dortmund', odds: 2.00, market: 'Win', league: 'Bundesliga', kick: '2025-09-04 18:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '7', sport: 'Soccer', home: 'Atletico', away: 'Sevilla', odds: 1.80, market: 'Win', league: 'La Liga', kick: '2025-09-05 19:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '8', sport: 'Soccer', home: 'Inter', away: 'Napoli', odds: 1.95, market: 'Win', league: 'Serie A', kick: '2025-09-06 17:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '9', sport: 'Soccer', home: 'Tottenham', away: 'Leicester', odds: 1.85, market: 'Win', league: 'Premier League', kick: '2025-09-07 20:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '10', sport: 'Soccer', home: 'Roma', away: 'Fiorentina', odds: 2.05, market: 'Win', league: 'Serie A', kick: '2025-09-08 18:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+
+        //         // Basketball (10 matches)
+        //         { id: '11', sport: 'Basketball', home: 'Lakers', away: 'Bulls', odds: 1.90, market: 'Win', league: 'NBA', kick: '2025-08-30 19:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '12', sport: 'Basketball', home: 'Celtics', away: 'Heat', odds: 2.05, market: 'Win', league: 'NBA', kick: '2025-08-31 21:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '13', sport: 'Basketball', home: 'Nets', away: 'Knicks', odds: 1.85, market: 'Win', league: 'NBA', kick: '2025-09-02 20:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '14', sport: 'Basketball', home: 'Warriors', away: 'Clippers', odds: 1.95, market: 'Win', league: 'NBA', kick: '2025-09-03 19:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '15', sport: 'Basketball', home: 'Suns', away: 'Mavericks', odds: 2.00, market: 'Win', league: 'NBA', kick: '2025-09-04 18:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '16', sport: 'Basketball', home: 'Bucks', away: 'Heat', odds: 1.80, market: 'Win', league: 'NBA', kick: '2025-09-05 20:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '17', sport: 'Basketball', home: 'Raptors', away: 'Hornets', odds: 2.10, market: 'Win', league: 'NBA', kick: '2025-09-06 19:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '18', sport: 'Basketball', home: 'Jazz', away: 'Kings', odds: 1.85, market: 'Win', league: 'NBA', kick: '2025-09-07 20:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '19', sport: 'Basketball', home: 'Knicks', away: 'Celtics', odds: 2.05, market: 'Win', league: 'NBA', kick: '2025-09-08 21:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '20', sport: 'Basketball', home: 'Pelicans', away: 'Pacers', odds: 1.95, market: 'Win', league: 'NBA', kick: '2025-09-09 18:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+
+        //         // Volleyball (10 matches)
+        //         { id: '21', sport: 'Volleyball', home: 'Team A', away: 'Team B', odds: 1.60, market: 'Win', league: 'Volleyball League', kick: '2025-09-01 17:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '22', sport: 'Volleyball', home: 'Team C', away: 'Team D', odds: 2.20, market: 'Win', league: 'Volleyball League', kick: '2025-09-02 18:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '23', sport: 'Volleyball', home: 'Team E', away: 'Team F', odds: 1.80, market: 'Win', league: 'Volleyball League', kick: '2025-09-03 19:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '24', sport: 'Volleyball', home: 'Team G', away: 'Team H', odds: 1.95, market: 'Win', league: 'Volleyball League', kick: '2025-09-04 17:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '25', sport: 'Volleyball', home: 'Team I', away: 'Team J', odds: 2.05, market: 'Win', league: 'Volleyball League', kick: '2025-09-05 18:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '26', sport: 'Volleyball', home: 'Team K', away: 'Team L', odds: 1.75, market: 'Win', league: 'Volleyball League', kick: '2025-09-06 19:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '27', sport: 'Volleyball', home: 'Team M', away: 'Team N', odds: 1.85, market: 'Win', league: 'Volleyball League', kick: '2025-09-07 20:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '28', sport: 'Volleyball', home: 'Team O', away: 'Team P', odds: 2.00, market: 'Win', league: 'Volleyball League', kick: '2025-09-08 17:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '29', sport: 'Volleyball', home: 'Team Q', away: 'Team R', odds: 1.90, market: 'Win', league: 'Volleyball League', kick: '2025-09-09 19:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '30', sport: 'Volleyball', home: 'Team S', away: 'Team T', odds: 1.95, market: 'Win', league: 'Volleyball League', kick: '2025-09-10 18:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+
+        //         // Hockey (10 matches)
+        //         { id: '31', sport: 'Hockey', home: 'Maple Leafs', away: 'Canadiens', odds: 1.80, market: 'Win', league: 'NHL', kick: '2025-09-03 19:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '32', sport: 'Hockey', home: 'Blackhawks', away: 'Rangers', odds: 2.00, market: 'Win', league: 'NHL', kick: '2025-09-04 20:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '33', sport: 'Hockey', home: 'Penguins', away: 'Flyers', odds: 1.95, market: 'Win', league: 'NHL', kick: '2025-09-05 21:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '34', sport: 'Hockey', home: 'Bruins', away: 'Capitals', odds: 1.85, market: 'Win', league: 'NHL', kick: '2025-09-06 19:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '35', sport: 'Hockey', home: 'Avalanche', away: 'Sharks', odds: 2.10, market: 'Win', league: 'NHL', kick: '2025-09-07 20:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '36', sport: 'Hockey', home: 'Lightning', away: 'Panthers', odds: 1.90, market: 'Win', league: 'NHL', kick: '2025-09-08 18:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '37', sport: 'Hockey', home: 'Jets', away: 'Senators', odds: 1.85, market: 'Win', league: 'NHL', kick: '2025-09-09 19:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '38', sport: 'Hockey', home: 'Kings', away: 'Ducks', odds: 2.05, market: 'Win', league: 'NHL', kick: '2025-09-10 20:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '39', sport: 'Hockey', home: 'Coyotes', away: 'Wild', odds: 1.95, market: 'Win', league: 'NHL', kick: '2025-09-11 19:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '40', sport: 'Hockey', home: 'Flames', away: 'Blue Jackets', odds: 1.90, market: 'Win', league: 'NHL', kick: '2025-09-12 18:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+
+        //         // Tennis (10 matches)
+        //         { id: '41', sport: 'Tennis', home: 'Federer', away: 'Nadal', odds: 1.95, market: 'Win', league: 'Grand Slam', kick: '2025-09-05 16:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '42', sport: 'Tennis', home: 'Djokovic', away: 'Thiem', odds: 2.10, market: 'Win', league: 'Grand Slam', kick: '2025-09-06 18:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '43', sport: 'Tennis', home: 'Murray', away: 'Zverev', odds: 1.85, market: 'Win', league: 'Grand Slam', kick: '2025-09-07 17:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '44', sport: 'Tennis', home: 'Medvedev', away: 'Alcaraz', odds: 1.90, market: 'Win', league: 'Grand Slam', kick: '2025-09-08 16:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '45', sport: 'Tennis', home: 'Tsitsipas', away: 'Rublev', odds: 2.05, market: 'Win', league: 'Grand Slam', kick: '2025-09-09 18:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '46', sport: 'Tennis', home: 'Kyrgios', away: 'Fognini', odds: 1.80, market: 'Win', league: 'Grand Slam', kick: '2025-09-10 17:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '47', sport: 'Tennis', home: 'Auger-Aliassime', away: 'Shapovalov', odds: 1.95, market: 'Win', league: 'Grand Slam', kick: '2025-09-11 16:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '48', sport: 'Tennis', home: 'Berrettini', away: 'Sinner', odds: 2.00, market: 'Win', league: 'Grand Slam', kick: '2025-09-12 18:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '49', sport: 'Tennis', home: 'Monfils', away: 'Goffin', odds: 1.85, market: 'Win', league: 'Grand Slam', kick: '2025-09-13 17:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '50', sport: 'Tennis', home: 'Ferrer', away: 'Isner', odds: 1.90, market: 'Win', league: 'Grand Slam', kick: '2025-09-14 16:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+
+        //         // Cricket (10 matches)
+        //         { id: '51', sport: 'Cricket', home: 'India', away: 'Australia', odds: 1.85, market: 'Win', league: 'ICC', kick: '2025-09-07 10:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '52', sport: 'Cricket', home: 'England', away: 'Pakistan', odds: 2.15, market: 'Win', league: 'ICC', kick: '2025-09-08 12:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '53', sport: 'Cricket', home: 'South Africa', away: 'New Zealand', odds: 1.95, market: 'Win', league: 'ICC', kick: '2025-09-09 14:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '54', sport: 'Cricket', home: 'West Indies', away: 'Sri Lanka', odds: 2.05, market: 'Win', league: 'ICC', kick: '2025-09-10 10:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '55', sport: 'Cricket', home: 'Bangladesh', away: 'Zimbabwe', odds: 1.80, market: 'Win', league: 'ICC', kick: '2025-09-11 11:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '56', sport: 'Cricket', home: 'Afghanistan', away: 'Ireland', odds: 2.00, market: 'Win', league: 'ICC', kick: '2025-09-12 12:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '57', sport: 'Cricket', home: 'Netherlands', away: 'Scotland', odds: 1.90, market: 'Win', league: 'ICC', kick: '2025-09-13 13:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '58', sport: 'Cricket', home: 'UAE', away: 'Nepal', odds: 1.85, market: 'Win', league: 'ICC', kick: '2025-09-14 14:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '59', sport: 'Cricket', home: 'Kenya', away: 'Oman', odds: 2.10, market: 'Win', league: 'ICC', kick: '2025-09-15 15:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '60', sport: 'Cricket', home: 'Canada', away: 'Nepal', odds: 1.95, market: 'Win', league: 'ICC', kick: '2025-09-16 16:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+
+        //         // Rugby (10 matches)
+        //         { id: '61', sport: 'Rugby', home: 'All Blacks', away: 'Springboks', odds: 1.70, market: 'Win', league: 'Rugby Championship', kick: '2025-09-09 15:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '62', sport: 'Rugby', home: 'Wallabies', away: 'England', odds: 2.00, market: 'Win', league: 'Rugby Championship', kick: '2025-09-10 17:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '63', sport: 'Rugby', home: 'France', away: 'Ireland', odds: 1.85, market: 'Win', league: 'Six Nations', kick: '2025-09-11 16:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '64', sport: 'Rugby', home: 'Scotland', away: 'Wales', odds: 1.95, market: 'Win', league: 'Six Nations', kick: '2025-09-12 17:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '65', sport: 'Rugby', home: 'Argentina', away: 'Italy', odds: 2.05, market: 'Win', league: 'Rugby Championship', kick: '2025-09-13 18:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '66', sport: 'Rugby', home: 'Japan', away: 'Samoa', odds: 1.85, market: 'Win', league: 'Rugby Championship', kick: '2025-09-14 19:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '67', sport: 'Rugby', home: 'Georgia', away: 'Fiji', odds: 1.90, market: 'Win', league: 'Rugby Championship', kick: '2025-09-15 16:30', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '68', sport: 'Rugby', home: 'Uruguay', away: 'Canada', odds: 2.00, market: 'Win', league: 'Rugby Championship', kick: '2025-09-16 17:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '69', sport: 'Rugby', home: 'Tonga', away: 'Namibia', odds: 1.85, market: 'Win', league: 'Rugby Championship', kick: '2025-09-17 18:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //         { id: '70', sport: 'Rugby', home: 'Brazil', away: 'Chile', odds: 1.95, market: 'Win', league: 'Rugby Championship', kick: '2025-09-18 19:00', homeLogo: './assets/images.jpg', awayLogo: './assets/images.jpg' },
+        //     ];
+
+        //     loadApiMatches(apiData); // from generate.js
+        // }
+
+        // fetchMatchesFromAPI();
+    </script>
+</body>
+
+</html>

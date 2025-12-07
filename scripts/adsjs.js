@@ -79,7 +79,7 @@
   // ✅ Render predictions into carousel
   function renderPredictions(predictions) {
     if (!Array.isArray(predictions) || predictions.length === 0) {
-      track.innerHTML = `<p>No predictions available today</p>`;
+      track.innerHTML = `<p>Please! Reload the server</p>`;
       return;
     }
 
