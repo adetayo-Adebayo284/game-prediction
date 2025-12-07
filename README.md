@@ -180,24 +180,19 @@ Create a folder:
 ```
 assets/screenshots/
 ```
-
-Then insert your screenshots:
-
-```md
 ## 📸 Screenshots
 
 ### Dashboard
-![Dashboard](assets/screenshots/sport.PNG)
+![Dashboard](assets/screenshots/sport.png)
 
 ### Daily Matches
 ![Daily Matches](assets/screenshots/all.jpg)
 
 ### Mobile View
-![Mobile](assets/screenshots/sport%20mobile.PNG)
+![Mobile](assets/screenshots/sport_mobile.png)
 
 ### Custom Prediction Page
 ![Custom](assets/screenshots/custom.jpg)
-```
 
 ---
 
