@@ -227,9 +227,12 @@ Check individual files for third-party asset licenses.
 
 ---
 
-## 💬 Feedback & Contribution
+## 💬 Contribute / Feedback
 
-If you like this project, feel free to ⭐ **Star** it, fork it, or open an **Issue** with feedback.
+Love this project?  
+- ⭐ Star it  
+- 🍴 Fork it  
+- 📝 Open an Issue with suggestions or questions
 
 
 ## 📬 Contact / Support
